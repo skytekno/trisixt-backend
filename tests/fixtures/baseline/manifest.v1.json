@@ -1,0 +1,688 @@
+{
+  "contract_version": 1,
+  "task": "MAN-5",
+  "namespace": "trisixt-baseline-v1",
+  "scope": "Fresh Rust fixtures; expected numbers are handwritten. Rendering does not execute HTTP, seed a database, or validate providers.",
+  "id_keys": [
+    "owner_a",
+    "owner_b",
+    "instance_a",
+    "instance_b",
+    "project_a",
+    "project_b",
+    "visitor_a_alias",
+    "visitor_a_customer",
+    "visitor_a_guest",
+    "visitor_b_customer",
+    "campaign_a",
+    "campaign_b",
+    "link_a",
+    "link_b",
+    "event_a_view_alias",
+    "event_a_open_customer",
+    "event_a_view_guest",
+    "event_a_checkout",
+    "event_b_view",
+    "event_b_open"
+  ],
+  "run_contract": {
+    "id_algorithm": "UUIDv8 from first 16 bytes of SHA256(UTF8(namespace + \"/\" + run_id + \"/\" + logical_key)); byte6=(byte6&15)|128, byte8=(byte8&63)|128",
+    "run_id_pattern": "[a-z][a-z0-9-]{0,39}",
+    "anchor": "Explicit UTC midnight on the previous day for a live run; persist it and reuse for replay. Reference example: 2026-09-18T00:00:00Z.",
+    "query_from": "{{time:0}}",
+    "query_to_exclusive": "{{time:86400}}",
+    "secrets": "Generate owner tokens and SDK keys in the disposable harness only; neither tokens nor passwords belong in this manifest.",
+    "generated_ids": "HTTP creation assigns owner/instance/project/campaign/link/device/purchase IDs; record response IDs in a runtime map. Deterministic IDs are suitable for isolated SQL seed fixtures and SDK event/visitor payloads."
+  },
+  "provider_matrix": [
+    {
+      "key": "clickhouse-minio",
+      "ANALYTICS_BACKEND": "clickhouse",
+      "STORAGE_BACKEND": "s3",
+      "storage_implementation": "MinIO"
+    },
+    {
+      "key": "bigquery-minio",
+      "ANALYTICS_BACKEND": "bigquery",
+      "STORAGE_BACKEND": "s3",
+      "storage_implementation": "MinIO"
+    },
+    {
+      "key": "clickhouse-gcs",
+      "ANALYTICS_BACKEND": "clickhouse",
+      "STORAGE_BACKEND": "gcs",
+      "storage_implementation": "GCS"
+    },
+    {
+      "key": "bigquery-gcs",
+      "ANALYTICS_BACKEND": "bigquery",
+      "STORAGE_BACKEND": "gcs",
+      "storage_implementation": "GCS"
+    }
+  ],
+  "owners": [
+    {
+      "key": "owner_a",
+      "id": "{{id:owner_a}}",
+      "email": "baseline-{{run_id}}-a@example.test"
+    },
+    {
+      "key": "owner_b",
+      "id": "{{id:owner_b}}",
+      "email": "baseline-{{run_id}}-b@example.test"
+    }
+  ],
+  "instances": [
+    {
+      "key": "instance_a",
+      "id": "{{id:instance_a}}",
+      "owner_id": "{{id:owner_a}}",
+      "name": "Baseline {{run_id}} a",
+      "revenue_collection_enabled": true
+    },
+    {
+      "key": "instance_b",
+      "id": "{{id:instance_b}}",
+      "owner_id": "{{id:owner_b}}",
+      "name": "Baseline {{run_id}} b",
+      "revenue_collection_enabled": true
+    }
+  ],
+  "projects": [
+    {
+      "key": "project_a",
+      "id": "{{id:project_a}}",
+      "instance_id": "{{id:instance_a}}",
+      "name": "Baseline a",
+      "environment": "test",
+      "domain": "{{run_id}}-a.example.test"
+    },
+    {
+      "key": "project_b",
+      "id": "{{id:project_b}}",
+      "instance_id": "{{id:instance_b}}",
+      "name": "Baseline b",
+      "environment": "test",
+      "domain": "{{run_id}}-b.example.test"
+    }
+  ],
+  "sdk_configurations": [
+    {
+      "project_id": "{{id:project_a}}",
+      "platform": "ios",
+      "request": {
+        "enabled": true,
+        "team_id": "ABCDEFGHIJ",
+        "bundle_id": "test.baseline.a",
+        "uri_scheme": "baseline",
+        "app_store_url": "https://apps.apple.com/app/example"
+      }
+    },
+    {
+      "project_id": "{{id:project_a}}",
+      "platform": "android",
+      "request": {
+        "enabled": true,
+        "package_name": "test.baseline.a",
+        "uri_scheme": "baseline",
+        "sha256_cert_fingerprints": [
+          "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB"
+        ],
+        "store_url": "https://play.google.com/store/apps/details?id=test.baseline.a"
+      }
+    },
+    {
+      "project_id": "{{id:project_a}}",
+      "platform": "web",
+      "request": {
+        "enabled": true,
+        "domains": [
+          "{{run_id}}-a.example.test"
+        ],
+        "fallback_url": "https://example.test/landing"
+      }
+    },
+    {
+      "project_id": "{{id:project_b}}",
+      "platform": "ios",
+      "request": {
+        "enabled": true,
+        "team_id": "ABCDEFGHIJ",
+        "bundle_id": "test.baseline.b",
+        "uri_scheme": "baseline",
+        "app_store_url": "https://apps.apple.com/app/example"
+      }
+    },
+    {
+      "project_id": "{{id:project_b}}",
+      "platform": "android",
+      "request": {
+        "enabled": true,
+        "package_name": "test.baseline.b",
+        "uri_scheme": "baseline",
+        "sha256_cert_fingerprints": [
+          "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB"
+        ],
+        "store_url": "https://play.google.com/store/apps/details?id=test.baseline.b"
+      }
+    },
+    {
+      "project_id": "{{id:project_b}}",
+      "platform": "web",
+      "request": {
+        "enabled": true,
+        "domains": [
+          "{{run_id}}-b.example.test"
+        ],
+        "fallback_url": "https://example.test/landing"
+      }
+    }
+  ],
+  "visitors": [
+    {
+      "key": "visitor_a_alias",
+      "id": "{{id:visitor_a_alias}}",
+      "project_id": "{{id:project_a}}",
+      "external_id": null,
+      "attributes": {
+        "cohort": "anonymous"
+      }
+    },
+    {
+      "key": "visitor_a_customer",
+      "id": "{{id:visitor_a_customer}}",
+      "project_id": "{{id:project_a}}",
+      "external_id": "{{run_id}}-customer-a",
+      "attributes": {
+        "plan": "paid"
+      }
+    },
+    {
+      "key": "visitor_a_guest",
+      "id": "{{id:visitor_a_guest}}",
+      "project_id": "{{id:project_a}}",
+      "external_id": null,
+      "attributes": {
+        "plan": "free"
+      }
+    },
+    {
+      "key": "visitor_b_customer",
+      "id": "{{id:visitor_b_customer}}",
+      "project_id": "{{id:project_b}}",
+      "external_id": "{{run_id}}-customer-b",
+      "attributes": {
+        "plan": "paid"
+      }
+    }
+  ],
+  "sdk_authentication": {
+    "method": "POST",
+    "path": "/api/v1/sdk/authenticate",
+    "header": "x-project-key",
+    "project_id": "{{id:project_a}}",
+    "request": {
+      "visitor_id": "{{id:visitor_a_customer}}",
+      "vendor": "{{run_id}}-vendor-a",
+      "platform": "ios",
+      "app_version": "1.0.0",
+      "user_agent": "BaselineFixture/1.0 (iPhone)",
+      "timezone": "UTC"
+    },
+    "expected": {
+      "status": 200,
+      "visitor_id": "{{id:visitor_a_customer}}",
+      "uri_scheme": "baseline",
+      "device_id": "runtime UUID; replay of same vendor/project returns same ID"
+    }
+  },
+  "campaigns": [
+    {
+      "key": "campaign_a",
+      "id": "{{id:campaign_a}}",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "name": "Baseline campaign a",
+        "metadata": {
+          "fixture_run_id": "{{run_id}}"
+        }
+      }
+    },
+    {
+      "key": "campaign_b",
+      "id": "{{id:campaign_b}}",
+      "project_id": "{{id:project_b}}",
+      "request": {
+        "name": "Baseline campaign b",
+        "metadata": {
+          "fixture_run_id": "{{run_id}}"
+        }
+      }
+    }
+  ],
+  "links": [
+    {
+      "key": "link_a",
+      "id": "{{id:link_a}}",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "name": "Baseline link a",
+        "path": "baseline-{{run_id}}-a",
+        "target_url": "https://example.test/landing",
+        "campaign_id": "{{id:campaign_a}}",
+        "tracking_source": "baseline",
+        "tracking_medium": "fixture",
+        "tracking_campaign": "baseline-a",
+        "data": {
+          "screen": "welcome",
+          "fixture_run_id": "{{run_id}}"
+        }
+      }
+    },
+    {
+      "key": "link_b",
+      "id": "{{id:link_b}}",
+      "project_id": "{{id:project_b}}",
+      "request": {
+        "name": "Baseline link b",
+        "path": "baseline-{{run_id}}-b",
+        "target_url": "https://example.test/landing",
+        "campaign_id": "{{id:campaign_b}}",
+        "tracking_source": "baseline",
+        "tracking_medium": "fixture",
+        "tracking_campaign": "baseline-b",
+        "data": {
+          "screen": "welcome",
+          "fixture_run_id": "{{run_id}}"
+        }
+      }
+    }
+  ],
+  "products": [
+    {
+      "product_id": "baseline-widget",
+      "currency": "USD",
+      "unit_price_cents": 1000,
+      "kind": "one_time",
+      "declaration": "SDK reported purchase product_id; this is not an App Store or Play receipt and needs no catalog creation API."
+    }
+  ],
+  "events": [
+    {
+      "key": "event_a_view_alias",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "event_id": "{{id:event_a_view_alias}}",
+        "visitor_id": "{{id:visitor_a_alias}}",
+        "event_type": "view",
+        "occurred_at": "{{time:3600}}",
+        "properties": {
+          "link_id": "{{id:link_a}}",
+          "session_id": "{{run_id}}-session-alias",
+          "platform": "ios"
+        }
+      }
+    },
+    {
+      "key": "event_a_open_customer",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "event_id": "{{id:event_a_open_customer}}",
+        "visitor_id": "{{id:visitor_a_customer}}",
+        "event_type": "open",
+        "occurred_at": "{{time:3660}}",
+        "properties": {
+          "link_id": "{{id:link_a}}",
+          "session_id": "{{run_id}}-session-a",
+          "platform": "ios"
+        }
+      }
+    },
+    {
+      "key": "event_a_view_guest",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "event_id": "{{id:event_a_view_guest}}",
+        "visitor_id": "{{id:visitor_a_guest}}",
+        "event_type": "view",
+        "occurred_at": "{{time:3720}}",
+        "properties": {
+          "session_id": "{{run_id}}-session-guest",
+          "platform": "android"
+        }
+      }
+    },
+    {
+      "key": "event_a_checkout",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "event_id": "{{id:event_a_checkout}}",
+        "visitor_id": "{{id:visitor_a_customer}}",
+        "event_type": "checkout",
+        "occurred_at": "{{time:3780}}",
+        "properties": {
+          "session_id": "{{run_id}}-session-a",
+          "platform": "ios",
+          "cart_items": 2
+        }
+      }
+    },
+    {
+      "key": "event_b_view",
+      "project_id": "{{id:project_b}}",
+      "request": {
+        "event_id": "{{id:event_b_view}}",
+        "visitor_id": "{{id:visitor_b_customer}}",
+        "event_type": "view",
+        "occurred_at": "{{time:3600}}",
+        "properties": {
+          "link_id": "{{id:link_b}}",
+          "session_id": "{{run_id}}-session-b",
+          "platform": "ios"
+        }
+      }
+    },
+    {
+      "key": "event_b_open",
+      "project_id": "{{id:project_b}}",
+      "request": {
+        "event_id": "{{id:event_b_open}}",
+        "visitor_id": "{{id:visitor_b_customer}}",
+        "event_type": "open",
+        "occurred_at": "{{time:3660}}",
+        "properties": {
+          "session_id": "{{run_id}}-session-b",
+          "platform": "ios"
+        }
+      }
+    }
+  ],
+  "event_replays": [
+    {
+      "key": "replay_a_first",
+      "event_key": "event_a_view_alias",
+      "expected": {
+        "status": 200,
+        "accepted": 0,
+        "duplicates": 1
+      }
+    },
+    {
+      "key": "replay_b_first",
+      "event_key": "event_b_view",
+      "expected": {
+        "status": 200,
+        "accepted": 0,
+        "duplicates": 1
+      }
+    }
+  ],
+  "aliases": [
+    {
+      "project_id": "{{id:project_a}}",
+      "from_visitor_id": "{{id:visitor_a_alias}}",
+      "to_visitor_id": "{{id:visitor_a_customer}}",
+      "apply_after": "all initial events and their initial provider delivery",
+      "method": "Native harness calls trisixt::sdk::merge_visitors; it is not a public merge HTTP endpoint."
+    }
+  ],
+  "payments": [
+    {
+      "key": "buy-a",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "visitor_id": "{{id:visitor_a_customer}}",
+        "transaction_id": "{{run_id}}-buy-a",
+        "product_id": "baseline-widget",
+        "currency": "USD",
+        "price_cents": 1000,
+        "quantity": 2,
+        "event_type": "BUY",
+        "purchase_kind": "one_time",
+        "date": "{{time:7200}}",
+        "session_id": "{{run_id}}-session-a",
+        "platform": "ios"
+      }
+    },
+    {
+      "key": "refund-a",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "visitor_id": "{{id:visitor_a_customer}}",
+        "transaction_id": "{{run_id}}-refund-a",
+        "product_id": "baseline-widget",
+        "currency": "USD",
+        "price_cents": 1000,
+        "quantity": 1,
+        "event_type": "REFUND",
+        "purchase_kind": "one_time",
+        "date": "{{time:10800}}",
+        "session_id": "{{run_id}}-session-a",
+        "platform": "ios",
+        "original_transaction_id": "{{run_id}}-buy-a"
+      }
+    },
+    {
+      "key": "reversal-a",
+      "project_id": "{{id:project_a}}",
+      "request": {
+        "visitor_id": "{{id:visitor_a_customer}}",
+        "transaction_id": "{{run_id}}-reversal-a",
+        "product_id": "baseline-widget",
+        "currency": "USD",
+        "price_cents": 1000,
+        "quantity": 1,
+        "event_type": "REFUND_REVERSED",
+        "purchase_kind": "one_time",
+        "date": "{{time:14400}}",
+        "session_id": "{{run_id}}-session-a",
+        "platform": "ios",
+        "original_transaction_id": "{{run_id}}-buy-a"
+      }
+    },
+    {
+      "key": "buy-b",
+      "project_id": "{{id:project_b}}",
+      "request": {
+        "visitor_id": "{{id:visitor_b_customer}}",
+        "transaction_id": "{{run_id}}-buy-b",
+        "product_id": "baseline-widget",
+        "currency": "USD",
+        "price_cents": 700,
+        "quantity": 1,
+        "event_type": "BUY",
+        "purchase_kind": "one_time",
+        "date": "{{time:7200}}",
+        "session_id": "{{run_id}}-session-b",
+        "platform": "ios"
+      }
+    }
+  ],
+  "payment_replays": {
+    "each_request_repeated_once": true,
+    "expected": "No additional verified purchase or signed ledger row. All responses status200; buy response duplicate=true on replay. Adjustments do not promise a duplicate field."
+  },
+  "expected": {
+    "initial_ingestion": {
+      "project_a": {
+        "accepted": 4,
+        "duplicates": 0
+      },
+      "project_b": {
+        "accepted": 2,
+        "duplicates": 0
+      }
+    },
+    "event_ledgers": {
+      "project_a": {
+        "events": 4,
+        "outbox_rows": 4,
+        "raw_distinct_visitors": 3,
+        "event_types": {
+          "view": 2,
+          "open": 1,
+          "checkout": 1
+        }
+      },
+      "project_b": {
+        "events": 2,
+        "outbox_rows": 2,
+        "raw_distinct_visitors": 1,
+        "event_types": {
+          "view": 1,
+          "open": 1
+        }
+      },
+      "all_projects": {
+        "events": 6,
+        "outbox_rows": 6
+      }
+    },
+    "after_alias_merge": {
+      "project_a": {
+        "canonical_distinct_visitors": 2,
+        "raw_distinct_visitors": 3,
+        "alias_rows": 1,
+        "events": 4,
+        "outbox_rows": 4
+      },
+      "project_b": {
+        "canonical_distinct_visitors": 1,
+        "alias_rows": 0,
+        "events": 2,
+        "outbox_rows": 2
+      }
+    },
+    "overview_after_merge_and_payments": {
+      "project_a": {
+        "events": 4,
+        "views": 2,
+        "link_views": 1,
+        "opens": 1,
+        "total_users": 2,
+        "revenue": 2000,
+        "revenue_usd_nanos": "20000000000",
+        "units_sold": 2,
+        "paying_users": 1,
+        "arpu": 1000.0,
+        "arppu": 2000.0
+      },
+      "project_b": {
+        "events": 2,
+        "views": 1,
+        "link_views": 1,
+        "opens": 1,
+        "total_users": 1,
+        "revenue": 700,
+        "revenue_usd_nanos": "7000000000",
+        "units_sold": 1,
+        "paying_users": 1,
+        "arpu": 700.0,
+        "arppu": 700.0
+      }
+    },
+    "money_stages_a": [
+      {
+        "after": "buy-a",
+        "signed_ledger_rows": 1,
+        "verified_purchases": 1,
+        "net_usd_cents": 2000,
+        "net_usd_nanos": "20000000000",
+        "units_sold": 2
+      },
+      {
+        "after": "refund-a",
+        "signed_ledger_rows": 2,
+        "verified_purchases": 1,
+        "net_usd_cents": 1000,
+        "net_usd_nanos": "10000000000",
+        "units_sold": 1
+      },
+      {
+        "after": "reversal-a",
+        "signed_ledger_rows": 3,
+        "verified_purchases": 1,
+        "net_usd_cents": 2000,
+        "net_usd_nanos": "20000000000",
+        "units_sold": 2
+      }
+    ],
+    "money_final_b": {
+      "signed_ledger_rows": 1,
+      "verified_purchases": 1,
+      "net_usd_cents": 700,
+      "net_usd_nanos": "7000000000",
+      "units_sold": 1
+    },
+    "storage": {
+      "put_status": 204,
+      "get_status": 200,
+      "download_content_disposition": "attachment",
+      "delete_status": 204,
+      "get_after_delete_status": 404,
+      "bytes_equal_fixture": true
+    },
+    "isolation": {
+      "owner_b_read_project_a_events_status": 403,
+      "owner_b_write_project_a_configuration_status": 403,
+      "owner_b_read_project_a_object_status": 403,
+      "unauthenticated_object_read_status": 401,
+      "project_b_event_with_project_a_link_status": 400
+    },
+    "derivation": [
+      "A has four unique event IDs: view, open, view, checkout; B has two: view and open. Replays add zero.",
+      "A event visitor set is alias/customer/guest (3). Alias->customer leaves customer/guest (2); B remains1.",
+      "Only the first A view has a link, so views2 and link_views1. checkout is an event but does not create an extra countable user.",
+      "A buys two units at1000c =2000c, refunds one at1000c =1000c net, then reverses that refund =2000c net; B buys one at700c.",
+      "One cent is10000000 nanos. A ARPU is2000c/2=1000c; ARPPU is2000c/1=2000c. B ARPU andARPPU are700c."
+    ]
+  },
+  "future_acceptance_boundaries": [
+    {
+      "task": "MAN-29 / C5",
+      "note": "Both projects declare apps now. Missing, disabled or mismatched platform rejection is a future gate; current SDK key extraction does not enforce that declaration."
+    },
+    {
+      "task": "A6",
+      "note": "The public analytics dashboard currently reads the provider distinct visitor aggregate. Immutable delivered visitor IDs remain3 for A after merge; canonical customer-facing counts must become2 under A6. Canonical PostgreSQL overview already resolves aliases; independently verify warehouse event arrival by event_id."
+    },
+    {
+      "task": "A1/A2/A3",
+      "note": "No GeoIP, UA parsing, screen or timezone enrichment completion is claimed. UTC and explicit platform values avoid depending on missing enrichment."
+    },
+    {
+      "task": "C3",
+      "note": "SVG files verify byte-preserving generic object upload/download only. They are not proof of accepted branding image formats, transformation, public delivery or client rendering."
+    },
+    {
+      "task": "E9",
+      "note": "Reported purchases are verified=false/source=sdk_reported. No external store receipt verification or push/mail provider delivery is covered."
+    }
+  ],
+  "assets": [
+    {
+      "file": "checker.svg",
+      "media_type": "image/svg+xml",
+      "dimensions": [
+        2,
+        2
+      ],
+      "bytes": 167,
+      "sha256": "ed0ad88374e241da26d8515f1795c8669312f5925258ad57b996d83ae4dccde7",
+      "object_key": "baseline/{{run_id}}/checker.svg",
+      "purpose": "Generic private object byte round-trip; not a branding transform fixture."
+    },
+    {
+      "file": "banner.svg",
+      "media_type": "image/svg+xml",
+      "dimensions": [
+        4,
+        2
+      ],
+      "bytes": 156,
+      "sha256": "ad47d79d25d6811831474ae4a2ac0559e4b13ce0213b457bd335f408134d29dd",
+      "object_key": "baseline/{{run_id}}/banner.svg",
+      "purpose": "Generic private object byte round-trip; not a branding transform fixture."
+    }
+  ]
+}

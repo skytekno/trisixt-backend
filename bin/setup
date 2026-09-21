@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+cd "$(dirname "$0")/.."
+if [[ ! -f .env ]]; then
+  # Generate once; preserving this key is essential for existing ciphertext.
+  umask 077
+  cp .env.example .env
+  python3 - <<'PYKEY'
+import base64, pathlib, secrets
+path = pathlib.Path('.env')
+text = path.read_text().replace('# TRISIXT_ENCRYPTION_KEY=', 'TRISIXT_ENCRYPTION_KEY=' + base64.b64encode(secrets.token_bytes(32)).decode(), 1)
+text = text.replace('# MIGRATION_ENCRYPTION_KEY=', 'MIGRATION_ENCRYPTION_KEY=' + secrets.token_hex(32), 1)
+path.write_text(text)
+PYKEY
+fi
+rustup show active-toolchain
+cargo fetch --locked
+docker compose up -d --build --wait postgres redis clickhouse minio
+docker compose run --rm minio-init
+cargo run --locked -- migrate

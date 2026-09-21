@@ -1,0 +1,17 @@
+{
+  "prepared_on": "2026-09-20",
+  "checks": {
+    "audited_findings_mapped": 31,
+    "deferred_legacy_workstreams": 1,
+    "finding_records": 32,
+    "dependencies_acyclic": true,
+    "audit_foundation_required_before_credentials": true,
+    "rename_audit_acceptance_deferred_until_audit_coverage": true,
+    "documents_checked": 6,
+    "links_checked": 34,
+    "source_files_unchanged": 1321
+  },
+  "errors": [],
+  "application_tests_run": false,
+  "implementation_started": false
+}

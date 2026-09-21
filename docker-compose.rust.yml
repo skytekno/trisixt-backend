@@ -1,0 +1,3 @@
+# Compatibility filename for the same Rust stack; select service names for infra only.
+include:
+  - path: docker-compose.yml

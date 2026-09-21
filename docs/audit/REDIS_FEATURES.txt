@@ -1,0 +1,26 @@
+redis v0.32.7
+├── redis feature "acl"
+│   └── redis feature "default"
+│       └── trisixt v0.1.0 (/Users/roman/Workspace/github.com/mandays/trisixt-backend)
+│           └── trisixt feature "default" (command-line)
+├── redis feature "aio"
+│   └── redis feature "tokio-comp"
+│       └── trisixt v0.1.0 (/Users/roman/Workspace/github.com/mandays/trisixt-backend) (*)
+├── redis feature "bytes"
+│   └── redis feature "aio" (*)
+├── redis feature "default" (*)
+├── redis feature "geospatial"
+│   └── redis feature "default" (*)
+├── redis feature "keep-alive"
+│   └── redis feature "default" (*)
+├── redis feature "num-bigint"
+│   └── redis feature "default" (*)
+├── redis feature "script"
+│   └── redis feature "default" (*)
+├── redis feature "streams"
+│   └── redis feature "default" (*)
+├── redis feature "tokio"
+│   └── redis feature "tokio-comp" (*)
+├── redis feature "tokio-comp" (*)
+└── redis feature "tokio-util"
+    └── redis feature "aio" (*)

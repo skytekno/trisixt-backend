@@ -1,0 +1,809 @@
+{
+  "schema_version": 1,
+  "prepared_on": "2026-09-20",
+  "release_target": "2026-12-20",
+  "team_size": 1,
+  "deployment_target": "fresh Rust installation first",
+  "capacity_assumption": {
+    "week_start": "2026-09-21",
+    "full_time_weekdays": 65,
+    "implementation_target_weekdays": 50,
+    "reserved_final_validation_and_release_weekdays": 15,
+    "weekends_assumed": false
+  },
+  "schedule_is": "optimistic target subject to 2026-10-04 capacity checkpoint, not a committed estimate",
+  "approved_deferrals": [
+    "M1"
+  ],
+  "optional_scope_reductions_approved": false,
+  "package_namespaces": {
+    "enterprise": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+    "analytics": "docs/planning/ANALYTICS_PLAN.md",
+    "connectivity": "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md"
+  },
+  "items": [
+    {
+      "id": "E1",
+      "title": "Stripe cancellation on instance/last-admin deletion",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        1,
+        2
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:B1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Delete a paying tenant directly and through its last administrator; cancellation obligation survives SQL cascade, retries crash/outage/late webhook, and sandbox subscription reaches terminal state.",
+      "existing_suite_files": [
+        "tests/billing.rs",
+        "tests/cleanup.rs",
+        "tests/accounts.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E2",
+      "title": "SCIM active-SSO, verified-domain and operator-email gates",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        2
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:S1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Reject provisioning without active SSO/verified domain and for foreign/operator emails; disable/delete revokes connection-bound tokens, including concurrent mutation.",
+      "existing_suite_files": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/oidc.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E3",
+      "title": "SCIM deactivation of nonlast administrators",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        2
+      ],
+      "depends_on_findings": [
+        "E2"
+      ],
+      "package_refs": [
+        "enterprise:S1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Deactivate a managed nonlast admin and revoke all sessions/MCP grants; simultaneous removals cannot eliminate the last administrative authority.",
+      "existing_suite_files": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/oidc.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E4",
+      "title": "SCIM member/invitation adoption, UPN/email distinction, externalId filtering, name/email PATCH, retained string-active payloads",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        3
+      ],
+      "depends_on_findings": [
+        "E2",
+        "E3"
+      ],
+      "package_refs": [
+        "enterprise:S2"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Replay retained member/invite adoption, separate UPN/email, externalId filter, profile PATCH/PUT, rename and boolean/string-active cases; foreign identities cannot be adopted.",
+      "existing_suite_files": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E5",
+      "title": "Controlled OIDC preferred_username/SCIM-UPN fallback",
+      "priority": "P2 / changed policy",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        3
+      ],
+      "depends_on_findings": [
+        "E4"
+      ],
+      "package_refs": [
+        "enterprise:S3"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "A signed allowed UPN-only IdP identity follows the agreed verified-domain/SCIM mapping contract; issuer/nonce/state/signature and ownership failures remain denied.",
+      "existing_suite_files": [
+        "tests/oidc.rs",
+        "tests/enterprise.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E6",
+      "title": "Purchase browser pagination/search/sort and adjustment event rows",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        7,
+        8
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:P1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Traverse more than 1000 same-timestamp sale/refund/reversal/cancellation rows with stable scoped pagination, filtering, order and verified/reported provenance.",
+      "existing_suite_files": [
+        "tests/purchase_lifecycle.rs",
+        "tests/analytics.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E7",
+      "title": "Product-level revenue tables",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        8
+      ],
+      "depends_on_findings": [
+        "E6",
+        "A6"
+      ],
+      "package_refs": [
+        "enterprise:P2"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Two-product/two-platform fixtures reconcile signed revenue, units, repeat buyers and defined product ARPU/ARPPU with stable pagination and exact currency units.",
+      "existing_suite_files": [
+        "tests/purchase_lifecycle.rs",
+        "tests/analytics.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E8",
+      "title": "Audit actor snapshots, before/after changes, outcome, request context, failed-login records and operational chain verification",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        4,
+        5,
+        9
+      ],
+      "depends_on_findings": [
+        "O2"
+      ],
+      "package_refs": [
+        "enterprise:A1",
+        "enterprise:A2"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Actor rename/deletion preserves snapshots; known failed login and redacted old/new request-context records exist; mixed-version chains verify and detect tampering without rewriting old hashes.",
+      "existing_suite_files": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/accounts.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "E9",
+      "title": "Tenant credential onboarding/rotation for SSO, push and stores; APNs certificate mode",
+      "priority": "P2 / changed administration",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        6,
+        8,
+        9
+      ],
+      "depends_on_findings": [
+        "E2",
+        "E3"
+      ],
+      "package_refs": [
+        "enterprise:K1",
+        "enterprise:K2",
+        "enterprise:K3",
+        "enterprise:K4"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "For SSO, FCM/APNs including certificate mode, and Apple/Google stores: tenant admin create/redacted-read/rotate/revoke works, wrong-tenant/SSRF/invalid file denied, in-flight version behavior and real provider flows verified.",
+      "existing_suite_files": [
+        "tests/oidc.rs",
+        "tests/messaging.rs",
+        "tests/purchase_lifecycle.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "evidence": [],
+      "required_prior_packages": [
+        "enterprise:A1"
+      ],
+      "package_dependency_note": "E8 audit storage/verifier foundation must precede K1 credential mutations; complete E8 request coverage can follow in week9."
+    },
+    {
+      "id": "A1",
+      "title": "Automatic IP-to-country/city enrichment and MMDB loading",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        4
+      ],
+      "depends_on_findings": [
+        "A2",
+        "A3"
+      ],
+      "package_refs": [
+        "analytics:AN2"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Deterministic MMDB IPv4/IPv6 and trusted-proxy fixtures yield identical canonical location in event/outbox; missing/corrupt database policy and frozen duplicate replay work.",
+      "existing_suite_files": [
+        "tests/analytics.rs",
+        "tests/sdk.rs",
+        "tests/providers.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A2",
+      "title": "Applying saved screen aliases and retained screen-name fallbacks",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        3,
+        4
+      ],
+      "depends_on_findings": [
+        "C5"
+      ],
+      "package_refs": [
+        "analytics:AN1"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Saved aliases apply across event property, visitor attribute and event-name fallback; routed event/session fields and outbox agree; later alias changes do not alter replay.",
+      "existing_suite_files": [
+        "tests/sdk.rs",
+        "tests/analytics.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A3",
+      "title": "Device UA-to-OS/version and timezone propagation into events",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        3,
+        4
+      ],
+      "depends_on_findings": [
+        "C5"
+      ],
+      "package_refs": [
+        "analytics:AN1"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Correct originating device UA/OS/version/timezone reaches event/outbox without manually supplying derived event fields; project/device ownership and unknown cases remain correct.",
+      "existing_suite_files": [
+        "tests/sdk.rs",
+        "tests/analytics.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A4",
+      "title": "Dashboard inviter/referral aggregate semantics",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        5,
+        6
+      ],
+      "depends_on_findings": [
+        "A6"
+      ],
+      "package_refs": [
+        "analytics:AN3-referrals"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Independent inviter/invitee/own activity, alias, platform and sale/refund fixture differentiates own and referral list/detail totals.",
+      "existing_suite_files": [
+        "tests/analytics.rs",
+        "tests/management.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A5",
+      "title": "Visitor metric pagination, metric/identity sort/search, revenue hydration and rich detail",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        5,
+        6
+      ],
+      "depends_on_findings": [
+        "A4"
+      ],
+      "package_refs": [
+        "analytics:AN3-visitors"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "More than 200 metric rows traverse without gaps/duplicates under sort ties and scoped cursors; identity search, signed revenue and own/referral detail match fixture.",
+      "existing_suite_files": [
+        "tests/analytics.rs",
+        "tests/management.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A6",
+      "title": "Merge-aware unique visitors in warehouse analytics",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        4
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "analytics:AN4"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Basic customer analytics preserves all-event semantics but resolves canonical identities after published/pending/chained/concurrent merges under both provider configurations; direct provider-arrival checks remain separate.",
+      "existing_suite_files": [
+        "tests/analytics.rs",
+        "tests/sdk.rs",
+        "tests/providers.rs",
+        "tests/end_to_end.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A7",
+      "title": "Retained link CSV counters",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        8
+      ],
+      "depends_on_findings": [
+        "A4",
+        "A5"
+      ],
+      "package_refs": [
+        "analytics:AN5-link-csv"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Link CSV contains and reconciles reinstall/reactivation/time-spent plus existing counters/metadata; retry/page/expiry and authorization behavior remains correct.",
+      "existing_suite_files": [
+        "tests/exports.rs",
+        "tests/analytics.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A8",
+      "title": "Range-sensitive usage CSV, daily active users and empty-period fill",
+      "priority": "P2 / deprecated reference endpoint",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        8
+      ],
+      "depends_on_findings": [
+        "A6"
+      ],
+      "package_refs": [
+        "analytics:AN5-usage-csv"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Partial-month fixture excludes outside-range activity; daily/monthly unique counts, zero-fill, timezone and retention boundaries are explicit and reconcile.",
+      "existing_suite_files": [
+        "tests/exports.rs",
+        "tests/analytics.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A9",
+      "title": "Expired migration negative-cache pruning",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        7
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "analytics:AN6"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Bounded cleanup removes only expired negative/transient migration cache after grace; fresh/resolved entries and concurrent successful refresh survive.",
+      "existing_suite_files": [
+        "tests/imports.rs",
+        "tests/maintenance.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "A10",
+      "title": "Runtime table-data deletion grant",
+      "priority": "P1 for BigQuery",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        1
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "analytics:AN7"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "Actual Terraform runtime principal can publish/query and delete project rows while another tenant remains; denied deletion preserves local source/retries and succeeds after permission restoration.",
+      "existing_suite_files": [
+        "tests/providers.rs",
+        "tests/maintenance.rs",
+        "tests/cleanup.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "C1",
+      "title": "Routed SDK support for raw Play Install Referrer and bare migration slug",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        2,
+        3
+      ],
+      "depends_on_findings": [
+        "C5"
+      ],
+      "package_refs": [
+        "connectivity:P-C1"
+      ],
+      "details": "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+      "closure_scenario": "Routed native/migrated URL, encoded Play referrer, bare slug and permitted custom scheme resolve exact expected data/attribution; malformed/foreign-project cases denied.",
+      "existing_suite_files": [
+        "tests/sdk.rs",
+        "tests/imports.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "C2",
+      "title": "MCP rich link/campaign search delegation",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        3
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "connectivity:P-C2"
+      ],
+      "details": "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+      "closure_scenario": "Management, MCP REST and JSON-RPC searches return identical filtered entity/metric sets and stable pages; read scopes and token/project boundaries remain enforced.",
+      "existing_suite_files": [
+        "tests/mcp.rs",
+        "tests/management.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "C3",
+      "title": "Uploaded link images and domain branding attachments",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        6,
+        7
+      ],
+      "depends_on_findings": [
+        "C5"
+      ],
+      "package_refs": [
+        "connectivity:P-C3a",
+        "connectivity:P-C3b",
+        "connectivity:P-C3c"
+      ],
+      "details": "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+      "closure_scenario": "Dashboard/SDK/quick-link/domain image upload-bind-render-replace-remove works; public serving exposes only published images; provider failures/concurrency/tenant deletion leave correct durable cleanup.",
+      "existing_suite_files": [
+        "tests/providers.rs",
+        "tests/cleanup.rs",
+        "tests/imports.rs",
+        "tests/domains.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "C4",
+      "title": "Tokenless clipboard project-activity check",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        6
+      ],
+      "depends_on_findings": [
+        "C5"
+      ],
+      "package_refs": [
+        "connectivity:P-C4"
+      ],
+      "details": "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+      "closure_scenario": "Tokenless status is false initially, true after eligible copy-enabled activity and false after TTL; project isolation and optional token consume/replay remain correct on real client.",
+      "existing_suite_files": [
+        "tests/sdk.rs",
+        "tests/imports.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "C5",
+      "title": "Mandatory SDK app/platform configuration gate",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        1
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "connectivity:P-C5"
+      ],
+      "details": "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+      "closure_scenario": "Missing/unconfigured/disabled/wrong platform-identifier-origin combinations reject before side effects; valid mobile/web and separate server-SDK paths remain usable.",
+      "existing_suite_files": [
+        "tests/sdk.rs",
+        "tests/core_api.rs",
+        "tests/imports.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O1",
+      "title": "Self-hosted flag automatically closing registration",
+      "priority": "P1 / changed policy",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        1
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:O1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Self-hosted public signup is denied through both aliases while authorized invitations work; independent disable flag and SaaS policy combinations covered.",
+      "existing_suite_files": [
+        "tests/accounts.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O2",
+      "title": "Retained per-IP request throttles",
+      "priority": "P1",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        2
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:O2"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Two app instances share source-IP policy; rotating identities and spoofed forwarding cannot bypass it; separate sources, IPv6, expiry, 429/retry behavior and database failure policy covered.",
+      "existing_suite_files": [
+        "tests/accounts.rs",
+        "tests/mcp.rs",
+        "tests/sdk.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O3",
+      "title": "OpenTelemetry/OTLP trace integration and metrics instrumentation",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        10
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:T1",
+        "enterprise:T2"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Local OTLP collector receives correlated request/database/provider/worker spans and required bounded-cardinality metrics; redaction and collector-outage behavior verified.",
+      "existing_suite_files": [
+        "tests/operations.rs",
+        "tests/worker.rs",
+        "tests/providers.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O4",
+      "title": "Deep dependency diagnostics and dedicated diagnostics-key contract",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        9,
+        10
+      ],
+      "depends_on_findings": [
+        "O5"
+      ],
+      "package_refs": [
+        "enterprise:D1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Independent bounded dependency probes report current isolated failures; monitor credentials cannot invoke repairs; liveness/readiness policy remains explicit.",
+      "existing_suite_files": [
+        "tests/operations.rs",
+        "tests/providers.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O5",
+      "title": "Redis TLS client features/configuration",
+      "priority": "P1 for TLS-only Redis",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        1
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:O5"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Real authenticated TLS Redis fixture verifies trusted CA/hostname, rejects wrong trust, reconnects and reports malformed config; PostgreSQL queued events progress during Redis outage.",
+      "existing_suite_files": [
+        "tests/worker.rs",
+        "tests/providers.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O6",
+      "title": "Atomic initial-member provisioning",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        7
+      ],
+      "depends_on_findings": [
+        "E4"
+      ],
+      "package_refs": [
+        "enterprise:N1"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Mixed new/existing initial members and paired projects commit atomically; invalid member/forbidden role rolls back invites/mail; defined no-SMTP self-hosted links work.",
+      "existing_suite_files": [
+        "tests/mcp.rs",
+        "tests/accounts.rs"
+      ],
+      "evidence": []
+    },
+    {
+      "id": "O7",
+      "title": "Renaming paired projects with an instance",
+      "priority": "P2",
+      "owner": "Roman",
+      "scope": "fresh_release",
+      "status": "planned",
+      "target_weeks": [
+        7
+      ],
+      "depends_on_findings": [],
+      "package_refs": [
+        "enterprise:N2"
+      ],
+      "details": "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "closure_scenario": "Instance and its paired production/test projects rename atomically with defined custom-name rule and audit before/after; rollback leaves all original names.",
+      "existing_suite_files": [
+        "tests/core_api.rs",
+        "tests/management.rs"
+      ],
+      "evidence": [],
+      "final_acceptance_after_findings": [
+        "E8"
+      ],
+      "acceptance_note": "Rename behavior implemented week7; final audit before/after assertions await E8 coverage in week9."
+    },
+    {
+      "id": "M1",
+      "title": "Rails data conversion and legacy archive recovery",
+      "priority": "post-fresh-release",
+      "owner": "Roman",
+      "scope": "later_existing_deployment",
+      "status": "deferred",
+      "target_weeks": [],
+      "depends_on_findings": [],
+      "package_refs": [
+        "analytics:M1"
+      ],
+      "details": "docs/planning/ANALYTICS_PLAN.md",
+      "closure_scenario": "After actual legacy inventory: stable source-ID mapping, resumable/idempotent event/archive import, exact tenant/financial reconciliation and rehearsed cutover/rollback. Not needed for fresh native schema installation.",
+      "existing_suite_files": [],
+      "evidence": []
+    }
+  ],
+  "target_week_semantics": "Implementation windows at lower-bound estimates; final closure also depends on declared acceptance prerequisites and required live verification."
+}

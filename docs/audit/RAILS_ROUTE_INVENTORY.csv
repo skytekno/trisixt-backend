@@ -1,0 +1,225 @@
+method,rails_path,rails_source,rails_target,rails_constraints,literal_path_candidate,rust_candidates,interpretation
+GET,/up,config/routes.rb:3,"to: proc { [200, {}, ['OK']] }",,yes,src/routes.rs:16 /up,candidate only; semantic review required
+GET,/favicon.ico,config/routes.rb:4,"to: ->(_) { [204, {}, []] }",,no,,"check renamed route, fallback, or missing behavior"
+GET,/*value,config/routes.rb:7,public/links#make_redirect,PreviewSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/,config/routes.rb:8,public/links#make_redirect,PreviewSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/.well-known/apple-app-site-association,config/routes.rb:12,public/verification#generate_ios_file,PublicSubdomain,yes,src/core_api.rs:915 /.well-known/apple-app-site-association,candidate only; semantic review required
+GET,/.well-known/assetlinks.json,config/routes.rb:13,public/verification#generate_android_file,PublicSubdomain,yes,src/core_api.rs:919 /.well-known/assetlinks.json,candidate only; semantic review required
+GET,/.well-known/trisixt-domain-verification,config/routes.rb:14,public/verification#domain_verification,PublicSubdomain,yes,src/domains.rs:354 /.well-known/trisixt-domain-verification,candidate only; semantic review required
+GET,/mm/*value,config/routes.rb:16,public/marketing_messages#open_marketing_message,PublicSubdomain,yes,src/messaging.rs:624 /mm/{id},candidate only; semantic review required
+GET,/*value,config/routes.rb:17,public/links#open_app_link,PublicSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/,config/routes.rb:18,public/links#open_app_link,PublicSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/,config/routes.rb:19,public/device_data#store_device_data,PublicSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/.well-known/oauth-protected-resource,config/routes.rb:24,mcp/oauth_metadata#protected_resource,McpSubdomain,yes,src/mcp.rs:1046 /.well-known/oauth-protected-resource,candidate only; semantic review required
+GET,/.well-known/oauth-authorization-server,config/routes.rb:25,mcp/oauth_metadata#authorization_server,McpSubdomain,yes,src/mcp.rs:1045 /.well-known/oauth-authorization-server,candidate only; semantic review required
+POST,/register,config/routes.rb:28,mcp/registration#create,McpSubdomain,yes,src/mcp.rs:1047 /register,candidate only; semantic review required
+GET,/authorize,config/routes.rb:29,mcp/authorize#show,McpSubdomain,yes,src/mcp.rs:1048 /authorize,candidate only; semantic review required
+POST,/token,config/routes.rb:30,mcp/token#create,McpSubdomain,yes,src/mcp.rs:1049 /token,candidate only; semantic review required
+GET,/api/v1/mcp/status,config/routes.rb:35,mcp/auth#status,McpSubdomain,yes,src/mcp.rs:1057 /api/v1/mcp/status,candidate only; semantic review required
+GET,/api/v1/mcp/usage,config/routes.rb:36,mcp/auth#usage,McpSubdomain,yes,src/mcp.rs:1059 /api/v1/mcp/usage,candidate only; semantic review required
+GET,/api/v1/mcp/validate,config/routes.rb:37,mcp/auth#validate,McpSubdomain,yes,src/mcp.rs:1058 /api/v1/mcp/validate,candidate only; semantic review required
+DELETE,/api/v1/mcp/token,config/routes.rb:38,mcp/auth#revoke_token,McpSubdomain,yes,src/mcp.rs:1060 /api/v1/mcp/token,candidate only; semantic review required
+GET,/api/v1/mcp/tokens,config/routes.rb:39,mcp/auth#list_tokens,McpSubdomain,yes,src/mcp.rs:1052 /api/v1/mcp/tokens,candidate only; semantic review required
+POST,/api/v1/mcp/projects,config/routes.rb:40,mcp/projects#create,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/mcp/redirects,config/routes.rb:41,mcp/configurations#setup_redirects,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/mcp/sdk,config/routes.rb:42,mcp/configurations#setup_sdk,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/links/search,config/routes.rb:43,mcp/links#index,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/links,config/routes.rb:44,mcp/links#create,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/mcp/links/by-path/:path,config/routes.rb:45,mcp/links#show,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PATCH,/api/v1/mcp/links/:id,config/routes.rb:46,mcp/links#update,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/mcp/links/:id,config/routes.rb:47,mcp/links#archive,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/analytics/link,config/routes.rb:48,mcp/analytics#link_stats,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/analytics/overview,config/routes.rb:49,mcp/analytics#project_metrics,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/analytics/top_links,config/routes.rb:50,mcp/analytics#top_links,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/campaigns,config/routes.rb:52,mcp/campaigns#create,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/mcp/campaigns/search,config/routes.rb:53,mcp/campaigns#index,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/mcp/campaigns/:campaign_id,config/routes.rb:54,mcp/campaigns#archive,McpSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/users,config/routes.rb:65,action: :create,ApiSubdomain,yes,src/accounts.rs:1172 /api/v1/users,candidate only; semantic review required
+POST,/api/v1/users/reset_password,config/routes.rb:66,(implicit action),ApiSubdomain,yes,src/accounts.rs:1177 /api/v1/users/reset_password,candidate only; semantic review required
+POST,/api/v1/users/change_password,config/routes.rb:67,(implicit action),ApiSubdomain,yes,src/accounts.rs:1180 /api/v1/users/change_password,candidate only; semantic review required
+POST,/api/v1/users/accept_invite,config/routes.rb:68,(implicit action),ApiSubdomain,yes,src/accounts.rs:1181 /api/v1/users/accept_invite,candidate only; semantic review required
+GET,/api/v1/users/me,config/routes.rb:69,action: :current_user_details,ApiSubdomain,yes,src/accounts.rs:1173 /api/v1/users/me,candidate only; semantic review required
+PATCH,/api/v1/users/me,config/routes.rb:70,action: :edit_user,ApiSubdomain,yes,src/accounts.rs:1173 /api/v1/users/me,candidate only; semantic review required
+DELETE,/api/v1/users/me,config/routes.rb:71,action: :remove_user,ApiSubdomain,yes,src/accounts.rs:1173 /api/v1/users/me,candidate only; semantic review required
+POST,/api/v1/users/otp_status,config/routes.rb:72,action: :otp_enabled,ApiSubdomain,yes,src/accounts.rs:1184 /api/v1/users/otp_status,candidate only; semantic review required
+GET,/api/v1/users/me/otp_qr,config/routes.rb:73,action: :otp_qr,ApiSubdomain,yes,src/accounts.rs:1185 /api/v1/users/me/otp_qr,candidate only; semantic review required
+PUT,/api/v1/users/me/two_factor,config/routes.rb:74,action: :set_2fa_enabled,ApiSubdomain,yes,src/accounts.rs:1186 /api/v1/users/me/two_factor,candidate only; semantic review required
+GET,/api/v1/instances/:id/configurations,config/routes.rb:78,configurations#current_project_configurations,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/ios,config/routes.rb:79,configurations#set_ios_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/android,config/routes.rb:80,configurations#set_android_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/desktop,config/routes.rb:81,configurations#set_desktop_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/web,config/routes.rb:82,configurations#set_web_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/ios/push,config/routes.rb:83,configurations#set_ios_push_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/android/push,config/routes.rb:84,configurations#set_android_push_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/android/api_access_key,config/routes.rb:85,configurations#set_android_api_access_key,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/configurations/ios/api_access_key,config/routes.rb:86,configurations#set_ios_api_access_key,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/instances/:id/configurations/ios,config/routes.rb:87,configurations#remove_ios_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/instances/:id/configurations/android,config/routes.rb:88,configurations#remove_android_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/instances/:id/configurations/desktop,config/routes.rb:89,configurations#remove_desktop_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/instances/:id/configurations/web,config/routes.rb:90,configurations#remove_web_configuration,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/instances/:id/configurations/android/google_configuration_script,config/routes.rb:91,configurations#google_configuration_script,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/projects/:id/redirect_config,config/routes.rb:94,redirects#redirect_config,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/projects/:id/redirect_config,config/routes.rb:95,redirects#set_redirect_config,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/projects/:id/redirect_config/redirect,config/routes.rb:96,redirects#set_redirect,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/projects/:id/domain,config/routes.rb:99,domains#current_project_domain,ApiSubdomain,yes,src/domains.rs:325 /api/v1/projects/{id}/domain,candidate only; semantic review required
+GET,/api/v1/projects/:id/domain/defaults,config/routes.rb:100,domains#domain_defaults,ApiSubdomain,yes,src/domains.rs:329 /api/v1/projects/{id}/domain/defaults,candidate only; semantic review required
+PUT,/api/v1/projects/:id/domain,config/routes.rb:101,domains#set_project_domain,ApiSubdomain,yes,src/domains.rs:325 /api/v1/projects/{id}/domain,candidate only; semantic review required
+POST,/api/v1/projects/:id/domain/check_availability,config/routes.rb:102,domains#domain_is_available,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/projects/:id/domain/google_tracking_id,config/routes.rb:103,domains#set_google_tracking_id,ApiSubdomain,yes,src/domains.rs:333 /api/v1/projects/{id}/domain/google_tracking_id,candidate only; semantic review required
+GET,/api/v1/projects/:id/custom_domain,config/routes.rb:105,domains#custom_domain,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/projects/:id/custom_domain,config/routes.rb:106,domains#create_custom_domain,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/projects/:id/custom_domain,config/routes.rb:107,domains#delete_custom_domain,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/projects/:id/custom_domains,config/routes.rb:110,domains#index_custom_domains,ApiSubdomain,yes,src/domains.rs:341 /api/v1/projects/{id}/custom_domains,candidate only; semantic review required
+POST,/api/v1/projects/:id/custom_domains,config/routes.rb:111,domains#create_custom_domain_v2,ApiSubdomain,yes,src/domains.rs:341 /api/v1/projects/{id}/custom_domains,candidate only; semantic review required
+DELETE,/api/v1/projects/:id/custom_domains,config/routes.rb:112,domains#delete_custom_domain_v2,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/projects/:id/custom_domains/preflight,config/routes.rb:115,domains#preflight_custom_domain,ApiSubdomain,yes,src/domains.rs:349 /api/v1/projects/{id}/custom_domains/preflight,candidate only; semantic review required
+POST,/api/v1/projects/:id/custom_domains/verify,config/routes.rb:116,domains#verify_custom_domain,ApiSubdomain,yes,src/domains.rs:353 /api/v1/projects/{id}/custom_domains/verify,candidate only; semantic review required
+POST,/api/v1/projects/:id/migrations,config/routes.rb:120,migrations#create,ApiSubdomain,yes,src/imports.rs:566 /api/v1/projects/{id}/migrations,candidate only; semantic review required
+GET,/api/v1/projects/:id/migration_source,config/routes.rb:122,migration_sources#show,ApiSubdomain,yes,src/imports.rs:567 /api/v1/projects/{id}/migration_source,candidate only; semantic review required
+PATCH,/api/v1/projects/:id/migration_source,config/routes.rb:123,migration_sources#update,ApiSubdomain,yes,src/imports.rs:567 /api/v1/projects/{id}/migration_source,candidate only; semantic review required
+DELETE,/api/v1/projects/:id/migration_source,config/routes.rb:124,migration_sources#destroy,ApiSubdomain,yes,src/imports.rs:567 /api/v1/projects/{id}/migration_source,candidate only; semantic review required
+POST,/api/v1/projects/:id/migration_source/test,config/routes.rb:125,migration_sources#test,ApiSubdomain,yes,src/imports.rs:571 /api/v1/projects/{id}/migration_source/test,candidate only; semantic review required
+POST,/api/v1/projects/:id/links,config/routes.rb:128,links#create_link,ApiSubdomain,yes,src/core_api.rs:951 /api/v1/projects/{id}/links,candidate only; semantic review required
+POST,/api/v1/projects/:id/links/search,config/routes.rb:131,links#current_project_links,ApiSubdomain,yes,src/management.rs:349 /api/v1/projects/{id}/links/search,candidate only; semantic review required
+POST,/api/v1/projects/:id/links/search_v2,config/routes.rb:132,links#current_project_links_v2,ApiSubdomain,yes,src/management.rs:350 /api/v1/projects/{id}/links/search_v2,candidate only; semantic review required
+POST,/api/v1/projects/:id/links/by_ids,config/routes.rb:133,links#links_by_ids,ApiSubdomain,yes,src/management.rs:351 /api/v1/projects/{id}/links/by_ids,candidate only; semantic review required
+POST,/api/v1/projects/:id/links/check_path,config/routes.rb:134,links#is_path_available,ApiSubdomain,yes,src/management.rs:352 /api/v1/projects/{id}/links/check_path,candidate only; semantic review required
+PATCH,/api/v1/projects/:id/links/:link_id,config/routes.rb:135,links#update_link,ApiSubdomain,yes,src/core_api.rs:952 /api/v1/projects/{id}/links/{link_id},candidate only; semantic review required
+DELETE,/api/v1/projects/:id/links/:link_id,config/routes.rb:136,links#remove_link,ApiSubdomain,yes,src/core_api.rs:952 /api/v1/projects/{id}/links/{link_id},candidate only; semantic review required
+GET,/api/v1/projects/:id/links/random_path,config/routes.rb:137,links#generate_path,ApiSubdomain,yes,src/management.rs:353 /api/v1/projects/{id}/links/random_path,candidate only; semantic review required
+POST,/api/v1/projects/:id/campaigns,config/routes.rb:140,campaigns#create,ApiSubdomain,yes,src/core_api.rs:943 /api/v1/projects/{id}/campaigns,candidate only; semantic review required
+PATCH,/api/v1/projects/:id/campaigns/:campaign_id,config/routes.rb:141,campaigns#update,ApiSubdomain,yes,src/core_api.rs:947 /api/v1/projects/{id}/campaigns/{campaign_id},candidate only; semantic review required
+DELETE,/api/v1/projects/:id/campaigns/:campaign_id,config/routes.rb:142,campaigns#archive,ApiSubdomain,yes,src/core_api.rs:947 /api/v1/projects/{id}/campaigns/{campaign_id},candidate only; semantic review required
+POST,/api/v1/projects/:id/campaigns/search,config/routes.rb:146,campaigns#current_project_campaigns,ApiSubdomain,yes,src/management.rs:354 /api/v1/projects/{id}/campaigns/search,candidate only; semantic review required
+POST,/api/v1/projects/:id/campaigns/search_v2,config/routes.rb:147,campaigns#current_project_campaigns_v2,ApiSubdomain,yes,src/management.rs:358 /api/v1/projects/{id}/campaigns/search_v2,candidate only; semantic review required
+POST,/api/v1/projects/:id/campaigns/metrics_overview,config/routes.rb:149,campaigns#metrics_for_overview,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/projects/:id/events/search,config/routes.rb:152,events#events_for_search_params,ApiSubdomain,yes,src/analytics_api.rs:1172 /api/v1/projects/{id}/events/search,candidate only; semantic review required
+POST,/api/v1/projects/:id/events/sorted,config/routes.rb:153,events#events_sorted_by_param,ApiSubdomain,yes,src/analytics_api.rs:1176 /api/v1/projects/{id}/events/sorted,candidate only; semantic review required
+GET,/api/v1/projects/:id/events/metric_values,config/routes.rb:154,events#metrics_values,ApiSubdomain,yes,src/analytics_api.rs:1184 /api/v1/projects/{id}/events/metric_values,candidate only; semantic review required
+POST,/api/v1/projects/:id/events/overview,config/routes.rb:155,events#events_for_overview,ApiSubdomain,yes,src/analytics_api.rs:1180 /api/v1/projects/{id}/events/overview,candidate only; semantic review required
+POST,/api/v1/instances/:id/events/billing,config/routes.rb:156,events#events_for_payment_screen,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/projects/:id/exports/links,config/routes.rb:159,export#export_link_data,ApiSubdomain,yes,src/exports.rs:267 /api/v1/projects/{id}/exports/links,candidate only; semantic review required
+POST,/api/v1/instances/:id/exports/usage,config/routes.rb:161,export#export_usage_data,ApiSubdomain,yes,src/exports.rs:268 /api/v1/instances/{id}/exports/usage,candidate only; semantic review required
+POST,/api/v1/projects/:id/visitors/aggregated,config/routes.rb:164,visitors#aggregated_visitors,ApiSubdomain,yes,src/analytics_api.rs:1185 /api/v1/projects/{id}/visitors/aggregated,candidate only; semantic review required
+POST,/api/v1/projects/:id/visitors/search,config/routes.rb:165,visitors#visitors,ApiSubdomain,yes,src/management.rs:366 /api/v1/projects/{id}/visitors/search,candidate only; semantic review required
+GET,/api/v1/projects/:id/visitors/:visitor_id,config/routes.rb:166,visitors#visitor_details,ApiSubdomain,yes,src/core_api.rs:961 /api/v1/projects/{id}/visitors/{visitor_id},candidate only; semantic review required
+POST,/api/v1/projects/:id/visitors/aggregated_metrics,config/routes.rb:171,visitors#aggregated_visitor_metrics_for_search_params,ApiSubdomain,yes,src/analytics_api.rs:1189 /api/v1/projects/{id}/visitors/aggregated_metrics,candidate only; semantic review required
+POST,/api/v1/projects/:id/visitors/metrics,config/routes.rb:172,visitors#visitor_metrics_for_search_params,ApiSubdomain,yes,src/analytics_api.rs:1193 /api/v1/projects/{id}/visitors/metrics,candidate only; semantic review required
+POST,/api/v1/projects/:id/purchases/search,config/routes.rb:176,purchases#purchases,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/projects/:id/purchases/revenue,config/routes.rb:177,purchases#revenue_metrics,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/projects/:id/dashboard/metrics_overview,config/routes.rb:182,dashboard#metrics_overview,ApiSubdomain,yes,src/analytics_api.rs:1168 /api/v1/projects/{id}/dashboard/metrics_overview,candidate only; semantic review required
+POST,/api/v1/projects/:id/dashboard/links_views,config/routes.rb:184,dashboard#links_views,ApiSubdomain,yes,src/analytics_api.rs:1164 /api/v1/projects/{id}/dashboard/links_views,candidate only; semantic review required
+POST,/api/v1/projects/:id/dashboard/top_links,config/routes.rb:185,dashboard#best_performing_links,ApiSubdomain,yes,src/analytics_api.rs:1160 /api/v1/projects/{id}/dashboard/top_links,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/events,config/routes.rb:190,analytics/events_explorer#index,ApiSubdomain,yes,src/analytics_api.rs:1197 /api/v1/projects/{id}/analytics/events,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/events/volume,config/routes.rb:191,analytics/events_explorer#volume,ApiSubdomain,yes,src/analytics_api.rs:1203 /api/v1/projects/{id}/analytics/events/volume,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/events/field-values,config/routes.rb:192,analytics/events_explorer#field_values,ApiSubdomain,yes,src/analytics_api.rs:1199 /api/v1/projects/{id}/analytics/events/field-values,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/events/fields,config/routes.rb:193,analytics/events_explorer#fields,ApiSubdomain,yes,src/analytics_api.rs:1198 /api/v1/projects/{id}/analytics/events/fields,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/events/:event_id,config/routes.rb:194,analytics/events_explorer#show,ApiSubdomain,yes,src/analytics_api.rs:1204 /api/v1/projects/{id}/analytics/events/{event_id},candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/overview/key-metrics,config/routes.rb:197,analytics/overview#key_metrics,ApiSubdomain,yes,src/analytics_api.rs:1208 /api/v1/projects/{id}/analytics/overview/key-metrics,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/overview/key-metrics/series,config/routes.rb:198,analytics/overview#key_metric_series,ApiSubdomain,yes,src/analytics_api.rs:1212 /api/v1/projects/{id}/analytics/overview/key-metrics/series,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/overview/versions,config/routes.rb:200,analytics/overview#versions,ApiSubdomain,yes,src/analytics_api.rs:1216 /api/v1/projects/{id}/analytics/overview/versions,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/overview/versions/distribution,config/routes.rb:201,analytics/overview#version_distribution,ApiSubdomain,yes,src/analytics_api.rs:1220 /api/v1/projects/{id}/analytics/overview/versions/distribution,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/overview/trends/users,config/routes.rb:202,analytics/overview#user_trends,ApiSubdomain,yes,src/analytics_api.rs:1224 /api/v1/projects/{id}/analytics/overview/trends/users,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/overview/sources/breakdown,config/routes.rb:204,analytics/overview#sources_breakdown,ApiSubdomain,yes,src/analytics_api.rs:1228 /api/v1/projects/{id}/analytics/overview/sources/breakdown,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/retention/summary,config/routes.rb:207,analytics/retention#summary,ApiSubdomain,yes,src/analytics_api.rs:1232 /api/v1/projects/{id}/analytics/retention/summary,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/sessions,config/routes.rb:213,analytics/sessions#index,ApiSubdomain,yes,src/analytics_api.rs:1236 /api/v1/projects/{id}/analytics/sessions,candidate only; semantic review required
+GET,/api/v1/projects/:id/analytics/sessions/:session_key,config/routes.rb:214,analytics/sessions#show,ApiSubdomain,yes,src/analytics_api.rs:1237 /api/v1/projects/{id}/analytics/sessions/{key},candidate only; semantic review required
+GET,/api/v1/notifications/test,config/routes.rb:218,(implicit action),ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/projects/:project_id/notifications,config/routes.rb:219,notifications#create,ApiSubdomain,yes,src/messaging.rs:603 /api/v1/projects/{id}/notifications,candidate only; semantic review required
+POST,/api/v1/projects/:project_id/notifications/search,config/routes.rb:220,notifications#notifications,ApiSubdomain,yes,src/messaging.rs:607 /api/v1/projects/{id}/notifications/search,candidate only; semantic review required
+DELETE,/api/v1/projects/:project_id/notifications/:id,config/routes.rb:221,notifications#archive_notification,ApiSubdomain,yes,src/messaging.rs:608 /api/v1/projects/{project}/notifications/{id},candidate only; semantic review required
+POST,/api/v1/instances,config/routes.rb:224,instances#create_instance,ApiSubdomain,yes,src/core_api.rs:920 /api/v1/instances,candidate only; semantic review required
+GET,/api/v1/instances,config/routes.rb:225,instances#current_user_instances,ApiSubdomain,yes,src/core_api.rs:920 /api/v1/instances,candidate only; semantic review required
+GET,/api/v1/instances/:id,config/routes.rb:226,instances#instance_details,ApiSubdomain,yes,src/core_api.rs:921 /api/v1/instances/{id},candidate only; semantic review required
+PUT,/api/v1/instances/:id,config/routes.rb:227,instances#edit_instance,ApiSubdomain,yes,src/core_api.rs:921 /api/v1/instances/{id},candidate only; semantic review required
+DELETE,/api/v1/instances/:id,config/routes.rb:228,instances#delete_instance,ApiSubdomain,yes,src/core_api.rs:921 /api/v1/instances/{id},candidate only; semantic review required
+GET,/api/v1/instances/:id/members,config/routes.rb:229,instances#members_for_instance,ApiSubdomain,yes,src/core_api.rs:925 /api/v1/instances/{id}/members,candidate only; semantic review required
+POST,/api/v1/instances/:id/members,config/routes.rb:230,instances#add_member_to_instance,ApiSubdomain,yes,src/core_api.rs:925 /api/v1/instances/{id}/members,candidate only; semantic review required
+DELETE,/api/v1/instances/:id/members,config/routes.rb:231,instances#remove_member_from_instance,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/instances/:id/role,config/routes.rb:232,instances#user_role_for_instance,ApiSubdomain,yes,src/management.rs:376 /api/v1/instances/{id}/role,candidate only; semantic review required
+PUT,/api/v1/instances/:id/revenue_collection,config/routes.rb:233,instances#set_revenue_collection_enabled,ApiSubdomain,yes,src/billing.rs:813 /api/v1/instances/{id}/revenue_collection,candidate only; semantic review required
+POST,/api/v1/instances/:id/dismiss_get_started,config/routes.rb:234,instances#dismiss_get_started,ApiSubdomain,yes,src/management.rs:375 /api/v1/instances/{id}/dismiss_get_started,candidate only; semantic review required
+GET,/api/v1/instances/:id/setup_progress,config/routes.rb:235,instances#setup_progress,ApiSubdomain,yes,src/management.rs:370 /api/v1/instances/{id}/setup_progress,candidate only; semantic review required
+POST,/api/v1/instances/:id/setup_progress/complete,config/routes.rb:236,instances#complete_setup_step,ApiSubdomain,yes,src/management.rs:371 /api/v1/instances/{id}/setup_progress/complete,candidate only; semantic review required
+GET,/api/v1/instances/:id/audit_events,config/routes.rb:240,audit_events#index,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise_admin.rs:398 /api/v1/instances/{id}/audit_events,candidate only; semantic review required
+GET,/api/v1/instances/:id/audit_events/head,config/routes.rb:241,audit_events#latest,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise_admin.rs:399 /api/v1/instances/{id}/audit_events/head,candidate only; semantic review required
+GET,/api/v1/instances/:id/audit_export_tokens,config/routes.rb:242,audit_export_tokens#index,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise_admin.rs:390 /api/v1/instances/{id}/audit_export_tokens,candidate only; semantic review required
+POST,/api/v1/instances/:id/audit_export_tokens,config/routes.rb:243,audit_export_tokens#create,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise_admin.rs:390 /api/v1/instances/{id}/audit_export_tokens,candidate only; semantic review required
+DELETE,/api/v1/instances/:id/audit_export_tokens/:token_id,config/routes.rb:244,audit_export_tokens#destroy,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise_admin.rs:394 /api/v1/instances/{id}/audit_export_tokens/{token},candidate only; semantic review required
+GET,/api/v1/instances/:id/sso_connection,config/routes.rb:245,sso_connections#show,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+PUT,/api/v1/instances/:id/sso_connection,config/routes.rb:246,sso_connections#upsert,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/instances/:id/sso_connection,config/routes.rb:247,sso_connections#destroy,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/instances/:id/sso_connection/verify_domains,config/routes.rb:248,sso_connections#verify_domains,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/instances/:id/sso_connection/scim_token,config/routes.rb:249,sso_connections#create_scim_token,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+DELETE,/api/v1/instances/:id/sso_connection/scim_token,config/routes.rb:250,sso_connections#destroy_scim_token,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/instances/:id/billing/subscriptions,config/routes.rb:254,payments#create_subscription_session,ApiSubdomain,yes,src/billing.rs:788 /api/v1/instances/{id}/billing/subscriptions,candidate only; semantic review required
+GET,/api/v1/instances/:id/billing/stripe_portal,config/routes.rb:255,payments#stripe_dashboard_url,ApiSubdomain,yes,src/billing.rs:792 /api/v1/instances/{id}/billing/stripe_portal,candidate only; semantic review required
+DELETE,/api/v1/instances/:id/billing/subscription,config/routes.rb:256,payments#cancel_subscription,ApiSubdomain,yes,src/billing.rs:793 /api/v1/instances/{id}/billing/subscription,candidate only; semantic review required
+GET,/api/v1/instances/:id/billing/subscription,config/routes.rb:257,payments#subscription_details,ApiSubdomain,yes,src/billing.rs:793 /api/v1/instances/{id}/billing/subscription,candidate only; semantic review required
+GET,/api/v1/instances/:id/billing/mau,config/routes.rb:258,payments#current_mau,ApiSubdomain,yes,src/billing.rs:801 /api/v1/instances/{id}/billing/mau,candidate only; semantic review required
+GET,/api/v1/instances/:id/billing/usage,config/routes.rb:259,payments#current_usage,ApiSubdomain,yes,src/billing.rs:802 /api/v1/instances/{id}/billing/usage,candidate only; semantic review required
+POST,/api/v1/automation/metrics_for_user,config/routes.rb:262,automation#metrics_for_user,ApiSubdomain,yes,src/automation.rs:356 /api/v1/automation/metrics_for_user,candidate only; semantic review required
+POST,/api/v1/automation/details_for_link,config/routes.rb:263,automation#details_for_link,ApiSubdomain,yes,src/automation.rs:355 /api/v1/automation/details_for_link,candidate only; semantic review required
+POST,/api/v1/mcp/approve_consent,config/routes.rb:266,mcp/auth#approve_consent,ApiSubdomain,yes,src/mcp.rs:1051 /api/v1/mcp/approve_consent,candidate only; semantic review required
+GET,/api/v1/mcp/tokens,config/routes.rb:267,mcp/auth#list_tokens,ApiSubdomain,yes,src/mcp.rs:1052 /api/v1/mcp/tokens,candidate only; semantic review required
+DELETE,/api/v1/mcp/tokens/:id,config/routes.rb:268,mcp/auth#revoke_token_by_id,ApiSubdomain,yes,src/mcp.rs:1053 /api/v1/mcp/tokens/{id},candidate only; semantic review required
+POST,/api/v1/admin/create_enterprise_subscription,config/routes.rb:271,admin#create_enterprise_subscription,ApiSubdomain,yes,src/billing.rs:805 /api/v1/admin/create_enterprise_subscription,candidate only; semantic review required
+PATCH,/api/v1/admin/update_enterprise_subscription,config/routes.rb:272,admin#update_enterprise_subscription,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/admin/create_custom_domain,config/routes.rb:273,admin#create_custom_domain,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/admin/migrate_firebase_links,config/routes.rb:274,admin#migrate_firebase_links,ApiSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/admin/flush_events,config/routes.rb:275,admin#flush_events,ApiSubdomain,yes,src/operations.rs:142 /api/v1/admin/flush_events,candidate only; semantic review required
+PATCH,/api/v1/admin/instance_retention,config/routes.rb:276,admin#update_instance_retention,ApiSubdomain,yes,src/operations.rs:144 /api/v1/admin/instance_retention,candidate only; semantic review required
+GET,/api/v1/diagnostics/test_exception,config/routes.rb:279,diagnostics#test_exception,ApiSubdomain,yes,src/operations.rs:157 /api/v1/diagnostics/test_exception,candidate only; semantic review required
+POST,/api/v1/diagnostics/test_exception,config/routes.rb:280,diagnostics#test_exception,ApiSubdomain,yes,src/operations.rs:157 /api/v1/diagnostics/test_exception,candidate only; semantic review required
+GET,/api/v1/diagnostics/test_logs,config/routes.rb:281,diagnostics#test_logs,ApiSubdomain,yes,src/operations.rs:153 /api/v1/diagnostics/test_logs,candidate only; semantic review required
+POST,/api/v1/diagnostics/test_logs,config/routes.rb:282,diagnostics#test_logs,ApiSubdomain,yes,src/operations.rs:153 /api/v1/diagnostics/test_logs,candidate only; semantic review required
+GET,/api/v1/diagnostics/test_diagnostics,config/routes.rb:283,diagnostics#test_diagnostics,ApiSubdomain,yes,src/operations.rs:149 /api/v1/diagnostics/test_diagnostics,candidate only; semantic review required
+POST,/api/v1/diagnostics/test_diagnostics,config/routes.rb:284,diagnostics#test_diagnostics,ApiSubdomain,yes,src/operations.rs:149 /api/v1/diagnostics/test_diagnostics,candidate only; semantic review required
+GET,/api/v1/diagnostics/health_metrics,config/routes.rb:285,diagnostics#health_metrics,ApiSubdomain,yes,src/operations.rs:148 /api/v1/diagnostics/health_metrics,candidate only; semantic review required
+POST,/api/v1/webhooks/stripe,config/routes.rb:288,webhooks#stripe_webhook,ApiSubdomain,yes,src/billing.rs:803 /api/v1/webhooks/stripe,candidate only; semantic review required
+POST,/api/v1/webhooks/send_stripe_quotas,config/routes.rb:289,(implicit action),ApiSubdomain,yes,src/billing.rs:804 /api/v1/webhooks/send_stripe_quotas,candidate only; semantic review required
+POST,/api/v1/iap/apple/production/:path,config/routes.rb:293,iap#apple_prod,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/iap/apple/test/:path,config/routes.rb:294,iap#apple_test,ApiSubdomain; if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/iap/google/:path,config/routes.rb:295,iap#google_handling,ApiSubdomain; if Trisixt.ee?,yes,src/purchase_lifecycle.rs:1286 /api/v1/iap/google/{instance_id},candidate only; semantic review required
+GET,/scim/v2/Users,config/routes.rb:303,users#index,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise.rs:37 /scim/v2/Users,candidate only; semantic review required
+GET,/scim/v2/Users/:id,config/routes.rb:304,users#show,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise.rs:38 /scim/v2/Users/{id},candidate only; semantic review required
+POST,/scim/v2/Users,config/routes.rb:305,users#create,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise.rs:37 /scim/v2/Users,candidate only; semantic review required
+PUT,/scim/v2/Users/:id,config/routes.rb:306,users#replace,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise.rs:38 /scim/v2/Users/{id},candidate only; semantic review required
+PATCH,/scim/v2/Users/:id,config/routes.rb:307,users#update,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise.rs:38 /scim/v2/Users/{id},candidate only; semantic review required
+DELETE,/scim/v2/Users/:id,config/routes.rb:308,users#destroy,ApiSubdomain; if Trisixt.ee?,yes,src/enterprise.rs:38 /scim/v2/Users/{id},candidate only; semantic review required
+POST,/create,config/routes.rb:315,public/public_link#create,GoSubdomain,no,,"check renamed route, fallback, or missing behavior"
+GET,/*path,config/routes.rb:316,public/public_link#get_link,GoSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/sdk/authenticate,config/routes.rb:324,sdk/auth#authenticate,SdkSubdomain,yes,src/sdk.rs:792 /api/v1/sdk/authenticate,candidate only; semantic review required
+GET,/api/v1/sdk/device_for_vendor_id,config/routes.rb:325,sdk/auth#device_for_vendor,SdkSubdomain,yes,src/sdk.rs:793 /api/v1/sdk/device_for_vendor_id,candidate only; semantic review required
+POST,/api/v1/sdk/data_for_device,config/routes.rb:328,sdk/links#data_for_device_details,SdkSubdomain,yes,src/sdk.rs:799 /api/v1/sdk/data_for_device,candidate only; semantic review required
+POST,/api/v1/sdk/data_for_device_and_url,config/routes.rb:329,sdk/links#data_for_device_details_and_url,SdkSubdomain,yes,src/sdk.rs:800 /api/v1/sdk/data_for_device_and_url,candidate only; semantic review required
+POST,/api/v1/sdk/data_for_device_and_path,config/routes.rb:330,sdk/links#data_for_device_details_and_path,SdkSubdomain,yes,src/sdk.rs:801 /api/v1/sdk/data_for_device_and_path,candidate only; semantic review required
+POST,/api/v1/sdk/link_details,config/routes.rb:331,sdk/links#link_details,SdkSubdomain,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/sdk/clipboard_status,config/routes.rb:332,sdk/links#clipboard_status,SdkSubdomain,yes,src/sdk.rs:802 /api/v1/sdk/clipboard_status,candidate only; semantic review required
+POST,/api/v1/sdk/create_link,config/routes.rb:333,sdk/links#create_link,SdkSubdomain,yes,src/automation.rs:351 /api/v1/sdk/create_link,candidate only; semantic review required
+POST,/api/v1/sdk/event,config/routes.rb:336,sdk/events#add_event,SdkSubdomain,yes,src/core_api.rs:965 /api/v1/sdk/event,candidate only; semantic review required
+POST,/api/v1/sdk/event/custom,config/routes.rb:337,sdk/events#add_custom_event,SdkSubdomain,yes,src/sdk.rs:803 /api/v1/sdk/event/custom,candidate only; semantic review required
+POST,/api/v1/sdk/events/batch,config/routes.rb:338,sdk/events#add_batch,SdkSubdomain,yes,src/core_api.rs:964 /api/v1/sdk/events/batch,candidate only; semantic review required
+POST,/api/v1/sdk/notifications_for_device,config/routes.rb:341,sdk/notifications#notifications_for_device,SdkSubdomain,yes,src/messaging.rs:617 /api/v1/sdk/notifications_for_device,candidate only; semantic review required
+GET,/api/v1/sdk/number_of_unread_notifications,config/routes.rb:342,sdk/notifications#number_of_unread_notifications,SdkSubdomain,yes,src/messaging.rs:618 /api/v1/sdk/number_of_unread_notifications,candidate only; semantic review required
+POST,/api/v1/sdk/mark_notification_as_read,config/routes.rb:343,sdk/notifications#mark_notification_as_read,SdkSubdomain,yes,src/messaging.rs:619 /api/v1/sdk/mark_notification_as_read,candidate only; semantic review required
+GET,/api/v1/sdk/notifications_to_display_automatically,config/routes.rb:344,sdk/notifications#notifications_to_display_automatically,SdkSubdomain,yes,src/messaging.rs:620 /api/v1/sdk/notifications_to_display_automatically,candidate only; semantic review required
+POST,/api/v1/sdk/screen_aliases,config/routes.rb:347,sdk/screen_aliases#create,SdkSubdomain,yes,src/sdk.rs:798 /api/v1/sdk/screen_aliases,candidate only; semantic review required
+GET,/api/v1/sdk/visitor_attributes,config/routes.rb:350,sdk/visitors#visitor_attributes,SdkSubdomain,yes,src/sdk.rs:794 /api/v1/sdk/visitor_attributes,candidate only; semantic review required
+POST,/api/v1/sdk/visitor_attributes,config/routes.rb:351,sdk/visitors#set_visitor_attributes,SdkSubdomain,yes,src/sdk.rs:794 /api/v1/sdk/visitor_attributes,candidate only; semantic review required
+POST,/api/v1/sdk/add_payment_event,config/routes.rb:355,sdk/payments#add_payment_event,SdkSubdomain; if Trisixt.ee?,yes,src/purchase_lifecycle.rs:1281 /api/v1/sdk/add_payment_event,candidate only; semantic review required
+POST,/api/v1/sdk/generate_link,config/routes.rb:359,server_sdk#generate_link,SdkSubdomain,yes,src/automation.rs:350 /api/v1/sdk/generate_link,candidate only; semantic review required
+GET,/api/v1/sdk/link/:path,config/routes.rb:360,server_sdk#link_details,SdkSubdomain,yes,src/automation.rs:352 /api/v1/sdk/link/{path},candidate only; semantic review required
+GET,/api/v1/sdk/metrics_for_link/:path,config/routes.rb:361,server_sdk#metrics_for_link,SdkSubdomain,yes,src/automation.rs:353 /api/v1/sdk/metrics_for_link/{path},candidate only; semantic review required
+GET,/api/v1/sdk/metrics_for_project,config/routes.rb:362,server_sdk#metrics_for_project,SdkSubdomain,yes,src/automation.rs:354 /api/v1/sdk/metrics_for_project,candidate only; semantic review required
+POST,/api/v1/iap/apple/production/:path,config/routes.rb:373,iap#apple_prod,if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/iap/apple/test/:path,config/routes.rb:375,iap#apple_test,if Trisixt.ee?,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/iap/google/:path,config/routes.rb:377,iap#google_handling,if Trisixt.ee?,yes,src/purchase_lifecycle.rs:1286 /api/v1/iap/google/{instance_id},candidate only; semantic review required
+GET,/api/v1/identity/sso/providers,config/routes.rb:384,sessions#providers,,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/identity/sso/discover,config/routes.rb:387,sessions#discover,,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/identity/sso/auth/:provider,config/routes.rb:388,sessions#passthru,,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/identity/sso/auth/:provider/callback,config/routes.rb:389,sessions#create,,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/identity/sso/auth/:provider/callback,config/routes.rb:390,sessions#create,,no,,"check renamed route, fallback, or missing behavior"
+GET,/api/v1/identity/sso/auth/failure,config/routes.rb:391,sessions#omniauth_failure,,no,,"check renamed route, fallback, or missing behavior"
+POST,/api/v1/identity/sso/tokens/refresh,config/routes.rb:394,tokens#refresh_token,,no,,"check renamed route, fallback, or missing behavior"
+GET,/public,config/routes.rb:402,links#open_app_link,,no,,"check renamed route, fallback, or missing behavior"

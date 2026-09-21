@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-20",
+  "checks": {
+    "documents": 17,
+    "local_links": 77,
+    "detailed_source_references": 200,
+    "unique_findings": 31,
+    "unchanged_source_hashes": 1321,
+    "rails_explicit_routes": 224,
+    "rails_literal_candidates": 152,
+    "rust_literal_routes": 240
+  },
+  "errors": [],
+  "application_tests_run": false,
+  "live_provider_tests_run": false
+}

@@ -1,0 +1,115 @@
+name: trisixt
+x-runtime: &runtime
+  image: ${TRISIXT_IMAGE:-trisixt-backend:local}
+  build: .
+  env_file:
+    - path: .env
+      required: false
+  environment: &environment
+    APP_ENV: production
+    HOST: 0.0.0.0
+    PORT: 3000
+    SERVER_HOST: ${SERVER_HOST:-localhost}
+    DATABASE_URL: postgresql://trisixt:${POSTGRES_PASSWORD:-trisixt-dev-password}@postgres:5432/trisixt
+    REDIS_URL: redis://:${REDIS_PASSWORD:-trisixt-dev-password}@redis:6379/0
+    TRISIXT_EE: ${TRISIXT_EE:-true}
+    ANALYTICS_BACKEND: ${ANALYTICS_BACKEND:-clickhouse}
+    CLICKHOUSE_URL: http://clickhouse:8123
+    CLICKHOUSE_DATABASE: trisixt
+    CLICKHOUSE_USER: trisixt
+    CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-trisixt-dev-password}
+    STORAGE_BACKEND: ${STORAGE_BACKEND:-s3}
+    STORAGE_BUCKET: ${STORAGE_BUCKET:-trisixt}
+    STORAGE_REGION: ${STORAGE_REGION:-us-east-1}
+    AWS_ENDPOINT: ${COMPOSE_AWS_ENDPOINT:-http://minio:9000}
+    AWS_ALLOW_HTTP: ${AWS_ALLOW_HTTP:-true}
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-trisixt}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-trisixt-dev-password}
+  depends_on:
+    postgres: {condition: service_healthy}
+    redis: {condition: service_healthy}
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: postgres:18.6
+    environment:
+      POSTGRES_USER: trisixt
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-trisixt-dev-password}
+      POSTGRES_DB: trisixt
+    ports: ["127.0.0.1:${POSTGRES_PORT:-5432}:5432"]
+    volumes: ["postgres_data:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trisixt -d trisixt"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: trisixt-redis:8.10.2
+    build:
+      context: .
+      dockerfile: deploy/redis.Dockerfile
+    ports: ["127.0.0.1:${REDIS_PORT:-6379}:6379"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-trisixt-dev-password}
+      REDISCLI_AUTH: ${REDIS_PASSWORD:-trisixt-dev-password}
+    command: ["sh", "-ec", 'exec redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD"']
+    volumes: ["redis_data:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  clickhouse:
+    image: clickhouse/clickhouse-server:25.3
+    environment:
+      CLICKHOUSE_DB: trisixt
+      CLICKHOUSE_USER: trisixt
+      CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:-trisixt-dev-password}
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports: ["127.0.0.1:${CLICKHOUSE_PORT:-8123}:8123"]
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+      - ./deploy/clickhouse/001-events.sql:/docker-entrypoint-initdb.d/001-events.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "clickhouse-client --user trisixt --password $$CLICKHOUSE_PASSWORD --query 'SELECT 1'"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: ["server", "/data"]
+    environment:
+      MINIO_ROOT_USER: ${AWS_ACCESS_KEY_ID:-trisixt}
+      MINIO_ROOT_PASSWORD: ${AWS_SECRET_ACCESS_KEY:-trisixt-dev-password}
+    ports: ["127.0.0.1:${S3_PORT:-9000}:9000"]
+    volumes: ["storage_data:/data"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  minio-init:
+    image: quay.io/minio/mc:RELEASE.2025-08-13T08-35-41Z
+    depends_on:
+      minio: {condition: service_healthy}
+    environment:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-trisixt}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-trisixt-dev-password}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-trisixt}
+    entrypoint: ["/bin/sh", "-ec"]
+    command: ['mc alias set local http://minio:9000 "$$AWS_ACCESS_KEY_ID" "$$AWS_SECRET_ACCESS_KEY" && mc mb --ignore-existing "local/$$STORAGE_BUCKET"']
+  web:
+    <<: *runtime
+    command: ["serve"]
+    ports: ["${PORT:-3000}:3000"]
+  worker:
+    <<: *runtime
+    command: ["worker"]
+    healthcheck: {disable: true}
+
+volumes:
+  postgres_data:
+  redis_data:
+  clickhouse_data:
+  storage_data:

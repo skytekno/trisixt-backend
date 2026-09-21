@@ -1,0 +1,17 @@
+#!/usr/bin/env python3
+"""Launch Codex with the Trisixt skill selection, without global changes."""
+import json
+import os
+from pathlib import Path
+import sys
+import tomllib
+
+root = Path(__file__).resolve().parent.parent
+with (root / ".codex/skills.toml").open("rb") as selection:
+    rules = tomllib.load(selection)["skills"]["config"]
+override = "skills.config=[" + ",".join(
+    "{path=" + json.dumps(rule["path"]) + ",enabled=false}"
+    for rule in rules
+) + "]"
+os.chdir(root)
+os.execvp("codex", ["codex", "-c", override, *sys.argv[1:]])

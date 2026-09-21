@@ -1,0 +1,20 @@
+ALTER TABLE verified_purchases ADD COLUMN original_transaction_id TEXT;
+ALTER TABLE verified_purchases ADD COLUMN expires_at TIMESTAMPTZ;
+ALTER TABLE verified_purchases ADD COLUMN link_id UUID REFERENCES links(id) ON DELETE SET NULL;
+UPDATE verified_purchases SET original_transaction_id=transaction_id;
+ALTER TABLE verified_purchases ALTER COLUMN original_transaction_id SET NOT NULL;
+DO $$ DECLARE constraint_name TEXT; BEGIN
+ SELECT conname INTO constraint_name FROM pg_constraint WHERE conrelid='verified_purchases'::regclass AND contype='u' AND pg_get_constraintdef(oid)='UNIQUE (provider, application_id, environment, transaction_id)';
+ IF constraint_name IS NOT NULL THEN EXECUTE format('ALTER TABLE verified_purchases DROP CONSTRAINT %I',constraint_name); END IF;
+END $$;
+ALTER TABLE verified_purchases ADD UNIQUE(provider,application_id,environment,transaction_id,product_id);
+CREATE TABLE purchase_notifications(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),provider TEXT NOT NULL,external_id TEXT NOT NULL,instance_id UUID NOT NULL REFERENCES instances(id) ON DELETE CASCADE,project_id UUID REFERENCES projects(id) ON DELETE CASCADE,payload JSONB NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,available_at TIMESTAMPTZ NOT NULL DEFAULT now(),processed_at TIMESTAMPTZ,last_error TEXT,received_at TIMESTAMPTZ NOT NULL DEFAULT now(),UNIQUE(provider,instance_id,external_id));
+CREATE INDEX purchase_notifications_pending ON purchase_notifications(available_at) WHERE processed_at IS NULL;
+CREATE TABLE purchase_ledger(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),purchase_id UUID NOT NULL REFERENCES verified_purchases(id) ON DELETE CASCADE,project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,visitor_id UUID NOT NULL,link_id UUID REFERENCES links(id) ON DELETE SET NULL,event_type TEXT NOT NULL CHECK(event_type IN ('BUY','REFUND','REFUND_REVERSED','CANCEL')),source_key TEXT NOT NULL,amount_nanos BIGINT NOT NULL,quantity INTEGER NOT NULL,currency TEXT NOT NULL,usd_nanos NUMERIC(30,0),occurred_at TIMESTAMPTZ NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now(),UNIQUE(purchase_id,source_key,event_type),FOREIGN KEY(project_id,visitor_id) REFERENCES visitors(project_id,id));
+CREATE INDEX purchase_ledger_project_time ON purchase_ledger(project_id,occurred_at);
+INSERT INTO purchase_ledger(purchase_id,project_id,visitor_id,event_type,source_key,amount_nanos,quantity,currency,usd_nanos,occurred_at) SELECT id,project_id,visitor_id,'BUY','initial',amount_nanos,quantity,currency,CASE WHEN currency='USD' THEN amount_nanos ELSE NULL END,purchased_at FROM verified_purchases;
+CREATE TABLE subscription_states(project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,provider TEXT NOT NULL,original_transaction_id TEXT NOT NULL,product_id TEXT NOT NULL,latest_transaction_id TEXT NOT NULL,visitor_id UUID NOT NULL,link_id UUID REFERENCES links(id) ON DELETE SET NULL,status TEXT NOT NULL DEFAULT 'active',auto_renew BOOLEAN,expires_at TIMESTAMPTZ,last_event_at TIMESTAMPTZ NOT NULL,updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),PRIMARY KEY(project_id,provider,original_transaction_id),FOREIGN KEY(project_id,visitor_id) REFERENCES visitors(project_id,id));
+CREATE TABLE fx_rates(currency TEXT PRIMARY KEY CHECK(currency ~ '^[A-Z]{3}$'),units_per_usd NUMERIC(24,12) NOT NULL CHECK(units_per_usd>0),fetched_at TIMESTAMPTZ NOT NULL DEFAULT now());
+INSERT INTO fx_rates(currency,units_per_usd) VALUES('USD',1);
+CREATE TABLE purchase_reconciliation(project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,provider TEXT NOT NULL,original_transaction_id TEXT NOT NULL,purchase_token TEXT,product_id TEXT NOT NULL,available_at TIMESTAMPTZ NOT NULL DEFAULT now(),attempts INTEGER NOT NULL DEFAULT 0,last_error TEXT,PRIMARY KEY(project_id,provider,original_transaction_id));
+CREATE TRIGGER audit_purchase_ledger AFTER INSERT ON purchase_ledger FOR EACH ROW EXECUTE FUNCTION trisixt_audit_domain_change();

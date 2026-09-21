@@ -1,0 +1,15 @@
+ALTER TABLE instances ADD COLUMN quota_exceeded BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE instances ADD COLUMN revenue_collection_enabled BOOLEAN NOT NULL DEFAULT true;
+CREATE TABLE billing_customers(instance_id UUID PRIMARY KEY REFERENCES instances(id) ON DELETE CASCADE,customer_id TEXT NOT NULL UNIQUE,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE billing_checkout_sessions(id TEXT PRIMARY KEY,instance_id UUID NOT NULL REFERENCES instances(id) ON DELETE CASCADE,user_id UUID NOT NULL REFERENCES users(id),url TEXT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE TABLE billing_subscriptions(id TEXT PRIMARY KEY,instance_id UUID NOT NULL REFERENCES instances(id) ON DELETE CASCADE,customer_id TEXT NOT NULL,item_id TEXT,status TEXT NOT NULL,active BOOLEAN NOT NULL DEFAULT false,period_start TIMESTAMPTZ,period_end TIMESTAMPTZ,cancels_at TIMESTAMPTZ,cancel_at_period_end BOOLEAN NOT NULL DEFAULT false,last_event_at BIGINT NOT NULL DEFAULT 0,snapshot JSONB NOT NULL,updated_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE INDEX billing_subscriptions_instance ON billing_subscriptions(instance_id,updated_at DESC);
+CREATE TABLE billing_webhooks(id TEXT PRIMARY KEY,event_type TEXT NOT NULL,created BIGINT NOT NULL,payload JSONB NOT NULL,attempts INTEGER NOT NULL DEFAULT 0,available_at TIMESTAMPTZ NOT NULL DEFAULT now(),processed_at TIMESTAMPTZ,last_error TEXT,received_at TIMESTAMPTZ NOT NULL DEFAULT now());
+CREATE INDEX billing_webhooks_pending ON billing_webhooks(available_at) WHERE processed_at IS NULL;
+CREATE TABLE enterprise_subscriptions(id UUID PRIMARY KEY DEFAULT gen_random_uuid(),instance_id UUID NOT NULL REFERENCES instances(id) ON DELETE CASCADE,start_date TIMESTAMPTZ NOT NULL,end_date TIMESTAMPTZ NOT NULL,total_maus BIGINT NOT NULL CHECK(total_maus>0),active BOOLEAN NOT NULL DEFAULT true,created_at TIMESTAMPTZ NOT NULL DEFAULT now(),CHECK(end_date>start_date));
+CREATE UNIQUE INDEX enterprise_active_instance ON enterprise_subscriptions(instance_id) WHERE active;
+CREATE TABLE monthly_active_visitors(instance_id UUID NOT NULL REFERENCES instances(id) ON DELETE CASCADE,month DATE NOT NULL,visitor_id UUID NOT NULL,PRIMARY KEY(instance_id,month,visitor_id));
+INSERT INTO monthly_active_visitors SELECT p.instance_id,date_trunc('month',e.occurred_at AT TIME ZONE 'UTC')::date,e.visitor_id FROM events e JOIN projects p ON p.id=e.project_id GROUP BY 1,2,3 ON CONFLICT DO NOTHING;
+CREATE TABLE billing_usage_reports(subscription_id TEXT NOT NULL REFERENCES billing_subscriptions(id) ON DELETE CASCADE,period_start TIMESTAMPTZ NOT NULL,quantity BIGINT NOT NULL DEFAULT 0,last_report_at TIMESTAMPTZ,PRIMARY KEY(subscription_id,period_start));
+CREATE TABLE billing_alerts(instance_id UUID NOT NULL REFERENCES instances(id) ON DELETE CASCADE,kind TEXT NOT NULL,quantity BIGINT NOT NULL,limit_value BIGINT NOT NULL,created_at TIMESTAMPTZ NOT NULL DEFAULT now(),delivered_at TIMESTAMPTZ,PRIMARY KEY(instance_id,kind,created_at));
+CREATE TRIGGER audit_enterprise_subscriptions AFTER INSERT OR UPDATE OR DELETE ON enterprise_subscriptions FOR EACH ROW EXECUTE FUNCTION trisixt_audit_domain_change();

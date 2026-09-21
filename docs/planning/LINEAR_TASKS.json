@@ -1,0 +1,2142 @@
+{
+  "metadata": {
+    "schema_version": 1,
+    "prepared_on": "2026-09-20",
+    "project_name": "TrisixT",
+    "owner_hint": "Roman",
+    "source_repo": "mandays/trisixt-backend",
+    "release_target": "2026-12-20",
+    "team_size": 1,
+    "fresh_install_first": true,
+    "approved_deferrals": [
+      "M1"
+    ],
+    "issue_count": 52,
+    "audit_finding_count": 31,
+    "deferred_issue_count": 1,
+    "implementation_child_count": 11,
+    "shared_issue_count": 9,
+    "capacity": {
+      "available_weekdays": 65,
+      "implementation_target_weekdays": 50,
+      "reserved_validation_and_release_weekdays": 15,
+      "feature_package_focused_days_range": [
+        47,
+        79
+      ],
+      "overall_planning_days_range": [
+        65,
+        100
+      ],
+      "date_is_conditional": true
+    },
+    "source_documents": [
+      "docs/RUST_GAP_CLOSURE_PLAN.md",
+      "docs/planning/GAP_CLOSURE_BACKLOG.json",
+      "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+      "docs/planning/ANALYTICS_PLAN.md",
+      "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+      "docs/RUST_PARITY_AUDIT.md"
+    ],
+    "import_notes": [
+      "Published to the existing TrisixT project on 2026-09-20. See LINEAR_SYNC.json for verified existing issue IDs; deduplicate stable keys before any future import.",
+      "Resolve project/team/assignee/workflow and deduplicate existing issues by stable key before creating.",
+      "Issue key is an import correlation key, not a requested Linear identifier. Map priority_hint to the actual team schema; target weeks are conditional planning spans, not promises.",
+      "Create all issues first, then apply parent_key and dependency relationships using resolved issue IDs. Parent acceptance issues contain no duplicated implementation assignment.",
+      "depends_on_keys are implementation blockers; acceptance_depends_on_keys may delay final closure but must not block independent implementation. requires_implementation_of_keys means implemented code is needed to run the gate, not that feature live-acceptance issues must already be closed.",
+      "additional_release_blocker_keys lists all 31 findings: release closure requires their completed behavior/evidence, while intermediate provider/client gates can supply that evidence without a circular workflow.",
+      "A2 owns the common enrichment infrastructure; A3 extends it. E2/E3 share locking helpers but own separate gates/deactivation acceptance. Shared fixture/local/provider/recovery work is centralized.",
+      "No native source modifications, application tests, cloud changes or external writes were performed when preparing this payload.",
+      "E8-CONTEXT depends on implemented credential/rename paths, not completed live/forensic closure of those issues; its readiness-only references must not be converted into Linear blocking relations.",
+      "C3-ASSETS requires only the week 1 asset/quick-link decisions from CONTRACTS, not its week 10 domain/quota/mail completion. Its requires_implementation_of_keys reference is a partial readiness requirement, not a Linear hard-blocking relation. The corrected payload has 52 issues, 97 hard prerequisite edges and 11 parent links."
+    ],
+    "dependency_first_keys": [
+      "RUST-BASELINE",
+      "RUST-E1",
+      "RUST-E2",
+      "RUST-E3",
+      "RUST-E4",
+      "RUST-E5",
+      "RUST-E6",
+      "RUST-A6",
+      "RUST-E7",
+      "RUST-O2",
+      "RUST-E8-STORAGE",
+      "RUST-E8-CONTEXT",
+      "RUST-E8",
+      "RUST-E9-ENVELOPE",
+      "RUST-E9-SSO",
+      "RUST-E9-PUSH",
+      "RUST-E9-STORES",
+      "RUST-E9",
+      "RUST-C5",
+      "RUST-A2",
+      "RUST-A3",
+      "RUST-A1",
+      "RUST-A4",
+      "RUST-A5",
+      "RUST-A7",
+      "RUST-A8",
+      "RUST-A9",
+      "RUST-A10",
+      "RUST-C1",
+      "RUST-C2",
+      "RUST-C3-ASSETS",
+      "RUST-C3-BINDINGS",
+      "RUST-C3-CLEANUP",
+      "RUST-C3",
+      "RUST-C4",
+      "RUST-O1",
+      "RUST-O3-TRACES",
+      "RUST-O3-METRICS",
+      "RUST-O3",
+      "RUST-O5",
+      "RUST-O4",
+      "RUST-O6",
+      "RUST-O7",
+      "RUST-M1",
+      "RUST-ACCESS",
+      "RUST-CONTRACTS",
+      "RUST-CHECKPOINTS",
+      "RUST-CANDIDATE",
+      "RUST-PROVIDERS",
+      "RUST-CLIENTS",
+      "RUST-RECOVERY",
+      "RUST-RELEASE"
+    ],
+    "checks": {
+      "unique_keys": true,
+      "all_31_findings_exactly_one_primary_issue": true,
+      "m1_only_deferral": true,
+      "parent_count": 4,
+      "all_relationship_targets_exist": true,
+      "implementation_dependencies_acyclic": true,
+      "all_referenced_source_and_existing_test_paths_exist": true,
+      "issue_count": 52,
+      "hard_dependency_count": 97,
+      "parent_link_count": 11,
+      "hard_dependency_max_target_weeks_consistent": true
+    },
+    "hard_dependency_count": 97,
+    "parent_link_count": 11,
+    "publication": {
+      "status": "published",
+      "published_on": "2026-09-20",
+      "project_id": "81198699-cf99-4f26-8492-5cc374cfe00b",
+      "project_url": "https://linear.app/mandays-labs/project/trisixt-91d84debbc6c",
+      "assignee_name": "Rohman M",
+      "issue_map": "docs/planning/LINEAR_SYNC.json",
+      "description_mode": "Condensed acceptance criteria in Linear; expanded implementation checklists in LINEAR_TASKS.json."
+    }
+  },
+  "issues": [
+    {
+      "key": "RUST-E1",
+      "title": "[E1] Stripe cancellation on instance/last-admin deletion",
+      "description": "## Outcome and scope\nLocal subscription reference is deleted while external billing can continue; cleanup has no cancellation obligation.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Persist a deduplicated Stripe cancellation obligation in the same PostgreSQL transaction before tenant/subscription cascades; its rows must have no cascading FK to deleted users, instances or subscriptions, and contain no provider secret.\n- [ ] Reuse native durable worker claim/retry semantics; acknowledge only confirmed terminal provider state, keeping obligations after provider failures and process interruption.\n- [ ] Cover explicit instance deletion and last-admin deletion; coordinate checkout/subscription locks and late webhooks so a subscription established during deletion cannot become an orphan charge.\n\n## Acceptance\n- [ ] Delete a paying tenant directly and through its last administrator; cancellation obligation survives SQL cascade, retries crash/outage/late webhook, and sandbox subscription reaches terminal state.\n- [ ] Local rollback creates no obligation; duplicate workers, outage, already-canceled state, crash after remote success, late webhook and checkout/delete race preserve eventual cancellation. Confirm terminal state in Stripe sandbox.\n\n## Source and test homes\n`src/billing.rs`, `src/core_api.rs`, `src/accounts.rs`, `src/worker.rs`, `src/cleanup.rs`, `migrations/0010_billing.sql`, `migrations/0051_deleted_namespaces.sql`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/billing.rs`, `tests/cleanup.rs`, `tests/accounts.rs`\n\n## Traceability and schedule\nAudit IDs: E1.\nStable task key: `RUST-E1`.\nTarget weeks 1, 2 (2026-09-21 through 2026-10-04); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1,
+        2
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "E1"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:B1"
+      ],
+      "source_paths": [
+        "src/billing.rs",
+        "src/core_api.rs",
+        "src/accounts.rs",
+        "src/worker.rs",
+        "src/cleanup.rs",
+        "migrations/0010_billing.sql",
+        "migrations/0051_deleted_namespaces.sql",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/billing.rs",
+        "tests/cleanup.rs",
+        "tests/accounts.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E2",
+      "title": "[E2] SCIM active-SSO, verified-domain and operator-email gates",
+      "description": "## Outcome and scope\nUnverified-domain users can be provisioned; instance-bound tokens survive SSO disable/delete. Existing-email takeover was not established.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Centralize active SSO, verified-domain and operator-email eligibility for SCIM token issuance and requests; preserve native enterprise availability defaults.\n- [ ] Bind tokens to the connection identity/version or transactionally revoke on disable/delete; explicitly invalidate or reauthorize staged tokens missing the new binding.\n- [ ] Re-check eligibility inside mutations so stale token extraction cannot authorize after SSO revocation; preserve safe existing-account ownership boundaries.\n\n## Acceptance\n- [ ] Reject provisioning without active SSO/verified domain and for foreign/operator emails; disable/delete revokes connection-bound tokens, including concurrent mutation.\n- [ ] SSO disable/delete invalidates old tokens immediately; mutation races cannot use stale eligibility; verified/unverified domains, operator identity and wrong-tenant requests have routed fixtures.\n\n## Source and test homes\n`src/enterprise.rs`, `src/enterprise_admin.rs`, `src/oidc.rs`, `migrations/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/enterprise.rs`, `tests/enterprise_administration.rs`, `tests/oidc.rs`\n\n## Traceability and schedule\nAudit IDs: E2.\nStable task key: `RUST-E2`.\nTarget weeks 2 (2026-09-28 through 2026-10-04); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        2
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "E2"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:S1"
+      ],
+      "source_paths": [
+        "src/enterprise.rs",
+        "src/enterprise_admin.rs",
+        "src/oidc.rs",
+        "migrations/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/oidc.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E3",
+      "title": "[E3] SCIM deactivation of nonlast administrators",
+      "description": "## Outcome and scope\nIdP deprovisioning returns forbidden and leaves membership/sessions active.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Allow eligible nonlast managed administrators to be deactivated; retain operator/last-authority protection under the frozen ownership contract.\n- [ ] Use one documented lock order consistent with account deletion and existing user-before-session locks.\n- [ ] Atomically deactivate and revoke access, refresh and MCP credentials; reuse E2 lifecycle rules rather than creating another authorization path.\n\n## Acceptance\n- [ ] Deactivate a managed nonlast admin and revoke all sessions/MCP grants; simultaneous removals cannot eliminate the last administrative authority.\n- [ ] Race deactivation against login, refresh, MCP grant, OIDC callback, role changes and another admin removal; never leave no administrative authority or a usable revoked credential.\n\n## Source and test homes\n`src/enterprise.rs`, `src/accounts.rs`, `src/oidc.rs`, `src/mcp.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/enterprise.rs`, `tests/enterprise_administration.rs`, `tests/oidc.rs`\n\n## Traceability and schedule\nAudit IDs: E3.\nStable task key: `RUST-E3`.\nTarget weeks 2 (2026-09-28 through 2026-10-04); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-E2`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        2
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-E2"
+      ],
+      "audit_ids": [
+        "E3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:S1"
+      ],
+      "source_paths": [
+        "src/enterprise.rs",
+        "src/accounts.rs",
+        "src/oidc.rs",
+        "src/mcp.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/oidc.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E4",
+      "title": "[E4] SCIM member/invitation adoption, UPN/email distinction, externalId filtering, name/email PATCH, retained string-active payloads",
+      "description": "## Outcome and scope\nCommon retained provisioning and profile-update workflows fail or lose fields.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add normalized UPN, work email and name fields plus scoped uniqueness/indexes; support exact externalId filtering and retained PATCH/replace/active boolean and string payloads.\n- [ ] Adopt only eligible same-tenant members or invitations using verified-domain and identity checks; never rebind a foreign IdP identity or overwrite an existing password on email match.\n- [ ] Factor invitation/profile/session helpers into the caller transaction and keep SCIM projection and permitted account fields coherent; reject unsupported paths explicitly.\n\n## Acceptance\n- [ ] Replay retained member/invite adoption, separate UPN/email, externalId filter, profile PATCH/PUT, rename and boolean/string-active cases; foreign identities cannot be adopted.\n- [ ] Port independent retained SCIM scenario expectations: UPN differs from email, externalId lookup, patch/replace profile, string active=false, same-tenant invite adoption, conflicts and foreign identities.\n\n## Source and test homes\n`src/enterprise.rs`, `src/accounts.rs`, `migrations/`, `ee/test/integration/scim_users_test.rb`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/enterprise.rs`, `tests/enterprise_administration.rs`\n\n## Traceability and schedule\nAudit IDs: E4.\nStable task key: `RUST-E4`.\nTarget weeks 3 (2026-10-05 through 2026-10-11); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-E2`, `RUST-E3`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        3
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-E2",
+        "RUST-E3"
+      ],
+      "audit_ids": [
+        "E4"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:S2"
+      ],
+      "source_paths": [
+        "src/enterprise.rs",
+        "src/accounts.rs",
+        "migrations/",
+        "ee/test/integration/scim_users_test.rb",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E5",
+      "title": "[E5] Controlled OIDC preferred_username/SCIM-UPN fallback",
+      "description": "## Outcome and scope\nPreviously supported IdPs without email/email_verified claims cannot sign in.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Resolve signed OIDC claims through the approved connection-scoped SCIM UPN mapping when retained preferred_username fallback is applicable.\n- [ ] Preserve signature, issuer, audience, nonce, PKCE, verified-domain policy, connection version and session-revocation checks; ordinary verified-email behavior remains the default.\n- [ ] Capture actual target IdP claim fixtures and document the narrowly accepted fallback and rejection conditions.\n\n## Acceptance\n- [ ] A signed allowed UPN-only IdP identity follows the agreed verified-domain/SCIM mapping contract; issuer/nonce/state/signature and ownership failures remain denied.\n- [ ] Live target IdP roundtrip and rejected forged/foreign/unverified mappings are required; HTTP claim fixtures alone do not establish integration.\n\n## Source and test homes\n`src/oidc.rs`, `src/enterprise.rs`, `src/enterprise_admin.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/oidc.rs`, `tests/enterprise.rs`\n\n## Traceability and schedule\nAudit IDs: E5.\nStable task key: `RUST-E5`.\nTarget weeks 3 (2026-10-05 through 2026-10-11); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-E4`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        3
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-E4"
+      ],
+      "audit_ids": [
+        "E5"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:S3"
+      ],
+      "source_paths": [
+        "src/oidc.rs",
+        "src/enterprise.rs",
+        "src/enterprise_admin.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/oidc.rs",
+        "tests/enterprise.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E6",
+      "title": "[E6] Purchase browser pagination/search/sort and adjustment event rows",
+      "description": "## Outcome and scope\nAt most 1000 sales are visible; refunds/cancellations stored in the ledger are absent from the browser query.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Query the signed purchase ledger joined to authoritative sale metadata; expose sale/refund/reversal/cancel rows and provider-verification provenance.\n- [ ] Add bounded stable pagination with unique tie-breaker, explicit date/type search and supported sorting; scope cursors to project/query.\n- [ ] Keep integer financial precision and defined response units; do not trust caller-supplied store prices or duplicate mutable balances.\n\n## Acceptance\n- [ ] Traverse more than 1000 same-timestamp sale/refund/reversal/cancellation rows with stable scoped pagination, filtering, order and verified/reported provenance.\n- [ ] Traverse >1000 same-timestamp rows in both directions without omission/duplication, prove cursor scoping and reconcile sale/refund/reversal values and cross-tenant denial.\n\n## Source and test homes\n`src/purchases.rs`, `src/purchase_lifecycle.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/purchase_lifecycle.rs`, `tests/analytics.rs`\n\n## Traceability and schedule\nAudit IDs: E6.\nStable task key: `RUST-E6`.\nTarget weeks 7, 8 (2026-11-02 through 2026-11-15); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        7,
+        8
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "E6"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:P1"
+      ],
+      "source_paths": [
+        "src/purchases.rs",
+        "src/purchase_lifecycle.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/purchase_lifecycle.rs",
+        "tests/analytics.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E7",
+      "title": "[E7] Product-level revenue tables",
+      "description": "## Outcome and scope\nProject totals exist, but filtered/sorted/paged product revenue and product ARPU/ARPPU are absent.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Aggregate product reports from the same signed ledger and canonical visitor aliases as E6/A6, retaining product/platform filters and stable paging/sorting.\n- [ ] Define units, cancellations, repeat/first-time purchasers, product revenue and ARPU/ARPPU with independent retained fixtures; include LTV only under its exact agreed definition.\n- [ ] Reconcile refund/reversal/renewal and unknown-FX behavior with the shared analytics fixture; inspect representative query plans before new indexes.\n\n## Acceptance\n- [ ] Two-product/two-platform fixtures reconcile signed revenue, units, repeat buyers and defined product ARPU/ARPPU with stable pagination and exact currency units.\n- [ ] Two products/platforms, first/repeat purchases, renewals/refunds/reversals, alias merge, unknown FX and edited/deleted attribution yield independently expected units and money.\n\n## Source and test homes\n`src/purchases.rs`, `src/purchase_lifecycle.rs`, `src/analytics_api.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/purchase_lifecycle.rs`, `tests/analytics.rs`\n\n## Traceability and schedule\nAudit IDs: E7.\nStable task key: `RUST-E7`.\nTarget weeks 8 (2026-11-09 through 2026-11-15); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-E6`, `RUST-A6`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        8
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-E6",
+        "RUST-A6"
+      ],
+      "audit_ids": [
+        "E7"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:P2"
+      ],
+      "source_paths": [
+        "src/purchases.rs",
+        "src/purchase_lifecycle.rs",
+        "src/analytics_api.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/purchase_lifecycle.rs",
+        "tests/analytics.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-E8",
+      "title": "[E8] Audit actor snapshots, before/after changes, outcome, request context, failed-login records and operational chain verification",
+      "description": "## Outcome and scope\nChaining exists, but investigation loses retained identity/context and failure evidence.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Track completion of the two child PRs: versioned audit storage/verifier, then request/actor/change coverage. Do not duplicate their implementation here.\n- [ ] Require additive mixed-version handling, immutable original hashes, trusted context and explicit forensic limitations.\n- [ ] Review final audit exports/filter semantics and link both child evidence plus O7/credential mutation assertions before closing.\n\n## Acceptance\n- [ ] Actor rename/deletion preserves snapshots; known failed login and redacted old/new request-context records exist; mixed-version chains verify and detect tampering without rewriting old hashes.\n\n## Source and test homes\n`migrations/0004_enterprise.sql`, `src/enterprise.rs`, `src/enterprise_admin.rs`, `src/accounts.rs`, `src/main.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/enterprise.rs`, `tests/enterprise_administration.rs`, `tests/accounts.rs`\n\n## Traceability and schedule\nAudit IDs: E8.\nStable task key: `RUST-E8`.\nTarget weeks 4, 5, 9 (2026-10-12 through 2026-11-22); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-O2`, `RUST-E8-STORAGE`, `RUST-E8-CONTEXT`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        4,
+        5,
+        9
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-O2",
+        "RUST-E8-STORAGE",
+        "RUST-E8-CONTEXT"
+      ],
+      "audit_ids": [
+        "E8"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:A1",
+        "enterprise:A2"
+      ],
+      "source_paths": [
+        "migrations/0004_enterprise.sql",
+        "src/enterprise.rs",
+        "src/enterprise_admin.rs",
+        "src/accounts.rs",
+        "src/main.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/accounts.rs"
+      ],
+      "issue_kind": "acceptance_parent",
+      "child_keys": [
+        "RUST-E8-STORAGE",
+        "RUST-E8-CONTEXT"
+      ]
+    },
+    {
+      "key": "RUST-E9",
+      "title": "[E9] Tenant credential onboarding/rotation for SSO, push and stores; APNs certificate mode",
+      "description": "## Outcome and scope\nTenant admins must rely on operator-provided profiles; provider transports themselves exist.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Track the four child PRs for encrypted credential lifecycle, SSO, push/APNs certificates and Apple/Google stores; preserve supported operator profiles.\n- [ ] Require audit storage foundation before any credential mutation is released, and a single tenant-scoped resolution/version policy across transports and jobs.\n- [ ] Close only after each provider has create/redacted-read/rotate/revoke and tenant-isolation proof plus required real IdP/device/store acceptance. Operator-only administration is not an approved deferral.\n\n## Acceptance\n- [ ] For SSO, FCM/APNs including certificate mode, and Apple/Google stores: tenant admin create/redacted-read/rotate/revoke works, wrong-tenant/SSRF/invalid file denied, in-flight version behavior and real provider flows verified.\n\n## Source and test homes\n`src/oidc.rs`, `src/messaging.rs`, `src/purchases.rs`, `src/purchase_lifecycle.rs`, `src/enterprise_admin.rs`, `src/config.rs`, `migrations/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/oidc.rs`, `tests/messaging.rs`, `tests/purchase_lifecycle.rs`, `tests/enterprise_administration.rs`\n\n## Traceability and schedule\nAudit IDs: E9.\nStable task key: `RUST-E9`.\nTarget weeks 6, 8, 9 (2026-10-26 through 2026-11-22); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-E2`, `RUST-E3`, `RUST-E9-ENVELOPE`, `RUST-E9-SSO`, `RUST-E9-PUSH`, `RUST-E9-STORES`, `RUST-E8-STORAGE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        6,
+        8,
+        9
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E9-ENVELOPE",
+        "RUST-E9-SSO",
+        "RUST-E9-PUSH",
+        "RUST-E9-STORES",
+        "RUST-E8-STORAGE"
+      ],
+      "audit_ids": [
+        "E9"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:K1",
+        "enterprise:K2",
+        "enterprise:K3",
+        "enterprise:K4"
+      ],
+      "source_paths": [
+        "src/oidc.rs",
+        "src/messaging.rs",
+        "src/purchases.rs",
+        "src/purchase_lifecycle.rs",
+        "src/enterprise_admin.rs",
+        "src/config.rs",
+        "migrations/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/oidc.rs",
+        "tests/messaging.rs",
+        "tests/purchase_lifecycle.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "issue_kind": "acceptance_parent",
+      "child_keys": [
+        "RUST-E9-ENVELOPE",
+        "RUST-E9-SSO",
+        "RUST-E9-PUSH",
+        "RUST-E9-STORES"
+      ]
+    },
+    {
+      "key": "RUST-A1",
+      "title": "[A1] Automatic IP-to-country/city enrichment and MMDB loading",
+      "description": "## Outcome and scope\nCountry/city remain blank unless supplied as event properties. Rails GeoIP environment variables do not enable native detection.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Use the A2/A3 enrichment path to derive canonical country/city from trusted source IP, with IPv4/IPv6 and explicit proxy policy; do not silently accept client geography overrides.\n- [ ] Load a deterministic tested MMDB read-only, retain version/checksum provenance and explicit optional/required missing/corrupt/stale behavior.\n- [ ] Provide a deployment-owned updater/distribution/checksum recipe using selected storage or a local volume and controlled restart; keep license credentials out of events/logs.\n\n## Acceptance\n- [ ] Deterministic MMDB IPv4/IPv6 and trusted-proxy fixtures yield identical canonical location in event/outbox; missing/corrupt database policy and frozen duplicate replay work.\n- [ ] IPv4/IPv6, proxy spoofing, private/invalid/no IP, country/city misses, missing/corrupt MMDB and restart/version changes behave as specified; PG and queued bytes use the same first snapshot.\n\n## Source and test homes\n`src/sdk.rs`, `src/public_links.rs`, `src/config.rs`, `src/state.rs`, `src/providers/storage.rs`, `Cargo.toml`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/analytics.rs`, `tests/sdk.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: A1.\nStable task key: `RUST-A1`.\nTarget weeks 4 (2026-10-12 through 2026-10-18); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-A2`, `RUST-A3`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        4
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-A2",
+        "RUST-A3"
+      ],
+      "audit_ids": [
+        "A1"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN2"
+      ],
+      "source_paths": [
+        "src/sdk.rs",
+        "src/public_links.rs",
+        "src/config.rs",
+        "src/state.rs",
+        "src/providers/storage.rs",
+        "Cargo.toml",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/analytics.rs",
+        "tests/sdk.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A2",
+      "title": "[A2] Applying saved screen aliases and retained screen-name fallbacks",
+      "description": "## Outcome and scope\nAliases are stored but never read; screen/session reports retain raw names or blanks.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Own the single typed enrichment path before the atomic PostgreSQL event/outbox write; deduplicate/lock event UUID first and freeze the original snapshot.\n- [ ] Resolve screen using event property, visitor screen attribute/project alias, then event-name alias and CUSTOM/SCREEN_VIEW fallback under the retained contract.\n- [ ] Use this common path across SDK/public-link/native fixture ingestion and expose a clear extension point for A3/A1; do not independently rewrite read endpoints or historical events.\n\n## Acceptance\n- [ ] Saved aliases apply across event property, visitor attribute and event-name fallback; routed event/session fields and outbox agree; later alias changes do not alter replay.\n- [ ] Screen precedence, whitespace/empty values, missing/changed aliases and duplicate UUID replay pass through actual ingestion and queued provider payload assertions.\n\n## Source and test homes\n`src/sdk.rs`, `src/public_links.rs`, `src/analytics_api.rs`, `src/management.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/sdk.rs`, `tests/analytics.rs`\n\n## Traceability and schedule\nAudit IDs: A2.\nStable task key: `RUST-A2`.\nTarget weeks 3, 4 (2026-10-05 through 2026-10-18); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-C5`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        3,
+        4
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "audit_ids": [
+        "A2"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN1"
+      ],
+      "source_paths": [
+        "src/sdk.rs",
+        "src/public_links.rs",
+        "src/analytics_api.rs",
+        "src/management.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/sdk.rs",
+        "tests/analytics.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A3",
+      "title": "[A3] Device UA-to-OS/version and timezone propagation into events",
+      "description": "## Outcome and scope\nKnown device metadata is absent from analytics unless sent explicitly with each event. Fingerprint UA handling exists.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Extend A2 shared enrichment to use the actual originating project-scoped device/context for UA OS/version, timezone, language/model/build.\n- [ ] Validate device/visitor/project ownership; document deterministic fallback where a caller only supplies visitor ID rather than borrowing the most recently updated unrelated device.\n- [ ] Persist the exact enriched snapshot in PostgreSQL/outbox and preserve it on duplicate event IDs or delivery replay after parser/profile changes.\n\n## Acceptance\n- [ ] Correct originating device UA/OS/version/timezone reaches event/outbox without manually supplying derived event fields; project/device ownership and unknown cases remain correct.\n- [ ] Two devices on one visitor cannot borrow each other’s context; wrong-tenant devices reject and replay after UA/profile change preserves the accepted snapshot.\n\n## Source and test homes\n`src/sdk.rs`, `src/models.rs`, `src/analytics_api.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/sdk.rs`, `tests/analytics.rs`\n\n## Traceability and schedule\nAudit IDs: A3.\nStable task key: `RUST-A3`.\nTarget weeks 3, 4 (2026-10-05 through 2026-10-18); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-C5`, `RUST-A2`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        3,
+        4
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-C5",
+        "RUST-A2"
+      ],
+      "audit_ids": [
+        "A3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN1"
+      ],
+      "source_paths": [
+        "src/sdk.rs",
+        "src/models.rs",
+        "src/analytics_api.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/sdk.rs",
+        "tests/analytics.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A4",
+      "title": "[A4] Dashboard inviter/referral aggregate semantics",
+      "description": "## Outcome and scope\nReferral tables query the visitor's own activity. Inviter-aware server-SDK metrics exist separately.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Build/reuse canonical own versus inviter/referral query scopes using event-time attribution and alias resolution; selecting an inviter must not filter to that visitor’s own events.\n- [ ] Join signed ledger referral amounts including reversals/refunds and preserve the agreed inviter-platform versus invitee-population distinction.\n- [ ] Provide shared primitives for A5, CSVs and MCP final metric acceptance rather than diverging query implementations.\n\n## Acceptance\n- [ ] Independent inviter/invitee/own activity, alias, platform and sale/refund fixture differentiates own and referral list/detail totals.\n- [ ] Golden A→B+C referral fixtures include A own activity, unrelated B link, merged inviter alias, cross-platform devices, refund and second tenant; exact money/counts are independently checked.\n\n## Source and test homes\n`src/analytics_api.rs`, `src/automation.rs`, `src/purchase_lifecycle.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/analytics.rs`, `tests/management.rs`\n\n## Traceability and schedule\nAudit IDs: A4.\nStable task key: `RUST-A4`.\nTarget weeks 5, 6 (2026-10-19 through 2026-11-01); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-A6`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        5,
+        6
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-A6"
+      ],
+      "audit_ids": [
+        "A4"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN3-referrals"
+      ],
+      "source_paths": [
+        "src/analytics_api.rs",
+        "src/automation.rs",
+        "src/purchase_lifecycle.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/analytics.rs",
+        "tests/management.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A5",
+      "title": "[A5] Visitor metric pagination, metric/identity sort/search, revenue hydration and rich detail",
+      "description": "## Outcome and scope\nMetric lists stop at 200; plain visitor search does not replace a paged metrics table.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add metric-plus-UUID stable keyset pagination, bounded sizes and cursor binding to project/scope/date/filter/sort; whitelist metric and identity search/sort fields.\n- [ ] Hydrate page rows with visitor identity and signed ledger revenue, and detail with own/referral metrics, generated-link count and effective metric-start date.\n- [ ] Reuse A4 scopes and A6 canonical identities; prove >200 rows, ties, empty visitors and cross-platform referral behavior independently.\n\n## Acceptance\n- [ ] More than 200 metric rows traverse without gaps/duplicates under sort ties and scoped cursors; identity search, signed revenue and own/referral detail match fixture.\n- [ ] The union of all pages exceeds 200 with stable ties and no omissions; identity search differs from event-name search and zero-activity/detail fields remain coherent.\n\n## Source and test homes\n`src/analytics_api.rs`, `src/management.rs`, `src/automation.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/analytics.rs`, `tests/management.rs`\n\n## Traceability and schedule\nAudit IDs: A5.\nStable task key: `RUST-A5`.\nTarget weeks 5, 6 (2026-10-19 through 2026-11-01); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-A4`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        5,
+        6
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-A4"
+      ],
+      "audit_ids": [
+        "A5"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN3-visitors"
+      ],
+      "source_paths": [
+        "src/analytics_api.rs",
+        "src/management.rs",
+        "src/automation.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/analytics.rs",
+        "tests/management.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A6",
+      "title": "[A6] Merge-aware unique visitors in warehouse analytics",
+      "description": "## Outcome and scope\nCanonical PostgreSQL analytics folds aliases; ClickHouse/BigQuery endpoint counts still use original visitor IDs.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Change the mounted customer analytics endpoint to alias-aware canonical PostgreSQL facts while preserving response envelope and all-event totals, including custom-only visitors.\n- [ ] Keep immutable raw warehouse event identifiers and asynchronous delivery unchanged; document that direct raw warehouse distinct counts are not merge-aware.\n- [ ] Verify provider arrival separately with actual warehouse queries; do not treat this canonical endpoint as warehouse-delivery evidence. A separate warehouse alias-view subsystem is not required by the accepted fresh-launch direction.\n\n## Acceptance\n- [ ] Basic customer analytics preserves all-event semantics but resolves canonical identities after published/pending/chained/concurrent merges under both provider configurations; direct provider-arrival checks remain separate.\n- [ ] Published and pending A/B events, A→B→C merges, duplicate delivery and concurrent ingest/merge preserve exact all-event totals and canonical uniques under both configured warehouses.\n\n## Source and test homes\n`src/core_api.rs`, `src/analytics_api.rs`, `src/providers/analytics.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/analytics.rs`, `tests/sdk.rs`, `tests/providers.rs`, `tests/end_to_end.rs`\n\n## Traceability and schedule\nAudit IDs: A6.\nStable task key: `RUST-A6`.\nTarget weeks 4 (2026-10-12 through 2026-10-18); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        4
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "A6"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN4"
+      ],
+      "source_paths": [
+        "src/core_api.rs",
+        "src/analytics_api.rs",
+        "src/providers/analytics.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/analytics.rs",
+        "tests/sdk.rs",
+        "tests/providers.rs",
+        "tests/end_to_end.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A7",
+      "title": "[A7] Retained link CSV counters",
+      "description": "## Outcome and scope\nReinstalls, reactivations and time-spent columns are absent. Native export queue/access/expiry handling exists.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Reuse canonical report queries to include reinstalls, reactivations and time-spent with existing link counters/metadata/campaign name and defined units.\n- [ ] Snapshot export parameters and page deterministically; preserve lease/retry/escaping/expiry/access mechanics.\n- [ ] Reconcile CSV values with independent report fixtures; do not invent a restored average-engagement formula where the reference was a hardcoded zero.\n\n## Acceptance\n- [ ] Link CSV contains and reconciles reinstall/reactivation/time-spent plus existing counters/metadata; retry/page/expiry and authorization behavior remains correct.\n- [ ] CSV creation alone is insufficient: reconcile each retained counter plus paging, retries, malformed CSV-sensitive text, tenant authorization and expiry.\n\n## Source and test homes\n`src/exports.rs`, `src/analytics_api.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/exports.rs`, `tests/analytics.rs`\n\n## Traceability and schedule\nAudit IDs: A7.\nStable task key: `RUST-A7`.\nTarget weeks 8 (2026-11-09 through 2026-11-15); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-A4`, `RUST-A5`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        8
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-A4",
+        "RUST-A5"
+      ],
+      "audit_ids": [
+        "A7"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN5-link-csv"
+      ],
+      "source_paths": [
+        "src/exports.rs",
+        "src/analytics_api.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/exports.rs",
+        "tests/analytics.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A8",
+      "title": "[A8] Range-sensitive usage CSV, daily active users and empty-period fill",
+      "description": "## Outcome and scope\nPartial-month exports count whole monthly billing snapshots, including activity outside the requested range.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Compute daily and requested partial-month distinct canonical activity visitors from retained events, with empty-period fill and explicit timezone rules.\n- [ ] Keep billing snapshot export meaning separate; reject unavailable retention ranges instead of presenting missing historical activity as zero.\n- [ ] Reconcile dates around month boundaries, identity merges and outside-range activity without using whole-month billing MAU as the partial-range answer.\n\n## Acceptance\n- [ ] Partial-month fixture excludes outside-range activity; daily/monthly unique counts, zero-fill, timezone and retention boundaries are explicit and reconcile.\n- [ ] September 15–20 excludes September 1 activity; test September 18, empty days, partial months, timezone boundaries, retention rejection, merge and second tenant.\n\n## Source and test homes\n`src/exports.rs`, `src/analytics_api.rs`, `src/billing.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/exports.rs`, `tests/analytics.rs`\n\n## Traceability and schedule\nAudit IDs: A8.\nStable task key: `RUST-A8`.\nTarget weeks 8 (2026-11-09 through 2026-11-15); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-A6`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        8
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-A6"
+      ],
+      "audit_ids": [
+        "A8"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN5-usage-csv"
+      ],
+      "source_paths": [
+        "src/exports.rs",
+        "src/analytics_api.rs",
+        "src/billing.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/exports.rs",
+        "tests/analytics.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A9",
+      "title": "[A9] Expired migration negative-cache pruning",
+      "description": "## Outcome and scope\nOld not-found/transient rows accumulate until their source is deleted.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add bounded periodic cleanup of expired negative/transient migration-cache entries after the retained seven-day grace.\n- [ ] Condition deletion on current status/expiry or lock rows so a concurrent successful resolver refresh survives.\n- [ ] Preserve resolved and fresh records and report bounded cleanup/error counts through existing worker health.\n\n## Acceptance\n- [ ] Bounded cleanup removes only expired negative/transient migration cache after grace; fresh/resolved entries and concurrent successful refresh survive.\n\n## Source and test homes\n`src/imports.rs`, `src/maintenance.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/imports.rs`, `tests/maintenance.rs`\n\n## Traceability and schedule\nAudit IDs: A9.\nStable task key: `RUST-A9`.\nTarget weeks 7 (2026-11-02 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        7
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "A9"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN6"
+      ],
+      "source_paths": [
+        "src/imports.rs",
+        "src/maintenance.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/imports.rs",
+        "tests/maintenance.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-A10",
+      "title": "[A10] Runtime table-data deletion grant",
+      "description": "## Outcome and scope\nSupplied Terraform grants read/query permissions, while retention and namespace cleanup issue DELETE. Live IAM failure has not been reproduced here.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add the narrow table-data row-deletion permission to the actual Terraform runtime principal, preserving separate Pub/Sub writer identity and dataset deletion protection.\n- [ ] Review official IAM permission semantics and a reviewable Terraform plan; do not grant broad dataset-drop administration merely to issue DELETE.\n- [ ] Prove deployed-runtime-principal publish, arrival, query and tenant-scoped deletion, including denial/retry/recovery; administrator CLI success is insufficient.\n\n## Acceptance\n- [ ] Actual Terraform runtime principal can publish/query and delete project rows while another tenant remains; denied deletion preserves local source/retries and succeeds after permission restoration.\n\n## Source and test homes\n`deploy/google/main.tf`, `src/providers/analytics.rs`, `src/cleanup.rs`, `src/maintenance.rs`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/providers.rs`, `tests/maintenance.rs`, `tests/cleanup.rs`\n\n## Traceability and schedule\nAudit IDs: A10.\nStable task key: `RUST-A10`.\nTarget weeks 1 (2026-09-21 through 2026-09-27); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "A10"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "analytics:AN7"
+      ],
+      "source_paths": [
+        "deploy/google/main.tf",
+        "src/providers/analytics.rs",
+        "src/cleanup.rs",
+        "src/maintenance.rs",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/providers.rs",
+        "tests/maintenance.rs",
+        "tests/cleanup.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-C1",
+      "title": "[C1] Routed SDK support for raw Play Install Referrer and bare migration slug",
+      "description": "## Outcome and scope\nURL parsing rejects these before reaching the resolver that supports them.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Classify supported raw referrer/slug/custom/native/migrated input shapes before requiring a normal HTTP URL parse, then reuse the existing import resolver.\n- [ ] Preserve native precedence, query/referrer tracking, tenant/host ownership, safe schemes, source-disable/default policy and explicit invalid/ambiguous handling.\n- [ ] Exercise the actual SDK data-for-device route with configured C5 fixtures; no cross-project source materialization.\n\n## Acceptance\n- [ ] Routed native/migrated URL, encoded Play referrer, bare slug and permitted custom scheme resolve exact expected data/attribution; malformed/foreign-project cases denied.\n- [ ] Cover encoded Branch ~referring_link, bare slug, permitted custom scheme, malformed/overlong/nested input, foreign source, cached hit, deleted target, provider 404/transient failure and replay.\n\n## Source and test homes\n`src/sdk.rs`, `src/imports.rs`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/sdk.rs`, `tests/imports.rs`\n\n## Traceability and schedule\nAudit IDs: C1.\nStable task key: `RUST-C1`.\nTarget weeks 2, 3 (2026-09-28 through 2026-10-11); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-C5`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        2,
+        3
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "audit_ids": [
+        "C1"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C1"
+      ],
+      "source_paths": [
+        "src/sdk.rs",
+        "src/imports.rs",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/sdk.rs",
+        "tests/imports.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-C2",
+      "title": "[C2] MCP rich link/campaign search delegation",
+      "description": "## Outcome and scope\nMCP calls simple list handlers, so term/filter/statistics arguments are ignored. Native link limit/offset still works.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Delegate MCP REST/JSON-RPC search to the existing management POST search handlers or shared typed service, preserving structured arguments and tool schema.\n- [ ] Retain OAuth/PKCE/project grants/read-only checks and avoid copying SQL into the gateway.\n- [ ] Compare actual entity sets/metrics and stable pagination for link and campaign filters through management, MCP REST and JSON-RPC; final metrics follow A4/A5.\n\n## Acceptance\n- [ ] Management, MCP REST and JSON-RPC searches return identical filtered entity/metric sets and stable pages; read scopes and token/project boundaries remain enforced.\n- [ ] Read-only search succeeds while mutation fails; revoked, ungranted and cross-project tokens fail; filters demonstrably alter results and actual MCP client acceptance is recorded.\n\n## Source and test homes\n`src/mcp.rs`, `src/management.rs`, `src/analytics_api.rs`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/mcp.rs`, `tests/management.rs`\n\n## Traceability and schedule\nAudit IDs: C2.\nStable task key: `RUST-C2`.\nTarget weeks 3 (2026-10-05 through 2026-10-11); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\nFinal acceptance also needs `RUST-A4`, `RUST-A5`; this must not delay otherwise independent implementation.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        3
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "C2"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C2"
+      ],
+      "source_paths": [
+        "src/mcp.rs",
+        "src/management.rs",
+        "src/analytics_api.rs",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/mcp.rs",
+        "tests/management.rs"
+      ],
+      "issue_kind": "implementation_finding",
+      "acceptance_depends_on_keys": [
+        "RUST-A4",
+        "RUST-A5"
+      ]
+    },
+    {
+      "key": "RUST-C3",
+      "title": "[C3] Uploaded link images and domain branding attachments",
+      "description": "## Outcome and scope\nJSON external-image URLs work; multipart attach/replace/purge/public rendering does not. Generic private GCS/MinIO objects are not an equivalent image workflow.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Track the three child PRs: safe asset/public delivery foundation, attachment bindings/rendering, and durable cleanup.\n- [ ] Cover dashboard, SDK, public quick-link and domain branding surfaces with documented native client contracts; generic private object storage alone is insufficient.\n- [ ] Close only after public preview bytes, replacement/removal/fallback, provider failures, isolation and live MinIO/GCS cleanup all pass.\n\n## Acceptance\n- [ ] Dashboard/SDK/quick-link/domain image upload-bind-render-replace-remove works; public serving exposes only published images; provider failures/concurrency/tenant deletion leave correct durable cleanup.\n\n## Source and test homes\n`src/providers/storage.rs`, `src/core_api.rs`, `src/automation.rs`, `src/public_links.rs`, `src/domains.rs`, `src/maintenance.rs`, `src/cleanup.rs`, `migrations/`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/providers.rs`, `tests/cleanup.rs`, `tests/imports.rs`, `tests/domains.rs`\n\n## Traceability and schedule\nAudit IDs: C3.\nStable task key: `RUST-C3`.\nTarget weeks 6, 7 (2026-10-26 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-C5`, `RUST-C3-ASSETS`, `RUST-C3-BINDINGS`, `RUST-C3-CLEANUP`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        6,
+        7
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-C5",
+        "RUST-C3-ASSETS",
+        "RUST-C3-BINDINGS",
+        "RUST-C3-CLEANUP"
+      ],
+      "audit_ids": [
+        "C3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C3a",
+        "connectivity:P-C3b",
+        "connectivity:P-C3c"
+      ],
+      "source_paths": [
+        "src/providers/storage.rs",
+        "src/core_api.rs",
+        "src/automation.rs",
+        "src/public_links.rs",
+        "src/domains.rs",
+        "src/maintenance.rs",
+        "src/cleanup.rs",
+        "migrations/",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/providers.rs",
+        "tests/cleanup.rs",
+        "tests/imports.rs",
+        "tests/domains.rs"
+      ],
+      "issue_kind": "acceptance_parent",
+      "child_keys": [
+        "RUST-C3-ASSETS",
+        "RUST-C3-BINDINGS",
+        "RUST-C3-CLEANUP"
+      ]
+    },
+    {
+      "key": "RUST-C4",
+      "title": "[C4] Tokenless clipboard project-activity check",
+      "description": "## Outcome and scope\nSDK must already have read a token before asking status, losing the retained pre-read activity signal.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Persist eligible copy-enabled project activity in PostgreSQL and expose tokenless status under an explicit response contract, using retained 48-hour TTL unless deliberately changed.\n- [ ] Stamp eligible mobile/public copy activity only; preserve existing optional token availability, consume and replay controls.\n- [ ] Verify pre-read activity check on actual iOS/browser flow; it is a hint and must not bypass operating-system privacy prompts.\n\n## Acceptance\n- [ ] Tokenless status is false initially, true after eligible copy-enabled activity and false after TTL; project isolation and optional token consume/replay remain correct on real client.\n\n## Source and test homes\n`src/public_links.rs`, `src/sdk.rs`, `migrations/`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/sdk.rs`, `tests/imports.rs`\n\n## Traceability and schedule\nAudit IDs: C4.\nStable task key: `RUST-C4`.\nTarget weeks 6 (2026-10-26 through 2026-11-01); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-C5`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        6
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "audit_ids": [
+        "C4"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C4"
+      ],
+      "source_paths": [
+        "src/public_links.rs",
+        "src/sdk.rs",
+        "migrations/",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/sdk.rs",
+        "tests/imports.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-C5",
+      "title": "[C5] Mandatory SDK app/platform configuration gate",
+      "description": "## Outcome and scope\nValid project-key calls without platform or Origin skip disabled-app/identifier/domain restrictions.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Define normalized supported mobile/web/desktop SDK declarations and require the configured enabled platform/identifier/origin before configuration or identity/event/link effects.\n- [ ] Propagate authenticated declaration so conflicting request body cannot bypass it; audit every SdkProject extraction site while keeping genuine server SDK/internal delegation contracts distinct.\n- [ ] Update shared fixtures and docs to configure apps explicitly; restore the gate rather than weakening it to keep permissive old fixtures green. This is configuration enforcement, not app attestation.\n\n## Acceptance\n- [ ] Missing/unconfigured/disabled/wrong platform-identifier-origin combinations reject before side effects; valid mobile/web and separate server-SDK paths remain usable.\n- [ ] Missing declarations, platform/identifier-only, absent/disabled app, wrong package/bundle/domain/origin, conflicting body and revoked key reject without side effects; valid clients and server paths pass.\n\n## Source and test homes\n`src/auth.rs`, `src/sdk.rs`, `tests/support/mod.rs`, `docs/TESTING_GUIDE.md`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/sdk.rs`, `tests/core_api.rs`, `tests/imports.rs`\n\n## Traceability and schedule\nAudit IDs: C5.\nStable task key: `RUST-C5`.\nTarget weeks 1 (2026-09-21 through 2026-09-27); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "C5"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C5"
+      ],
+      "source_paths": [
+        "src/auth.rs",
+        "src/sdk.rs",
+        "tests/support/mod.rs",
+        "docs/TESTING_GUIDE.md",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/sdk.rs",
+        "tests/core_api.rs",
+        "tests/imports.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-O1",
+      "title": "[O1] Self-hosted flag automatically closing registration",
+      "description": "## Outcome and scope\nTRISIXT_SELF_HOSTED alone does not close Rust signup; the separate DISABLE_REGISTRATION setting is required.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Apply self-hosted closed-public-signup policy in the common handler before password hashing or insertion.\n- [ ] Preserve separate token-authorized invitations and DISABLE_REGISTRATION behavior; document all SaaS/self-hosted combinations.\n- [ ] Test both mounted registration aliases and ensure rejected signup has no account/session effects.\n\n## Acceptance\n- [ ] Self-hosted public signup is denied through both aliases while authorized invitations work; independent disable flag and SaaS policy combinations covered.\n\n## Source and test homes\n`src/accounts.rs`, `src/config.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/accounts.rs`\n\n## Traceability and schedule\nAudit IDs: O1.\nStable task key: `RUST-O1`.\nTarget weeks 1 (2026-09-21 through 2026-09-27); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "O1"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:O1"
+      ],
+      "source_paths": [
+        "src/accounts.rs",
+        "src/config.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/accounts.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-O2",
+      "title": "[O2] Retained per-IP request throttles",
+      "description": "## Outcome and scope\nNative account/token/project counters and password-work semaphore do not reproduce source-IP protection across rotating account identifiers or SDK requests.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Reuse PostgreSQL atomic expiry counters with typed bounded bucket keys and cleanup for shared source-IP route-class policies; retain account/project/token limits and Argon2 semaphore.\n- [ ] Trust socket IP plus explicitly configured proxies only, normalize IPv4/IPv6 and preserve safe key/log handling.\n- [ ] Test two instances, parallel increments, rotating emails, spoofed forwarding and 429/Retry-After; measure SDK load before any explicit alternative ingress/shared-store design.\n\n## Acceptance\n- [ ] Two app instances share source-IP policy; rotating identities and spoofed forwarding cannot bypass it; separate sources, IPv6, expiry, 429/retry behavior and database failure policy covered.\n\n## Source and test homes\n`src/routes.rs`, `src/auth.rs`, `src/accounts.rs`, `src/sdk.rs`, `migrations/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/accounts.rs`, `tests/mcp.rs`, `tests/sdk.rs`\n\n## Traceability and schedule\nAudit IDs: O2.\nStable task key: `RUST-O2`.\nTarget weeks 2 (2026-09-28 through 2026-10-04); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        2
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "O2"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:O2"
+      ],
+      "source_paths": [
+        "src/routes.rs",
+        "src/auth.rs",
+        "src/accounts.rs",
+        "src/sdk.rs",
+        "migrations/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/accounts.rs",
+        "tests/mcp.rs",
+        "tests/sdk.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-O3",
+      "title": "[O3] OpenTelemetry/OTLP trace integration and metrics instrumentation",
+      "description": "## Outcome and scope\nLocal tracing logs exist, but the retained instrumentation/export integration is absent. Historical Rails metric delivery was not established.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Track optional OTLP tracing and bounded metric child PRs; keep formatted tracing and runtime behavior with no collector.\n- [ ] Require propagated correlation, safe labels/redaction and collector receipt evidence for both signals.\n- [ ] Do not interpret historical Rails wrapper presence as proof of past metric export.\n\n## Acceptance\n- [ ] Local OTLP collector receives correlated request/database/provider/worker spans and required bounded-cardinality metrics; redaction and collector-outage behavior verified.\n\n## Source and test homes\n`src/main.rs`, `src/routes.rs`, `src/worker.rs`, `src/providers/`, `Cargo.toml`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/operations.rs`, `tests/worker.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: O3.\nStable task key: `RUST-O3`.\nTarget weeks 10 (2026-11-23 through 2026-11-29); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-O3-TRACES`, `RUST-O3-METRICS`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        10
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-O3-TRACES",
+        "RUST-O3-METRICS"
+      ],
+      "audit_ids": [
+        "O3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:T1",
+        "enterprise:T2"
+      ],
+      "source_paths": [
+        "src/main.rs",
+        "src/routes.rs",
+        "src/worker.rs",
+        "src/providers/",
+        "Cargo.toml",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/operations.rs",
+        "tests/worker.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "acceptance_parent",
+      "child_keys": [
+        "RUST-O3-TRACES",
+        "RUST-O3-METRICS"
+      ]
+    },
+    {
+      "key": "RUST-O4",
+      "title": "[O4] Deep dependency diagnostics and dedicated diagnostics-key contract",
+      "description": "## Outcome and scope\nQueue/job health exists; independent Redis/warehouse probes and retained diagnostic exercises are reduced. Readiness only checks PostgreSQL.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Separate retained diagnostics key/header from stronger admin repair authorization; do not accept query-string secrets by default.\n- [ ] Add independent bounded PostgreSQL/Redis/configured-warehouse probes and deliberate disposable diagnostics with cleanup; keep storage probes explicit and harmless.\n- [ ] Report fresh failure/timeout states without suppressing other dependency results; preserve /up and document /ready policy rather than globally blocking on every provider outage.\n\n## Acceptance\n- [ ] Independent bounded dependency probes report current isolated failures; monitor credentials cannot invoke repairs; liveness/readiness policy remains explicit.\n\n## Source and test homes\n`src/operations.rs`, `src/routes.rs`, `src/config.rs`, `src/providers/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/operations.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: O4.\nStable task key: `RUST-O4`.\nTarget weeks 9, 10 (2026-11-16 through 2026-11-29); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-O5`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        9,
+        10
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-O5"
+      ],
+      "audit_ids": [
+        "O4"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:D1"
+      ],
+      "source_paths": [
+        "src/operations.rs",
+        "src/routes.rs",
+        "src/config.rs",
+        "src/providers/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/operations.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-O5",
+      "title": "[O5] Redis TLS client features/configuration",
+      "description": "## Outcome and scope\nrediss URLs are rejected by the compiled client; the worker discards client-open errors and skips Redis heartbeat. PostgreSQL event delivery remains separate.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Enable supported Redis async TLS features with peer/hostname verification and explicit optional custom CA configuration.\n- [ ] Surface malformed URL/TLS configuration instead of silently converting Client::open failures to no client.\n- [ ] Keep transient Redis outage degraded/nonfatal for PostgreSQL durable event work; verify real TLS authentication, wrong trust/host rejection and reconnect.\n\n## Acceptance\n- [ ] Real authenticated TLS Redis fixture verifies trusted CA/hostname, rejects wrong trust, reconnects and reports malformed config; PostgreSQL queued events progress during Redis outage.\n- [ ] Real authenticated TLS Redis rejects untrusted CA/hostname mismatch and reconnects; PostgreSQL event delivery continues during a Redis outage.\n\n## Source and test homes\n`Cargo.toml`, `Cargo.lock`, `src/config.rs`, `src/worker.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/worker.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: O5.\nStable task key: `RUST-O5`.\nTarget weeks 1 (2026-09-21 through 2026-09-27); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "O5"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:O5"
+      ],
+      "source_paths": [
+        "Cargo.toml",
+        "Cargo.lock",
+        "src/config.rs",
+        "src/worker.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/worker.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-O6",
+      "title": "[O6] Atomic initial-member provisioning",
+      "description": "## Outcome and scope\nRust creates production/test projects atomically, but cannot include the initial invited members in the same operation. Separate invitations exist.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Extract an invite_member_tx-style helper from the self-committing invitation flow, coordinating E4 adoption semantics.\n- [ ] Validate/authorize a bounded initial member list, then commit instance, production/test pair, roles, invitations and mail obligations together; no nested independent commits.\n- [ ] Keep SMTP asynchronous and follow the agreed self-hosted no-SMTP/copyable-link contract while preserving one-time keys.\n\n## Acceptance\n- [ ] Mixed new/existing initial members and paired projects commit atomically; invalid member/forbidden role rolls back invites/mail; defined no-SMTP self-hosted links work.\n- [ ] Mixed new/existing members, duplicate addresses, forbidden roles and one invalid member prove all-or-nothing invitations/mail/project creation; SMTP delivery is outside the SQL transaction.\n\n## Source and test homes\n`src/provisioning.rs`, `src/accounts.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/mcp.rs`, `tests/accounts.rs`\n\n## Traceability and schedule\nAudit IDs: O6.\nStable task key: `RUST-O6`.\nTarget weeks 7 (2026-11-02 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`, `RUST-E4`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        7
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE",
+        "RUST-E4"
+      ],
+      "audit_ids": [
+        "O6"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:N1"
+      ],
+      "source_paths": [
+        "src/provisioning.rs",
+        "src/accounts.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/mcp.rs",
+        "tests/accounts.rs"
+      ],
+      "issue_kind": "implementation_finding"
+    },
+    {
+      "key": "RUST-O7",
+      "title": "[O7] Renaming paired projects with an instance",
+      "description": "## Outcome and scope\nInstance name changes while production/test project names remain unchanged.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Lock and rename the instance plus its known production/test pair in one transaction.\n- [ ] Freeze the rule for custom project names and do not rename unrelated projects.\n- [ ] Implement name/rollback behavior in week 7; complete before/after forensic assertions after E8 context coverage in week 9.\n\n## Acceptance\n- [ ] Instance and its paired production/test projects rename atomically with defined custom-name rule and audit before/after; rollback leaves all original names.\n\n## Source and test homes\n`src/core_api.rs`, `src/provisioning.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: `tests/core_api.rs`, `tests/management.rs`\n\n## Traceability and schedule\nAudit IDs: O7.\nStable task key: `RUST-O7`.\nTarget weeks 7 (2026-11-02 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\nFinal acceptance also needs `RUST-E8`; this must not delay otherwise independent implementation.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        7
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "O7"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:N2"
+      ],
+      "source_paths": [
+        "src/core_api.rs",
+        "src/provisioning.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [
+        "tests/core_api.rs",
+        "tests/management.rs"
+      ],
+      "issue_kind": "implementation_finding",
+      "acceptance_depends_on_keys": [
+        "RUST-E8"
+      ]
+    },
+    {
+      "key": "RUST-M1",
+      "title": "[M1] Rails data conversion and legacy archive recovery",
+      "description": "## Outcome and scope\nLegacy Rails records and archived events need discovery-led conversion before an existing deployment can cut over; this does not block a fresh native installation.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Keep this issue explicitly deferred and outside first fresh-release capacity; native schema migration and native recovery remain initial-release requirements elsewhere.\n- [ ] When an actual Rails deployment is authorized, inventory schema/data/archive sizes, secrets/attachments and supported history before refining estimates.\n- [ ] Then plan stable source-ID mapping, entity conversion, idempotent resumable archive/event/ledger replay, reconciliation and rehearsed cutover as a separate workstream.\n\n## Acceptance\n- [ ] After actual legacy inventory: stable source-ID mapping, resumable/idempotent event/archive import, exact tenant/financial reconciliation and rehearsed cutover/rollback. Not needed for fresh native schema installation.\n\n## Source and test homes\n`docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`, `docs/TESTING_GUIDE.md`, `docs/planning/ANALYTICS_PLAN.md`, `docs/RUST_PARITY_AUDIT.md`\nNative suites / validation: Discovery evidence only; implementation and tests require a separate post-release plan.\n\n## Traceability and schedule\nAudit IDs: M1.\nStable task key: `RUST-M1`.\nDeferred until after the fresh release; no initial-release date assigned.\nImplementation prerequisites: none beyond stated scope and authorization.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "low",
+      "scope": "later_existing_deployment",
+      "target_weeks": [],
+      "parent_key": null,
+      "depends_on_keys": [],
+      "audit_ids": [
+        "M1"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "deferred",
+      "package_refs": [
+        "analytics:M1"
+      ],
+      "source_paths": [
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md",
+        "docs/TESTING_GUIDE.md",
+        "docs/planning/ANALYTICS_PLAN.md",
+        "docs/RUST_PARITY_AUDIT.md"
+      ],
+      "test_paths": [],
+      "issue_kind": "deferred_discovery"
+    },
+    {
+      "key": "RUST-E8-STORAGE",
+      "title": "[E8] Audit v2 immutable storage and mixed-version verifier",
+      "description": "## Outcome and scope\nExisting chained audit rows lack a versioned canonical forensic envelope; preserve their hashes while enabling verifiable new events.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add additive v2 payload/version fields with immutable actor type/id/email/via, outcome, target, redacted diffs and context; identify existing native v1 rows honestly.\n- [ ] Store exact canonical v2 hash payload; seed per-tenant chain head from current tail in a locking migration and atomically append/advance with existing append-only/no-truncate controls.\n- [ ] Provide a read-only mixed-version verifier for sequence gaps, hash and tail/head mismatch; use a genuine old-function v1 fixture and report irrecoverable historical canonicalization limitations.\n\n## Acceptance\n- [ ] Existing staged audit entries and hashes survive migration unchanged; v1/v2 chains verify with no Rails conversion/backfill.\n- [ ] Concurrent append, rollback, tampered payload/gap/head and actor deletion fixtures behave independently of runtime serializer/timezone.\n\n## Source and test homes\n`migrations/0004_enterprise.sql`, `migrations/`, `src/enterprise.rs`, `src/enterprise_admin.rs`, `src/main.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/enterprise.rs`, `tests/enterprise_administration.rs`\n\n## Traceability and schedule\nAudit IDs: E8.\nStable task key: `RUST-E8-STORAGE`.\nTarget weeks 4, 5 (2026-10-12 through 2026-10-25); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\nParent acceptance issue: `RUST-E8`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        4,
+        5
+      ],
+      "parent_key": "RUST-E8",
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "E8"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:A1"
+      ],
+      "source_paths": [
+        "migrations/0004_enterprise.sql",
+        "migrations/",
+        "src/enterprise.rs",
+        "src/enterprise_admin.rs",
+        "src/main.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-E8-CONTEXT",
+      "title": "[E8] Audit request context, actor snapshots, failures and redacted diffs",
+      "description": "## Outcome and scope\nInvestigation loses actor identity after rename/delete and misses failed-login/request/before-after evidence despite existing chain storage.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Provide sanitized typed request context and transaction-local trigger context, using route/path rather than secret-bearing query strings and preventing pooled-connection leakage.\n- [ ] Snapshot actor before deletion; record known-user failed login without changing anti-enumeration; cover retained user/admin/system/provider mutations and meaningful before/after changes.\n- [ ] Update audit exports/filters and cover new credential mutations and paired rename; preserve v2 redaction and canonical serialization.\n\n## Acceptance\n- [ ] Actor rename/deletion, failed login, rollback, concurrent tenants and pooled connections preserve correct attributable context without secrets.\n- [ ] E9 credentials expose no raw secret in audit and O7 has exact old/new names; mixed-chain verifier remains valid.\n\n## Source and test homes\n`src/accounts.rs`, `src/enterprise.rs`, `src/enterprise_admin.rs`, `src/core_api.rs`, `src/oidc.rs`, `src/exports.rs`, `migrations/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/accounts.rs`, `tests/enterprise.rs`, `tests/enterprise_administration.rs`, `tests/core_api.rs`\n\n## Traceability and schedule\nAudit IDs: E8.\nStable task key: `RUST-E8-CONTEXT`.\nTarget weeks 9 (2026-11-16 through 2026-11-22); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-E8-STORAGE`, `RUST-O2`.\nFinal call-site coverage requires implemented credential mutation and rename paths from `RUST-E9-SSO`, `RUST-E9-PUSH`, `RUST-E9-STORES`, `RUST-O7`; their later live/forensic acceptance need not already be closed. This avoids making O7 closure a prerequisite for the E8 audit evidence that O7 itself needs.\nParent acceptance issue: `RUST-E8`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        9
+      ],
+      "parent_key": "RUST-E8",
+      "depends_on_keys": [
+        "RUST-E8-STORAGE",
+        "RUST-O2"
+      ],
+      "audit_ids": [
+        "E8"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:A2"
+      ],
+      "source_paths": [
+        "src/accounts.rs",
+        "src/enterprise.rs",
+        "src/enterprise_admin.rs",
+        "src/core_api.rs",
+        "src/oidc.rs",
+        "src/exports.rs",
+        "migrations/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/accounts.rs",
+        "tests/enterprise.rs",
+        "tests/enterprise_administration.rs",
+        "tests/core_api.rs"
+      ],
+      "issue_kind": "implementation_child",
+      "requires_implementation_of_keys": [
+        "RUST-E9-SSO",
+        "RUST-E9-PUSH",
+        "RUST-E9-STORES",
+        "RUST-O7"
+      ]
+    },
+    {
+      "key": "RUST-E9-ENVELOPE",
+      "title": "[E9] Encrypted tenant credential envelope, resolver and lifecycle",
+      "description": "## Outcome and scope\nTenant admins need secure credential ownership and rotation alongside existing operator profiles before provider-specific administration can be added.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add tenant/provider identity, encrypted envelope version/key identifier, safe metadata, active/revoked versions and expiry with purpose/tenant-bound authenticated encryption and persistent-key recovery documentation.\n- [ ] Centralize explicit tenant-versus-operator resolution precedence; authorize existing tenant-admin roles and prohibit cross-tenant references.\n- [ ] Provide metadata-only reads, explicit secret replacement (omission preserves), bounded expected-format input, no arbitrary paths/endpoints, and operator origin/SSRF controls.\n- [ ] Define and test in-flight job version retention versus explicit revocation; keep secrets out of logs, audit, list/read responses, queues and exports.\n\n## Acceptance\n- [ ] Create, metadata/read redaction, rotate, revoke, wrong tenant, malformed/oversized input and omitted-secret update pass; backup keys recover stored values in isolated tests.\n- [ ] Running/retried jobs obey version/revocation policy; credential changes are attributable through required E8 storage foundation from their first release.\n\n## Source and test homes\n`src/config.rs`, `src/enterprise_admin.rs`, `src/oidc.rs`, `src/messaging.rs`, `src/purchases.rs`, `migrations/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/enterprise_administration.rs`, `tests/oidc.rs`, `tests/messaging.rs`, `tests/purchase_lifecycle.rs`\n\n## Traceability and schedule\nAudit IDs: E9.\nStable task key: `RUST-E9-ENVELOPE`.\nTarget weeks 6 (2026-10-26 through 2026-11-01); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-E2`, `RUST-E3`, `RUST-E8-STORAGE`.\nParent acceptance issue: `RUST-E9`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        6
+      ],
+      "parent_key": "RUST-E9",
+      "depends_on_keys": [
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E8-STORAGE"
+      ],
+      "audit_ids": [
+        "E9"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:K1"
+      ],
+      "source_paths": [
+        "src/config.rs",
+        "src/enterprise_admin.rs",
+        "src/oidc.rs",
+        "src/messaging.rs",
+        "src/purchases.rs",
+        "migrations/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/enterprise_administration.rs",
+        "tests/oidc.rs",
+        "tests/messaging.rs",
+        "tests/purchase_lifecycle.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-E9-SSO",
+      "title": "[E9] Tenant SSO issuer/client secret administration and rotation",
+      "description": "## Outcome and scope\nTenant SSO configuration currently references operator profiles; restore tenant-admin issuer/client-secret onboarding without weakening OIDC/SCIM identity controls.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Use the shared credential resolver for issuer, client ID, secret and expiry, safe presence/expiring metadata and explicit rotation/revocation.\n- [ ] Enforce origin/discovery SSRF policy, connection-version invalidation, current domain eligibility and existing state/claim/nonce/PKCE controls.\n- [ ] Preserve operator profiles and E5 approved UPN fallback behavior; add native client contract fixtures for secret omission and updates.\n\n## Acceptance\n- [ ] Tenant admin create/read-redaction/rotate/revoke succeeds; wrong tenant, invalid origin, stale connection and missing/replaced secret cases are correct.\n- [ ] One deterministic local OIDC flow and real target IdP login/SCIM lifecycle pass using tenant credentials.\n\n## Source and test homes\n`src/oidc.rs`, `src/enterprise_admin.rs`, `src/enterprise.rs`, `src/config.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/oidc.rs`, `tests/enterprise_administration.rs`, `tests/enterprise.rs`\n\n## Traceability and schedule\nAudit IDs: E9.\nStable task key: `RUST-E9-SSO`.\nTarget weeks 6 (2026-10-26 through 2026-11-01); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-E9-ENVELOPE`, `RUST-E5`.\nParent acceptance issue: `RUST-E9`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        6
+      ],
+      "parent_key": "RUST-E9",
+      "depends_on_keys": [
+        "RUST-E9-ENVELOPE",
+        "RUST-E5"
+      ],
+      "audit_ids": [
+        "E9"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:K2"
+      ],
+      "source_paths": [
+        "src/oidc.rs",
+        "src/enterprise_admin.rs",
+        "src/enterprise.rs",
+        "src/config.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/oidc.rs",
+        "tests/enterprise_administration.rs",
+        "tests/enterprise.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-E9-PUSH",
+      "title": "[E9] Tenant FCM/APNs credentials including certificate mode",
+      "description": "## Outcome and scope\nPush transports exist, but tenant-managed onboarding/rotation and retained APNs certificate/password mode are absent.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add FCM provider-format onboarding and APNs key plus certificate/password configuration through the shared encrypted lifecycle.\n- [ ] Preserve sandbox/production and app/topic binding; use vetted certificate/TLS parsing and bounded formats without temporary secret files or secret-bearing errors.\n- [ ] Use version-aware job credential resolution for rotation/revocation and preserve operator-profile selection.\n\n## Acceptance\n- [ ] Create/redacted-read/rotate/revoke, wrong-tenant, bad format/certificate/password, excessive input and job races pass for FCM and both APNs modes.\n- [ ] A real FCM device and APNs device receive expected sandbox/production-appropriate messages; revoked/expired credentials produce observable failures without secret leakage.\n\n## Source and test homes\n`src/messaging.rs`, `src/config.rs`, `src/enterprise_admin.rs`, `src/providers/`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/messaging.rs`, `tests/enterprise_administration.rs`\n\n## Traceability and schedule\nAudit IDs: E9.\nStable task key: `RUST-E9-PUSH`.\nTarget weeks 8, 9 (2026-11-09 through 2026-11-22); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-E9-ENVELOPE`.\nParent acceptance issue: `RUST-E9`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        8,
+        9
+      ],
+      "parent_key": "RUST-E9",
+      "depends_on_keys": [
+        "RUST-E9-ENVELOPE"
+      ],
+      "audit_ids": [
+        "E9"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:K3"
+      ],
+      "source_paths": [
+        "src/messaging.rs",
+        "src/config.rs",
+        "src/enterprise_admin.rs",
+        "src/providers/",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/messaging.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-E9-STORES",
+      "title": "[E9] Tenant Apple/Google store server credentials and rotation",
+      "description": "## Outcome and scope\nStore verification/notification transports exist, but tenant-owned server-key onboarding currently depends on operator profiles.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add expected Apple/Google server-key metadata/upload and rotation using the shared encrypted resolver, safe reads and one-time handling.\n- [ ] Preserve authoritative provider pricing, application/package ownership, signed notification verification, replay/idempotency and refund/reversal lifecycle.\n- [ ] Apply explicit in-flight verification/notification behavior under credential version rotation and revocation; keep operator profiles supported.\n\n## Acceptance\n- [ ] Create/read-redaction/rotate/revoke, wrong tenant/app, malformed/oversized keys and in-flight retry cases pass for both stores.\n- [ ] Local signed protocol flows plus Apple/Google sandbox purchase/notification/refund journeys reconcile authoritative ledger amounts.\n\n## Source and test homes\n`src/purchases.rs`, `src/purchase_lifecycle.rs`, `src/config.rs`, `src/enterprise_admin.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/purchase_lifecycle.rs`, `tests/enterprise_administration.rs`\n\n## Traceability and schedule\nAudit IDs: E9.\nStable task key: `RUST-E9-STORES`.\nTarget weeks 9 (2026-11-16 through 2026-11-22); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-E9-ENVELOPE`.\nParent acceptance issue: `RUST-E9`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        9
+      ],
+      "parent_key": "RUST-E9",
+      "depends_on_keys": [
+        "RUST-E9-ENVELOPE"
+      ],
+      "audit_ids": [
+        "E9"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:K4"
+      ],
+      "source_paths": [
+        "src/purchases.rs",
+        "src/purchase_lifecycle.rs",
+        "src/config.rs",
+        "src/enterprise_admin.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/purchase_lifecycle.rs",
+        "tests/enterprise_administration.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-C3-ASSETS",
+      "title": "[C3] Asset metadata and safe public image delivery",
+      "description": "## Outcome and scope\nGeneric private object endpoints cannot serve published preview/branding images without an explicit asset ownership and public-read model.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Introduce focused asset metadata/module (proposed src/assets.rs) with immutable key, owner, MIME/size/hash and lifecycle state, using selected GCS/S3 storage adapter.\n- [ ] Define explicit published-image anonymous reads with content type, caching/ETag and nosniff; never expose private exports or generic object namespaces.\n- [ ] Freeze allowed formats, real-byte/dimension/size validation, anonymous quick-link ownership/TTL and rate budget before implementation; use bounded raster formats unless deliberately changed.\n\n## Acceptance\n- [ ] Exact uploaded image bytes re-download, unpublished/wrong-tenant/private objects remain inaccessible and published removed images return 404.\n- [ ] Malformed/empty/MIME-spoofed/unsupported/excessive images fail, provider errors cannot create falsely published state and native metadata migration is additive.\n\n## Source and test homes\n`src/providers/storage.rs`, `src/routes.rs`, `src/config.rs`, `migrations/`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`\nNative suites / validation: `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: C3.\nStable task key: `RUST-C3-ASSETS`.\nTarget weeks 6, 7 (2026-10-26 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-C5`.\nReadiness prerequisite (not a hard blocker on whole-issue closure): Week 1 asset formats/limits, anonymous quick-link ownership/TTL/rate and contract decisions from `RUST-CONTRACTS` must be recorded before asset implementation; week 10 domain/quota/mail closure is not required.\nParent acceptance issue: `RUST-C3`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        6,
+        7
+      ],
+      "parent_key": "RUST-C3",
+      "depends_on_keys": [
+        "RUST-C5"
+      ],
+      "audit_ids": [
+        "C3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C3a"
+      ],
+      "source_paths": [
+        "src/providers/storage.rs",
+        "src/routes.rs",
+        "src/config.rs",
+        "migrations/",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_child",
+      "requires_implementation_of_keys": [
+        "RUST-CONTRACTS"
+      ],
+      "readiness_note": "Week 1 asset formats/limits, anonymous quick-link ownership/TTL/rate and contract decisions from `RUST-CONTRACTS` must be recorded before asset implementation; week 10 domain/quota/mail closure is not required."
+    },
+    {
+      "key": "RUST-C3-BINDINGS",
+      "title": "[C3] Bind uploaded images to links and domain branding",
+      "description": "## Outcome and scope\nAttachment capability requires actual rendered image bytes through each link/branding surface, beyond upload APIs or JSON image-field acceptance.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Implement documented native multipart or upload-then-bind contracts for dashboard links, SDK links, public quick links and domain branding, reusing asset authorization.\n- [ ] Support attach, replacement, explicit removal and external-URL versus upload precedence with established link/domain/store-art fallback.\n- [ ] Adapt real client forms/contracts and renderers; preserve old committed image if replacement fails and settle concurrent replacement deterministically.\n\n## Acceptance\n- [ ] Each surface produces anonymously fetchable preview/OG image, then correct replacement/removal/fallback and external URL transitions.\n- [ ] Cross-tenant bind fails, failed replacement retains old bytes and concurrent edits leave one valid current binding; crawler/frontend flow and relevant accessible errors pass.\n\n## Source and test homes\n`src/core_api.rs`, `src/automation.rs`, `src/public_links.rs`, `src/domains.rs`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`\nNative suites / validation: `tests/core_api.rs`, `tests/imports.rs`, `tests/domains.rs`\n\n## Traceability and schedule\nAudit IDs: C3.\nStable task key: `RUST-C3-BINDINGS`.\nTarget weeks 7 (2026-11-02 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-C3-ASSETS`.\nParent acceptance issue: `RUST-C3`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        7
+      ],
+      "parent_key": "RUST-C3",
+      "depends_on_keys": [
+        "RUST-C3-ASSETS"
+      ],
+      "audit_ids": [
+        "C3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C3b"
+      ],
+      "source_paths": [
+        "src/core_api.rs",
+        "src/automation.rs",
+        "src/public_links.rs",
+        "src/domains.rs",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/core_api.rs",
+        "tests/imports.rs",
+        "tests/domains.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-C3-CLEANUP",
+      "title": "[C3] Durable cleanup for replaced, abandoned and deleted assets",
+      "description": "## Outcome and scope\nNew image workflows need retryable blob cleanup without deleting a concurrently retained binding or losing provider failure obligations.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Schedule unreferenced cleanup for replace/remove, abandoned uploads, failed DB commit and expired anonymous quick assets; include image namespaces in project deletion.\n- [ ] Reuse durable native lifecycle work and idempotent claims/retries; preserve last committed working image and prevent deletion after a concurrent retain/rebind.\n- [ ] Add proposed tests/assets.rs with focused asset lifecycle fixtures alongside existing cleanup/maintenance tests.\n\n## Acceptance\n- [ ] Crash before/after blob write, binding commit and remote delete, plus denied list/delete then restored permission, recover without orphan published images.\n- [ ] Concurrent replace/delete, active uploads, multi-batch deletion and two tenants pass on MinIO/GCS; independent warehouse/storage failures cannot discard one another’s obligations.\n\n## Source and test homes\n`src/maintenance.rs`, `src/cleanup.rs`, `src/providers/storage.rs`, `migrations/`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`\nNative suites / validation: `tests/cleanup.rs`, `tests/maintenance.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: C3.\nStable task key: `RUST-C3-CLEANUP`.\nTarget weeks 7 (2026-11-02 through 2026-11-08); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-C3-BINDINGS`.\nParent acceptance issue: `RUST-C3`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        7
+      ],
+      "parent_key": "RUST-C3",
+      "depends_on_keys": [
+        "RUST-C3-BINDINGS"
+      ],
+      "audit_ids": [
+        "C3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "connectivity:P-C3c"
+      ],
+      "source_paths": [
+        "src/maintenance.rs",
+        "src/cleanup.rs",
+        "src/providers/storage.rs",
+        "migrations/",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/cleanup.rs",
+        "tests/maintenance.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-O3-TRACES",
+      "title": "[O3] Optional OTLP export and correlated request/worker spans",
+      "description": "## Outcome and scope\nCurrent formatted tracing lacks the retained optional OTLP export and cross-boundary instrumentation.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Select compatible locked-toolchain tracing/OTLP dependencies using official docs during implementation and add optional exporter configuration alongside formatted logs.\n- [ ] Add service/process/version resources and request/database/provider/worker spans with propagated correlation and secret-safe attributes.\n- [ ] Make collector absence/outage nonblocking for request serving and durable queue work; document bounded export behavior.\n\n## Acceptance\n- [ ] A local collector receives correlated representative request/provider/worker spans with no tokens, credentials or secret query values.\n- [ ] Disabled export and collector outage preserve normal service/event processing; clean shutdown behavior is observed.\n\n## Source and test homes\n`src/main.rs`, `src/routes.rs`, `src/worker.rs`, `src/providers/`, `Cargo.toml`, `src/config.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/operations.rs`, `tests/worker.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: O3.\nStable task key: `RUST-O3-TRACES`.\nTarget weeks 10 (2026-11-23 through 2026-11-29); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\nParent acceptance issue: `RUST-O3`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        10
+      ],
+      "parent_key": "RUST-O3",
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [
+        "O3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:T1"
+      ],
+      "source_paths": [
+        "src/main.rs",
+        "src/routes.rs",
+        "src/worker.rs",
+        "src/providers/",
+        "Cargo.toml",
+        "src/config.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/operations.rs",
+        "tests/worker.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-O3-METRICS",
+      "title": "[O3] Required operation, error, latency and queue metrics",
+      "description": "## Outcome and scope\nOperational counters/histograms and queue measurements must accompany tracing to make launch health and recovery observable.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Add required retained operation/error/latency/queue instruments to the existing measured boundaries.\n- [ ] Keep metric dimensions bounded; do not label with tenant IDs, secrets, tokens or full URLs.\n- [ ] Document interpretation and connect candidate load/recovery observations to these instruments without claiming historical Rails export was proven.\n\n## Acceptance\n- [ ] Collector receives known fixture counts, latency and queue signals; labels have bounded cardinality and no secret/high-cardinality identifiers.\n- [ ] Collector downtime is safe and retry/error fixtures produce independently expected metrics without changing processing semantics.\n\n## Source and test homes\n`src/worker.rs`, `src/operations.rs`, `src/providers/`, `src/routes.rs`, `docs/planning/ENTERPRISE_OPERATIONS_PLAN.md`\nNative suites / validation: `tests/operations.rs`, `tests/worker.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: O3.\nStable task key: `RUST-O3-METRICS`.\nTarget weeks 10 (2026-11-23 through 2026-11-29); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-O3-TRACES`.\nParent acceptance issue: `RUST-O3`; this child owns implementation, while the parent tracks the combined result.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "normal",
+      "scope": "fresh_release",
+      "target_weeks": [
+        10
+      ],
+      "parent_key": "RUST-O3",
+      "depends_on_keys": [
+        "RUST-O3-TRACES"
+      ],
+      "audit_ids": [
+        "O3"
+      ],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [
+        "enterprise:T2"
+      ],
+      "source_paths": [
+        "src/worker.rs",
+        "src/operations.rs",
+        "src/providers/",
+        "src/routes.rs",
+        "docs/planning/ENTERPRISE_OPERATIONS_PLAN.md"
+      ],
+      "test_paths": [
+        "tests/operations.rs",
+        "tests/worker.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "implementation_child"
+    },
+    {
+      "key": "RUST-BASELINE",
+      "title": "Capture reviewed baseline and shared deterministic fixture contracts",
+      "description": "## Outcome and scope\nThe planning snapshot had no commits; implementation needs a reviewed recoverable baseline and explicit native request/fixture contracts, without losing existing work or treating historic validation as current.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Inspect current worktree and capture intended source/docs baseline, excluding credentials, generated caches and local artifacts; preserve existing checkout and avoid mass staging. Once present, branch from reviewed main and use one writer per shared module/migration.\n- [ ] Create a shared run-ID/two-owner/project fixture manifest with configured SDK apps, deterministic event IDs, visitors/aliases, link/campaign/product/refund data, image hashes and independent expected results; C5 owns gate-specific fixture updates.\n- [ ] Record source/image identity conventions and evidence template; describe actual client request/response expectations and planned fixture homes.\n\n## Acceptance\n- [ ] Baseline can be recovered with intended files identified and no secrets; latest source identity is recorded rather than relying on the former zero-commit state.\n- [ ] Fixture contract covers both provider/store selectors, configured SDK declaration, two-tenant isolation and independent numeric expectations; no production-code-generated expected values.\n\n## Source and test homes\n`docs/RUST_GAP_CLOSURE_PLAN.md`, `docs/planning/GAP_CLOSURE_BACKLOG.json`, `docs/TESTING_GUIDE.md`, `tests/support/mod.rs`\nNative suites / validation: `scripts/check.sh`, `tests/end_to_end.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-BASELINE`.\nTarget weeks 1 (2026-09-21 through 2026-09-27); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: none beyond stated scope and authorization.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1
+      ],
+      "parent_key": null,
+      "depends_on_keys": [],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/RUST_GAP_CLOSURE_PLAN.md",
+        "docs/planning/GAP_CLOSURE_BACKLOG.json",
+        "docs/TESTING_GUIDE.md",
+        "tests/support/mod.rs"
+      ],
+      "test_paths": [
+        "scripts/check.sh",
+        "tests/end_to_end.rs"
+      ],
+      "issue_kind": "shared_foundation"
+    },
+    {
+      "key": "RUST-ACCESS",
+      "title": "Prepare isolated provider sandboxes, client builds and device access",
+      "description": "## Outcome and scope\nLive IAM, identity, payment, push and client claims cannot be established through local mocks; access lead time must begin before feature work is complete.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Inventory and obtain isolated Google project/dataset/topic/export subscription/private bucket/runtime identity, local ClickHouse/MinIO, PostgreSQL 18.6 persistent staging/backup resources, TLS Redis fixture and DNS test zone; set owner, expiry/cleanup and budget.\n- [ ] Prepare Stripe and Apple/Google sandbox apps/accounts, target IdP/SCIM, FCM/APNs devices/certificate/key modes, mail inbox, DNS/TLS/import provider access; use scoped secrets outside issues.\n- [ ] Attach supported frontend/iOS/Android/server/MCP repos/builds and app/package/bundle/associated-domain setup; record access blockers and owner rather than silently reducing scope.\n\n## Acceptance\n- [ ] A redacted resource/access manifest names runtime principals, provider modes and cleanup ownership; representative authentication/access proves usability without destructive production checks.\n- [ ] Any unavailable required client/account/device is an explicit environment gate and reflected at checkpoints; no secret material appears in Linear.\n\n## Source and test homes\n`docs/TESTING_GUIDE.md`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `deploy/google/main.tf`, `docker-compose.test.yml`\nNative suites / validation: `tests/providers.rs`, `tests/end_to_end.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-ACCESS`.\nTarget weeks 1 (2026-09-21 through 2026-09-27); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: none beyond stated scope and authorization.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1
+      ],
+      "parent_key": null,
+      "depends_on_keys": [],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/TESTING_GUIDE.md",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "deploy/google/main.tf",
+        "docker-compose.test.yml"
+      ],
+      "test_paths": [
+        "tests/providers.rs",
+        "tests/end_to_end.rs"
+      ],
+      "issue_kind": "environment_foundation"
+    },
+    {
+      "key": "RUST-CONTRACTS",
+      "title": "Freeze week-one behavior contracts and implement agreed lifecycle decisions",
+      "description": "## Outcome and scope\nThe audit records behavior choices in addition to 31 findings; domain failure compensation, cap notifications and no-SMTP invitations need explicit contracts and tested implementation instead of ambiguous partial states.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] In week 1 freeze signup/bootstrap policy, SCIM/UPN ownership, credential origins/formats/version rules, audit v2, trusted IP/GeoIP policy, asset/quick-link lifecycle, custom project names, analytics/export units and client envelopes. Record expected peak traffic/dataset/latency/error/lag and recovery RPO/RTO without inventing universal limits.\n- [ ] Choose durable visible pending/failed domain setup linked to its import source, or complete compensating teardown; implement agreed state machine without orphan active hosts, covering remote-success/local-timeout, retry/adoption and delete-while-pending.\n- [ ] Keep hard quota cap and define observable cap-reached notification boundary/recipients/deduplication; define self-hosted no-SMTP copyable invite links without permanently failing mail jobs and retained HTML/text/URL behavior.\n- [ ] Finalize local behavior fixtures by week 10; feature issues own their scoped implementation, while this issue owns shared domain/quota/mail behavior and decision record.\n\n## Acceptance\n- [ ] Week-one contract record has explicit chosen behavior and performance/recovery targets; unaccepted alternatives are not treated as approved scope cuts.\n- [ ] Domain/import failure/retry/delete races cannot leave an unauthorized host; below/at/above quota and exact recipients/deduplication pass; no-SMTP invitation flow and controlled mailbox behavior pass.\n\n## Source and test homes\n`docs/RUST_GAP_CLOSURE_PLAN.md`, `src/imports.rs`, `src/domains.rs`, `src/billing.rs`, `src/accounts.rs`, `src/messaging.rs`\nNative suites / validation: `tests/imports.rs`, `tests/domains.rs`, `tests/billing.rs`, `tests/accounts.rs`, `tests/messaging.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-CONTRACTS`.\nTarget weeks 1, 10 (2026-09-21 through 2026-11-29); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        1,
+        10
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/RUST_GAP_CLOSURE_PLAN.md",
+        "src/imports.rs",
+        "src/domains.rs",
+        "src/billing.rs",
+        "src/accounts.rs",
+        "src/messaging.rs"
+      ],
+      "test_paths": [
+        "tests/imports.rs",
+        "tests/domains.rs",
+        "tests/billing.rs",
+        "tests/accounts.rs",
+        "tests/messaging.rs"
+      ],
+      "issue_kind": "shared_contract_and_implementation"
+    },
+    {
+      "key": "RUST-CHECKPOINTS",
+      "title": "Reforecast solo capacity and external readiness at release checkpoints",
+      "description": "## Outcome and scope\nAll 31 findings plus validation have an initial 65–100 focused-day envelope against 65 available weekdays; a 20 December release requires measured reforecast rather than silent omission or assumed parallel capacity.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Review progress every Friday using actual effort/evidence and remaining estimates, counting one engineer and no assumed weekends; separate implementation from live acceptance.\n- [ ] Record explicit capacity/access decisions on 2026-10-04, 2026-11-01 and 2026-11-29; keep weeks 11–13 protected for integration/recovery/fixes.\n- [ ] If the forecast exceeds available days, present date movement or concrete scope reduction for an explicit decision. M1 remains the only approved deferral; operator-only credentials/APNs omissions are not automatically accepted.\n\n## Acceptance\n- [ ] Each checkpoint records completed/remaining work, actual throughput, external blockers, forecast and decision owner; status is backed by evidence, not merge counts.\n- [ ] Any approved scope/date change propagates to issues and release claims; disabled/skipped features remain open and a reduced launch is not labeled full parity.\n\n## Source and test homes\n`docs/RUST_GAP_CLOSURE_PLAN.md`, `docs/planning/GAP_CLOSURE_BACKLOG.json`\nNative suites / validation: Discovery evidence only; implementation and tests require a separate post-release plan.\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-CHECKPOINTS`.\nTarget weeks 2, 6, 10 (2026-09-28 through 2026-11-29); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        2,
+        6,
+        10
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/RUST_GAP_CLOSURE_PLAN.md",
+        "docs/planning/GAP_CLOSURE_BACKLOG.json"
+      ],
+      "test_paths": [],
+      "issue_kind": "release_governance",
+      "checkpoint_dates": [
+        "2026-10-04",
+        "2026-11-01",
+        "2026-11-29"
+      ]
+    },
+    {
+      "key": "RUST-CANDIDATE",
+      "title": "Build exact candidate and run complete native/config/image gates",
+      "description": "## Outcome and scope\nHistorical local test totals and ordinary cargo test do not establish current candidate validity; the final local gate includes infrastructure tests, configuration, migration and image checks.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Keep per-feature focused regressions in their owning issues; for final candidate run scripts/check.sh, scripts/validate-config.sh --terraform, docker build -t trisixt-backend:gap-closure ., and IMAGE_NAME=trisixt-backend:gap-closure scripts/image-smoke.sh.\n- [ ] Record locked dependencies, source identity, image digest and actual PostgreSQL 18.6/Redis versions; verify fresh SQLx migration, repeat invocation and restart against persistent native data.\n- [ ] Extend common acceptance harness beyond existing hard-coded ClickHouse/S3 flow to configurable matrix fixtures; keep one image digest and update TESTING_GUIDE examples for SDK declarations/assets/contracts.\n\n## Acceptance\n- [ ] All required local/config/ignored-infrastructure/image checks complete with actual results and no skipped requirement reported as pass.\n- [ ] Exact candidate initializes fresh native schema and restarts preserving synthetic data; ordinary cargo test or the historical 130 count is not used as the release threshold.\n\n## Source and test homes\n`scripts/check.sh`, `scripts/integration.sh`, `scripts/validate-config.sh`, `scripts/image-smoke.sh`, `Dockerfile`, `src/main.rs`, `docs/TESTING_GUIDE.md`\nNative suites / validation: `tests/end_to_end.rs`, `tests/providers.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-CANDIDATE`.\nTarget weeks 10, 11 (2026-11-23 through 2026-12-06); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-BASELINE`.\nRun final gate against implemented slices of `RUST-E1`, `RUST-E2`, `RUST-E3`, `RUST-E4`, `RUST-E5`, `RUST-E6`, `RUST-E7`, `RUST-E8`, `RUST-E9`, `RUST-A1`, `RUST-A2`, `RUST-A3`, `RUST-A4`, `RUST-A5`, `RUST-A6`, `RUST-A7`, `RUST-A8`, `RUST-A9`, `RUST-A10`, `RUST-C1`, `RUST-C2`, `RUST-C3`, `RUST-C4`, `RUST-C5`, `RUST-O1`, `RUST-O2`, `RUST-O3`, `RUST-O4`, `RUST-O5`, `RUST-O6`, `RUST-O7`. This is an implementation-readiness condition, not a requirement that their later live-acceptance issues already be closed.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        10,
+        11
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-BASELINE"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "scripts/check.sh",
+        "scripts/integration.sh",
+        "scripts/validate-config.sh",
+        "scripts/image-smoke.sh",
+        "Dockerfile",
+        "src/main.rs",
+        "docs/TESTING_GUIDE.md"
+      ],
+      "test_paths": [
+        "tests/end_to_end.rs",
+        "tests/providers.rs"
+      ],
+      "issue_kind": "candidate_gate",
+      "requires_implementation_of_keys": [
+        "RUST-E1",
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E4",
+        "RUST-E5",
+        "RUST-E6",
+        "RUST-E7",
+        "RUST-E8",
+        "RUST-E9",
+        "RUST-A1",
+        "RUST-A2",
+        "RUST-A3",
+        "RUST-A4",
+        "RUST-A5",
+        "RUST-A6",
+        "RUST-A7",
+        "RUST-A8",
+        "RUST-A9",
+        "RUST-A10",
+        "RUST-C1",
+        "RUST-C2",
+        "RUST-C3",
+        "RUST-C4",
+        "RUST-C5",
+        "RUST-O1",
+        "RUST-O2",
+        "RUST-O3",
+        "RUST-O4",
+        "RUST-O5",
+        "RUST-O6",
+        "RUST-O7"
+      ]
+    },
+    {
+      "key": "RUST-PROVIDERS",
+      "title": "Validate four provider combinations and live identity/payment/push services",
+      "description": "## Outcome and scope\nEach selectable warehouse/object pair and retained external integration needs real isolated runtime evidence; Pub/Sub acknowledgement and PostgreSQL readiness do not prove warehouse delivery.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Using the same candidate digest and separate fresh environments, run ClickHouse+MinIO, BigQuery/PubSub+MinIO, ClickHouse+GCS and BigQuery/PubSub+GCS; keep web/worker selectors aligned and never switch a collecting tenant merely for testing.\n- [ ] Run two-owner ingestion/replay/identity/report/export/image/cleanup journey and query actual selected warehouse event IDs/counts; use deployed runtime identities for GCS and BigQuery permissions, expiry and deletion.\n- [ ] Exercise publish/export permission separation, delayed export after deletion, malformed message, credential refresh/revocation, delete/read/write/list denial then recovery and independent warehouse/storage outages with bounded pre-agreed observation windows.\n- [ ] Complete Stripe cancellation, store purchase/notification/refund, target IdP/SCIM lifecycle, real FCM/APNs modes, mail and controlled DNS/TLS/import provider journeys; direct AWS S3 requires a separate live check if advertised.\n\n## Acceptance\n- [ ] Four matrix records reconcile exact logical event/report/image/tenant cleanup results; B survives deleting A and failed external work remains durable/observable until recovered.\n- [ ] Live account/device/provider records tie to candidate and scoped runtime principal; no administrator-only IAM success, emulator override, readiness endpoint or skipped integration is counted as proof.\n\n## Source and test homes\n`docs/TESTING_GUIDE.md`, `docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `deploy/google/main.tf`, `src/providers/`, `src/cleanup.rs`\nNative suites / validation: `tests/end_to_end.rs`, `tests/providers.rs`, `tests/billing.rs`, `tests/purchase_lifecycle.rs`, `tests/enterprise.rs`, `tests/messaging.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-PROVIDERS`.\nTarget weeks 11 (2026-11-30 through 2026-12-06); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-ACCESS`, `RUST-CANDIDATE`.\nRun final gate against implemented slices of `RUST-E1`, `RUST-E2`, `RUST-E3`, `RUST-E4`, `RUST-E5`, `RUST-E6`, `RUST-E7`, `RUST-E8`, `RUST-E9`, `RUST-A1`, `RUST-A2`, `RUST-A3`, `RUST-A4`, `RUST-A5`, `RUST-A6`, `RUST-A7`, `RUST-A8`, `RUST-A9`, `RUST-A10`, `RUST-C1`, `RUST-C2`, `RUST-C3`, `RUST-C4`, `RUST-C5`, `RUST-O1`, `RUST-O2`, `RUST-O3`, `RUST-O4`, `RUST-O5`, `RUST-O6`, `RUST-O7`. This is an implementation-readiness condition, not a requirement that their later live-acceptance issues already be closed.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        11
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-ACCESS",
+        "RUST-CANDIDATE"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/TESTING_GUIDE.md",
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "deploy/google/main.tf",
+        "src/providers/",
+        "src/cleanup.rs"
+      ],
+      "test_paths": [
+        "tests/end_to_end.rs",
+        "tests/providers.rs",
+        "tests/billing.rs",
+        "tests/purchase_lifecycle.rs",
+        "tests/enterprise.rs",
+        "tests/messaging.rs"
+      ],
+      "issue_kind": "live_provider_gate",
+      "requires_implementation_of_keys": [
+        "RUST-E1",
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E4",
+        "RUST-E5",
+        "RUST-E6",
+        "RUST-E7",
+        "RUST-E8",
+        "RUST-E9",
+        "RUST-A1",
+        "RUST-A2",
+        "RUST-A3",
+        "RUST-A4",
+        "RUST-A5",
+        "RUST-A6",
+        "RUST-A7",
+        "RUST-A8",
+        "RUST-A9",
+        "RUST-A10",
+        "RUST-C1",
+        "RUST-C2",
+        "RUST-C3",
+        "RUST-C4",
+        "RUST-C5",
+        "RUST-O1",
+        "RUST-O2",
+        "RUST-O3",
+        "RUST-O4",
+        "RUST-O5",
+        "RUST-O6",
+        "RUST-O7"
+      ]
+    },
+    {
+      "key": "RUST-CLIENTS",
+      "title": "Prove supported dashboard, Android, iOS, server SDK and MCP journeys",
+      "description": "## Outcome and scope\nRoute fixtures alone cannot prove actual frontend/mobile/server/MCP compatibility after native contracts and configuration gates change.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Run dashboard account/project/app setup, rich link/campaign search, attach/replace/remove/brand preview and export through real supported build with two-owner denial and meaningful upload error/accessibility checks.\n- [ ] Run Android configured SDK, encoded Play Install Referrer delivery and direct/migrated links with exact deferred data/one-time attribution/retries; run iOS associated-domain and tokenless clipboard pre-read/consume/privacy behavior on device.\n- [ ] Exercise server SDK valid/revoked/wrong-scope keys, generation/details/metrics/retries and exposed image binding; actual MCP client discovery and REST/JSON-RPC rich filters/paging/read-only/revocation.\n- [ ] Record supported build versions, native contracts, golden expected responses and unavailable-client blockers; adapt clients where accepted native wire changes require it.\n\n## Acceptance\n- [ ] Actual supported client journeys produce expected data and UI/device behavior on the candidate; wrong scope/project/app and replay cases reject correctly.\n- [ ] Mobile platform delivery/privacy and actual MCP behavior have direct evidence; HTTP-only/emulator-only checks do not silently replace required devices/platform flows.\n\n## Source and test homes\n`docs/planning/CONNECTIVITY_VALIDATION_PLAN.md`, `docs/TESTING_GUIDE.md`, `src/sdk.rs`, `src/mcp.rs`, `src/public_links.rs`\nNative suites / validation: `tests/sdk.rs`, `tests/imports.rs`, `tests/mcp.rs`, `tests/management.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-CLIENTS`.\nTarget weeks 11 (2026-11-30 through 2026-12-06); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-ACCESS`, `RUST-CANDIDATE`.\nRun final gate against implemented slices of `RUST-C1`, `RUST-C2`, `RUST-C3`, `RUST-C4`, `RUST-C5`, `RUST-A4`, `RUST-A5`, `RUST-E9`. This is an implementation-readiness condition, not a requirement that their later live-acceptance issues already be closed.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        11
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-ACCESS",
+        "RUST-CANDIDATE"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/planning/CONNECTIVITY_VALIDATION_PLAN.md",
+        "docs/TESTING_GUIDE.md",
+        "src/sdk.rs",
+        "src/mcp.rs",
+        "src/public_links.rs"
+      ],
+      "test_paths": [
+        "tests/sdk.rs",
+        "tests/imports.rs",
+        "tests/mcp.rs",
+        "tests/management.rs"
+      ],
+      "issue_kind": "live_client_gate",
+      "requires_implementation_of_keys": [
+        "RUST-C1",
+        "RUST-C2",
+        "RUST-C3",
+        "RUST-C4",
+        "RUST-C5",
+        "RUST-A4",
+        "RUST-A5",
+        "RUST-E9"
+      ]
+    },
+    {
+      "key": "RUST-RECOVERY",
+      "title": "Measure load/soak and rehearse native backup, replay and image rollback",
+      "description": "## Outcome and scope\nFresh launch still needs measured capacity and recoverable native data/keys/objects/queues; deferring Rails conversion does not remove recovery or additive-schema rollback requirements.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Use week-one traffic/dataset/latency/error/lag and RPO/RTO targets to run expected sustained load and documented bursts/soak on isolated staging; observe queue bounds and independent report reconciliation, including SQL source-IP limiter cost.\n- [ ] Inject provider/worker/database interruption around leasing and remote acknowledgement, restoring access to prove stable IDs, bounded retries, durable obligations and two-tenant cleanup.\n- [ ] Restore native PostgreSQL, required encryption keys and selected object storage into a clean environment; replay/rebuild recoverable warehouse sources and reconcile identities, ledger/audit, attachments and pending jobs.\n- [ ] Run the previous compatible native image against additive schema and document forward repair where incompatible; never use destructive down-migration or overwrite newly accepted financial/events data to simulate rollback.\n\n## Acceptance\n- [ ] Measured load and recovery bounds meet recorded targets or remain explicit blockers; counts/money/identity are correct after interruption and queues drain.\n- [ ] Clean restore and compatible-image rollback preserve keys/data/assets/audit and pending work, with actual elapsed RPO/RTO evidence; M1 remains deferred and no Rails cutover claim is made.\n\n## Source and test homes\n`docs/TESTING_GUIDE.md`, `docs/RUST_GAP_CLOSURE_PLAN.md`, `src/worker.rs`, `src/cleanup.rs`, `src/maintenance.rs`, `migrations/`, `Dockerfile`\nNative suites / validation: `tests/worker.rs`, `tests/cleanup.rs`, `tests/maintenance.rs`, `tests/end_to_end.rs`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-RECOVERY`.\nTarget weeks 12 (2026-12-07 through 2026-12-13); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-CONTRACTS`, `RUST-CANDIDATE`, `RUST-PROVIDERS`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        12
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-CONTRACTS",
+        "RUST-CANDIDATE",
+        "RUST-PROVIDERS"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/TESTING_GUIDE.md",
+        "docs/RUST_GAP_CLOSURE_PLAN.md",
+        "src/worker.rs",
+        "src/cleanup.rs",
+        "src/maintenance.rs",
+        "migrations/",
+        "Dockerfile"
+      ],
+      "test_paths": [
+        "tests/worker.rs",
+        "tests/cleanup.rs",
+        "tests/maintenance.rs",
+        "tests/end_to_end.rs"
+      ],
+      "issue_kind": "capacity_and_recovery_gate"
+    },
+    {
+      "key": "RUST-RELEASE",
+      "title": "Review release evidence and execute controlled fresh first-tenant rollout",
+      "description": "## Outcome and scope\nProduction onboarding must use the exact verified candidate with monitored rollback triggers; fresh-install readiness is not Rails migration readiness or an automatic full-parity claim.\n\nOwner: Roman (sole engineer). Fresh Rust installation first; all 31 audit findings remain launch scope and only M1 is deferred. The 2026-12-20 release is an optimistic target, not a committed estimate; preserve weeks 11–13 for integration/recovery/fixes and reforecast at checkpoints. Use additive native SQLx migrations; no Rails conversion is required here.\n\n## Implementation checklist\n- [ ] Reserve week 13 for fixes and final review; rerun affected evidence after changes plus final exact-candidate integrated smoke, preserving full source/image/config identities.\n- [ ] Require all 31 audited capabilities closed plus local/provider/client/load/recovery gates; if scope/date is explicitly changed, record remaining open scope and adjust claims. M1 alone is already deferred.\n- [ ] Prepare the concrete deployment/rollback runbook, then deploy the authorized candidate to a fresh installation with a controlled synthetic tenant and two test principals before inviting a real tenant.\n- [ ] Exercise login/config, link/public image, SDK event/deferred resolve, MCP search, export and synthetic cleanup; observe worker heartbeat/queue age, actual warehouse arrival, assets/auth/provider errors over the agreed cadence. Do not run outages/revocation/load against production.\n\n## Acceptance\n- [ ] Final evidence manifest identifies source/image/providers and closed findings; no unresolved data-integrity/security failure or unverified required integration remains.\n- [ ] Synthetic rollout reconciles results and monitored rollback criteria; on failure halt onboarding/ingress as appropriate, retain evidence and use rehearsed compatible rollback/repair. Release by 2026-12-20 only if gates pass.\n\n## Source and test homes\n`docs/RUST_GAP_CLOSURE_PLAN.md`, `docs/TESTING_GUIDE.md`, `docs/planning/GAP_CLOSURE_BACKLOG.json`, `Dockerfile`, `deploy/google/main.tf`\nNative suites / validation: `scripts/check.sh`, `scripts/image-smoke.sh`\n\n## Traceability and schedule\nAudit IDs: shared release work; applies to all 31 findings.\nStable task key: `RUST-RELEASE`.\nTarget weeks 13 (2026-12-14 through 2026-12-20); implementation/acceptance targets only, subject to reforecast.\nImplementation prerequisites: `RUST-CHECKPOINTS`, `RUST-CANDIDATE`, `RUST-PROVIDERS`, `RUST-CLIENTS`, `RUST-RECOVERY`.\n\n## Evidence\nRecord source revision and candidate image digest, routed fixture/command, independent expected result, actual result, provider/client evidence where relevant, and remaining gates. Redact secrets and user data. Local mocks, merged code and skipped external checks do not by themselves close the finding. Run affected native suites during implementation and the shared candidate checks before release.",
+      "priority_hint": "high",
+      "scope": "fresh_release",
+      "target_weeks": [
+        13
+      ],
+      "parent_key": null,
+      "depends_on_keys": [
+        "RUST-CHECKPOINTS",
+        "RUST-CANDIDATE",
+        "RUST-PROVIDERS",
+        "RUST-CLIENTS",
+        "RUST-RECOVERY"
+      ],
+      "audit_ids": [],
+      "owner_hint": "Roman",
+      "status_hint": "planned",
+      "package_refs": [],
+      "source_paths": [
+        "docs/RUST_GAP_CLOSURE_PLAN.md",
+        "docs/TESTING_GUIDE.md",
+        "docs/planning/GAP_CLOSURE_BACKLOG.json",
+        "Dockerfile",
+        "deploy/google/main.tf"
+      ],
+      "test_paths": [
+        "scripts/check.sh",
+        "scripts/image-smoke.sh"
+      ],
+      "issue_kind": "release_gate",
+      "additional_release_blocker_keys": [
+        "RUST-E1",
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E4",
+        "RUST-E5",
+        "RUST-E6",
+        "RUST-E7",
+        "RUST-E8",
+        "RUST-E9",
+        "RUST-A1",
+        "RUST-A2",
+        "RUST-A3",
+        "RUST-A4",
+        "RUST-A5",
+        "RUST-A6",
+        "RUST-A7",
+        "RUST-A8",
+        "RUST-A9",
+        "RUST-A10",
+        "RUST-C1",
+        "RUST-C2",
+        "RUST-C3",
+        "RUST-C4",
+        "RUST-C5",
+        "RUST-O1",
+        "RUST-O2",
+        "RUST-O3",
+        "RUST-O4",
+        "RUST-O5",
+        "RUST-O6",
+        "RUST-O7"
+      ]
+    }
+  ]
+}

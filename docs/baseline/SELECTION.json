@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "purpose": "MAN-5 recoverable source baseline; native Rust and retained Rails reference sources",
+  "include_files": [
+    ".dockerignore",
+    ".env.example",
+    ".env.rust.example",
+    ".env.test",
+    ".gitattributes",
+    ".gitignore",
+    ".rubocop.yml",
+    "Cargo.lock",
+    "Cargo.toml",
+    "Dockerfile",
+    "Gemfile",
+    "Gemfile.lock",
+    "LICENSE",
+    "Procfile",
+    "Procfile.dev",
+    "README.md",
+    "README.rust.md",
+    "Rakefile",
+    "SECURITY.md",
+    "config.ru",
+    "docker-compose.yml",
+    "docker-compose.rust.yml",
+    "docker-compose.test.yml",
+    "run_clickhouse.sh",
+    "run_sidekiq.sh",
+    "rust-toolchain.toml"
+  ],
+  "include_directories": [
+    ".githooks",
+    ".github",
+    "app",
+    "bin",
+    "config",
+    "db",
+    "deploy",
+    "docs",
+    "ee",
+    "lib",
+    "migrations",
+    "script",
+    "scripts",
+    "src",
+    "test",
+    "tests",
+    "vendor"
+  ],
+  "excluded_roots": {
+    ".git": "git_metadata_preserved_in_checkout",
+    ".codex": "local_agent_preferences",
+    "graphify-out": "generated_analysis_cache",
+    "target": "build_cache",
+    "storage": "runtime_state",
+    "tmp": "runtime_state_and_local_evidence",
+    "log": "runtime_logs",
+    ".clickhouse": "runtime_state",
+    "coverage": "generated_coverage",
+    "resources": "external_local_resources",
+    "extensions": "external_local_extensions",
+    "secrets": "operator_credentials"
+  },
+  "exclude_paths": {
+    "db/GeoLite2-City.mmdb": "separately_provisioned_geoip_database",
+    "config/master.key": "operator_credentials",
+    "config/deploy.yml": "operator_deployment_config",
+    "Procfile.local": "local_runtime_config",
+    "docs/baseline/runs": "generated_baseline_records",
+    "docs/baseline/artifacts": "generated_baseline_artifacts"
+  },
+  "exclude_directory_names": [
+    ".git",
+    ".terraform",
+    "node_modules",
+    "__pycache__",
+    ".pytest_cache",
+    ".bundle"
+  ],
+  "exclude_file_globs": [
+    ".DS_Store",
+    ".env",
+    ".env.*",
+    "*.bak",
+    "*.log",
+    "*.pyc",
+    "*.key",
+    "*.pem",
+    "*.p8",
+    "*service-account*.json",
+    "*credentials*.json",
+    "*.tfstate",
+    "*.tfstate.*",
+    "*.tfplan",
+    "terraform.tfvars",
+    "*.auto.tfvars",
+    "*.tar",
+    "*.tar.gz",
+    "*.tgz",
+    "*.zip"
+  ],
+  "file_exceptions": {
+    ".env.example": "reviewed local example values, never operator credentials",
+    ".env.rust.example": "reviewed local example values, never operator credentials",
+    ".env.test": "retained Rails synthetic test environment",
+    "tests/fixtures/apple-test-key.p8": "synthetic signing key for offline Apple fixtures",
+    "tests/fixtures/apple-test-key-public.pem": "matching public key for offline Apple fixtures"
+  },
+  "synthetic_private_key_allowances": {
+    "tests/fixtures/apple-test-key.p8": {
+      "reason": "offline Apple test signing key; never provision to a provider",
+      "material_sha256": [
+        "7bcc0f0a63b4a33b84e8f0cccbbfdb417040748fbc4ef9c0ce5939d8e585c437"
+      ]
+    },
+    "tests/oidc.rs": {
+      "reason": "embedded synthetic RSA key used only by the local mock OIDC issuer",
+      "material_sha256": [
+        "b63ebc7aead47bb25a953475711d17d9c4fac9e478b5527f7ca1a4dd8d0bb24a",
+        "f946c1a07b8590fc6032d4c52044d6f26cfd83fc8cb6260e7b1ed8d7951d6ab6"
+      ]
+    }
+  }
+}

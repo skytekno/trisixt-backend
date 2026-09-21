@@ -1,0 +1,2 @@
+web: cargo run --locked -- serve
+worker: cargo run --locked -- worker

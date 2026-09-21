@@ -1,0 +1,160 @@
+{
+  "task": "MAN-5",
+  "task_key": "RUST-BASELINE",
+  "recorded_at": "2026-09-20T17:09:51.855600+00:00",
+  "local_status": "acceptance_complete",
+  "linear_status": "Done",
+  "linear_issue": "https://linear.app/mandays-labs/issue/MAN-5/capture-reviewed-baseline-and-shared-deterministic-fixture-contracts",
+  "linear_sync_blocker": null,
+  "scope": "Recoverable source baseline and shared deterministic contracts for fresh Rust installation; no other parity finding closed.",
+  "source": {
+    "manifest": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/manifest.json",
+    "archive": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/source.tar.gz",
+    "source_sha256": "31ae10fd87c85255066235a862d9cb0520e5a142d8cf5da0d36aa1fbeb107c00",
+    "archive_sha256": "3bce466c45cb28e6785a68329f1b9a83df0b99c76c3de891637f73e9888f1615",
+    "files": 1612,
+    "bytes": 8624100,
+    "git_revision": null,
+    "git_branch": "main",
+    "index_unchanged": true,
+    "state": "uncommitted; unborn main; checkout and existing backup preserved"
+  },
+  "acceptance": {
+    "recoverable_intended_source": "PASS",
+    "restored_bytes_and_modes": "PASS",
+    "operator_credentials_and_generated_caches_excluded": "PASS reviewed selection; narrow credential scanner plus pinned synthetic test-key allowances",
+    "deterministic_two_owner_project_contract": "PASS",
+    "configured_sdk_declarations": "PASS",
+    "four_provider_selector_contracts": "PASS definitions only; live providers not executed",
+    "independent_numeric_expectations": "PASS literal expectations; runtime tests compare actual results",
+    "source_image_evidence_conventions": "PASS docs/testing/EVIDENCE_TEMPLATE.md"
+  },
+  "validation": {
+    "command": "DEVELOPER_DIR=/Library/Developer/CommandLineTools TEST_COMPOSE_PROJECT=trisixt-man5-acceptance scripts/check.sh",
+    "exit_code": 0,
+    "rust_tests": {
+      "passed": 132,
+      "failed": 0,
+      "ignored": 0
+    },
+    "source_recovery_tests": {
+      "passed": 9,
+      "failed": 0
+    },
+    "fmt": "PASS",
+    "clippy_all_targets_features_deny_warnings": "PASS",
+    "branding_shell_compose": "PASS",
+    "cargo_audit": "PASS; 397 locked dependencies; 1251 advisories loaded",
+    "rust_version": "1.98.1",
+    "postgres_version": "18.6",
+    "redis_version": "8.10.2",
+    "recovery_verification": {
+      "restored_files": 1612,
+      "bytes_and_modes_verified": true
+    },
+    "fixture_render_reference": {
+      "run_id": "man5-reference",
+      "anchor_utc": "2026-09-18T00:00:00Z"
+    },
+    "native_runtime_run_ids": "Fresh native-UUID per fixture; anchor UTC midnight yesterday; deterministic ID function and reference vector checked"
+  },
+  "provider_execution": {
+    "clickhouse_minio": "Existing real HTTP E2E passed in full gate",
+    "bigquery_minio": "NOT_RUN live provider",
+    "clickhouse_gcs": "NOT_RUN live provider",
+    "bigquery_gcs": "NOT_RUN live provider",
+    "shared_baseline_fixture": "PostgreSQL/HTTP contract executed; provider fixture stages remain separate"
+  },
+  "candidate_image": "NOT_BUILT; no new release-image claim",
+  "boundaries": [
+    "All 31 parity findings remain open pending their own implementation and acceptance.",
+    "M1 legacy Rails data conversion remains deferred.",
+    "No real provider/client/device or load/recovery/deployment gate closed.",
+    "Recovery verified source files only, not database/provider data.",
+    "No Git staging, commit, branch or global permission/tool configuration change."
+  ],
+  "evidence": [
+    {
+      "name": "acceptance-check.log",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/acceptance-check.log",
+      "sha256": "70bab4631a213dd7293a0466a1485d53f1054f7167213c319b1d2967e0794d55",
+      "bytes": 20582
+    },
+    {
+      "name": "check.log",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/check.log",
+      "sha256": "fab76fb9388459314d3254ce7775fee5960bd5d4b130f660a350862b6e49fb23",
+      "bytes": 20006
+    },
+    {
+      "name": "reviewed-check.log",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/reviewed-check.log",
+      "sha256": "23befb0ca0227372da098ed23a3ab9102916b1f3702befc39e2efb6766b20db1",
+      "bytes": 20455
+    },
+    {
+      "name": "config-final.log",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/config-final.log",
+      "sha256": "1a66fbf3601aa5e27354e1c3b24cbbe83acc6f409f42fd8f7b019f35ba8f57df",
+      "bytes": 66
+    },
+    {
+      "name": "rendered-fixtures.json",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/rendered-fixtures.json",
+      "sha256": "f4ee94afcf6a397d4baf45164863e5d0487f0afc376cd8d2f8a7db7eadb01a5c",
+      "bytes": 22984
+    },
+    {
+      "name": "initial-native-source.json",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/initial-native-source.json",
+      "sha256": "c152179fe1293a69a36f943dea2b4e6237a2b1e74d6173a1a59f0b9734669ee0",
+      "bytes": 11604
+    },
+    {
+      "name": "capture.json",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/capture.json",
+      "sha256": "5472bcdccc1d982364f67e96050b4d0610a81249d7507189dad6b33b5f78d010",
+      "bytes": 362
+    },
+    {
+      "name": "recovery-verification.json",
+      "path": "/Users/roman/Workspace/github.com/mandays/trisixt-backend-baseline-man5-20260921/evidence/recovery-verification.json",
+      "sha256": "7e2650f55b91ed07e03faf1213c28197715cfd592ae73385126c1d08e9a48c14",
+      "bytes": 65
+    }
+  ],
+  "changed_existing_files": [
+    "tests/support/mod.rs",
+    "scripts/check.sh",
+    "docs/TESTING_GUIDE.md",
+    "docs/RUST_GAP_CLOSURE_PLAN.md"
+  ],
+  "new_deliverables": [
+    "tests/support/baseline.rs",
+    "tests/baseline_contract.rs",
+    "tests/fixtures/baseline/manifest.v1.json",
+    "tests/fixtures/baseline/render.py",
+    "tests/fixtures/baseline/checker.svg",
+    "tests/fixtures/baseline/banner.svg",
+    "scripts/capture_baseline.py",
+    "scripts/tests/test_capture_baseline.py",
+    "docs/baseline/SELECTION.json",
+    "docs/baseline/README.md",
+    "docs/testing/BASELINE_FIXTURES.md",
+    "docs/testing/EVIDENCE_TEMPLATE.md"
+  ],
+  "previous_linear_sync_blocker": "No connected browser; native Chrome requires macOS Accessibility/Screen Recording. No permission settings changed. Saved Linear snapshot remains Backlog; current server status unknown.",
+  "linear_sync": {
+    "verified_at": "2026-09-20T17:41:48.099618+00:00",
+    "issue": "MAN-5",
+    "url": "https://linear.app/mandays-labs/issue/MAN-5/capture-reviewed-baseline-and-shared-deterministic-fixture-contracts",
+    "previous_observed_status": "Todo",
+    "status": "Done",
+    "method": "Authenticated Linear native Chrome UI",
+    "checklist_items_completed": 5,
+    "completion_evidence_added": true,
+    "verification": "UI displayed Done after status change; description displayed complete original criteria plus completion evidence.",
+    "source_identity_unchanged": true,
+    "note": "Linear automatically changed completed blocking relationships to related relationships; no manual relation edits were made."
+  }
+}

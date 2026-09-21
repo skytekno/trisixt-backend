@@ -1,0 +1,1556 @@
+# Skill selection loaded as session overrides by bin/codex-repo.
+# Keeps backend, API, SQL, analytics infrastructure, security, testing,
+# deployment, code review, documentation, and agent-maintenance skills.
+# User-level settings and installed skill files are unchanged.
+# Remove an entry below to restore that skill in launcher sessions.
+# Paths reflect the installed skills on this machine.
+
+# a11y-audit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/a11y-audit/SKILL.md"
+enabled = false
+
+# ab-test-setup
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ab-test-setup/SKILL.md"
+enabled = false
+
+# account-executive
+[[skills.config]]
+path = "/Users/roman/.codex/skills/account-executive/SKILL.md"
+enabled = false
+
+# activation-funnel
+[[skills.config]]
+path = "/Users/roman/.codex/skills/activation-funnel/SKILL.md"
+enabled = false
+
+# ad-creative
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ad-creative/SKILL.md"
+enabled = false
+
+# aeo
+[[skills.config]]
+path = "/Users/roman/.codex/skills/aeo/SKILL.md"
+enabled = false
+
+# agent-designer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agent-designer/SKILL.md"
+enabled = false
+
+# agent-harness
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agent-harness/SKILL.md"
+enabled = false
+
+# agent-protocol
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agent-protocol/SKILL.md"
+enabled = false
+
+# agent-workflow-designer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agent-workflow-designer/SKILL.md"
+enabled = false
+
+# agenthub
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agenthub/SKILL.md"
+enabled = false
+
+# agentic-evaluation-framework
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agentic-evaluation-framework/SKILL.md"
+enabled = false
+
+# agile-coach
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agile-coach/SKILL.md"
+enabled = false
+
+# agile-product-owner
+[[skills.config]]
+path = "/Users/roman/.codex/skills/agile-product-owner/SKILL.md"
+enabled = false
+
+# ai-act-readiness
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ai-act-readiness/SKILL.md"
+enabled = false
+
+# ai-feature-prd
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ai-feature-prd/SKILL.md"
+enabled = false
+
+# ai-security
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ai-security/SKILL.md"
+enabled = false
+
+# ai-seo
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ai-seo/SKILL.md"
+enabled = false
+
+# aims-audit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/aims-audit/SKILL.md"
+enabled = false
+
+# analytics-tracking
+[[skills.config]]
+path = "/Users/roman/.codex/skills/analytics-tracking/SKILL.md"
+enabled = false
+
+# ansoff-matrix
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ansoff-matrix/SKILL.md"
+enabled = false
+
+# app-store-optimization
+[[skills.config]]
+path = "/Users/roman/.codex/skills/app-store-optimization/SKILL.md"
+enabled = false
+
+# apple-hig-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/apple-hig-expert/SKILL.md"
+enabled = false
+
+# atlassian-admin
+[[skills.config]]
+path = "/Users/roman/.codex/skills/atlassian-admin/SKILL.md"
+enabled = false
+
+# atlassian-templates
+[[skills.config]]
+path = "/Users/roman/.codex/skills/atlassian-templates/SKILL.md"
+enabled = false
+
+# azure-cloud-architect
+[[skills.config]]
+path = "/Users/roman/.codex/skills/azure-cloud-architect/SKILL.md"
+enabled = false
+
+# backlog-refinement
+[[skills.config]]
+path = "/Users/roman/.codex/skills/backlog-refinement/SKILL.md"
+enabled = false
+
+# batch-api-orchestrator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/batch-api-orchestrator/SKILL.md"
+enabled = false
+
+# beta-program
+[[skills.config]]
+path = "/Users/roman/.codex/skills/beta-program/SKILL.md"
+enabled = false
+
+# board-deck-builder
+[[skills.config]]
+path = "/Users/roman/.codex/skills/board-deck-builder/SKILL.md"
+enabled = false
+
+# board-meeting
+[[skills.config]]
+path = "/Users/roman/.codex/skills/board-meeting/SKILL.md"
+enabled = false
+
+# brainstorm-experiments
+[[skills.config]]
+path = "/Users/roman/.codex/skills/brainstorm-experiments/SKILL.md"
+enabled = false
+
+# brainstorm-ideas
+[[skills.config]]
+path = "/Users/roman/.codex/skills/brainstorm-ideas/SKILL.md"
+enabled = false
+
+# brainstorm-okrs
+[[skills.config]]
+path = "/Users/roman/.codex/skills/brainstorm-okrs/SKILL.md"
+enabled = false
+
+# brand-guidelines
+[[skills.config]]
+path = "/Users/roman/.codex/skills/brand-guidelines/SKILL.md"
+enabled = false
+
+# brand-strategist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/brand-strategist/SKILL.md"
+enabled = false
+
+# browser-automation
+[[skills.config]]
+path = "/Users/roman/.codex/skills/browser-automation/SKILL.md"
+enabled = false
+
+# business-intelligence
+[[skills.config]]
+path = "/Users/roman/.codex/skills/business-intelligence/SKILL.md"
+enabled = false
+
+# business-investment-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/business-investment-advisor/SKILL.md"
+enabled = false
+
+# business-model-canvas
+[[skills.config]]
+path = "/Users/roman/.codex/skills/business-model-canvas/SKILL.md"
+enabled = false
+
+# calendar-prep
+[[skills.config]]
+path = "/Users/roman/.codex/skills/calendar-prep/SKILL.md"
+enabled = false
+
+# campaign-analytics
+[[skills.config]]
+path = "/Users/roman/.codex/skills/campaign-analytics/SKILL.md"
+enabled = false
+
+# capa-officer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/capa-officer/SKILL.md"
+enabled = false
+
+# capacity-planner
+[[skills.config]]
+path = "/Users/roman/.codex/skills/capacity-planner/SKILL.md"
+enabled = false
+
+# capture
+[[skills.config]]
+path = "/Users/roman/.codex/skills/capture/SKILL.md"
+enabled = false
+
+# ccpa-cpra-privacy-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ccpa-cpra-privacy-expert/SKILL.md"
+enabled = false
+
+# ceo-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ceo-advisor/SKILL.md"
+enabled = false
+
+# cfo-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cfo-advisor/SKILL.md"
+enabled = false
+
+# change-management
+[[skills.config]]
+path = "/Users/roman/.codex/skills/change-management/SKILL.md"
+enabled = false
+
+# channel-economics
+[[skills.config]]
+path = "/Users/roman/.codex/skills/channel-economics/SKILL.md"
+enabled = false
+
+# chief-ai-officer-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/chief-ai-officer-advisor/SKILL.md"
+enabled = false
+
+# chief-customer-officer-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/chief-customer-officer-advisor/SKILL.md"
+enabled = false
+
+# chief-data-officer-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/chief-data-officer-advisor/SKILL.md"
+enabled = false
+
+# chief-of-staff
+[[skills.config]]
+path = "/Users/roman/.codex/skills/chief-of-staff/SKILL.md"
+enabled = false
+
+# chro-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/chro-advisor/SKILL.md"
+enabled = false
+
+# churn-prevention
+[[skills.config]]
+path = "/Users/roman/.codex/skills/churn-prevention/SKILL.md"
+enabled = false
+
+# ciso-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ciso-advisor/SKILL.md"
+enabled = false
+
+# climate-tech-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/climate-tech-advisor/SKILL.md"
+enabled = false
+
+# clinical-research
+[[skills.config]]
+path = "/Users/roman/.codex/skills/clinical-research/SKILL.md"
+enabled = false
+
+# cmo-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cmo-advisor/SKILL.md"
+enabled = false
+
+# cold-email
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cold-email/SKILL.md"
+enabled = false
+
+# commercial-policy
+[[skills.config]]
+path = "/Users/roman/.codex/skills/commercial-policy/SKILL.md"
+enabled = false
+
+# company-os
+[[skills.config]]
+path = "/Users/roman/.codex/skills/company-os/SKILL.md"
+enabled = false
+
+# competitive-intel
+[[skills.config]]
+path = "/Users/roman/.codex/skills/competitive-intel/SKILL.md"
+enabled = false
+
+# competitive-teardown
+[[skills.config]]
+path = "/Users/roman/.codex/skills/competitive-teardown/SKILL.md"
+enabled = false
+
+# competitor-alternatives
+[[skills.config]]
+path = "/Users/roman/.codex/skills/competitor-alternatives/SKILL.md"
+enabled = false
+
+# compliance-readiness
+[[skills.config]]
+path = "/Users/roman/.codex/skills/compliance-readiness/SKILL.md"
+enabled = false
+
+# computer-history:computer-history
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-bundled/computer-history/1.0.1001103/skills/computer-history/SKILL.md"
+enabled = false
+
+# computer-use-automation
+[[skills.config]]
+path = "/Users/roman/.codex/skills/computer-use-automation/SKILL.md"
+enabled = false
+
+# confluence-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/confluence-expert/SKILL.md"
+enabled = false
+
+# content-creator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/content-creator/SKILL.md"
+enabled = false
+
+# content-humanizer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/content-humanizer/SKILL.md"
+enabled = false
+
+# content-production
+[[skills.config]]
+path = "/Users/roman/.codex/skills/content-production/SKILL.md"
+enabled = false
+
+# content-strategy
+[[skills.config]]
+path = "/Users/roman/.codex/skills/content-strategy/SKILL.md"
+enabled = false
+
+# contract-and-proposal-writer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/contract-and-proposal-writer/SKILL.md"
+enabled = false
+
+# contract-review
+[[skills.config]]
+path = "/Users/roman/.codex/skills/contract-review/SKILL.md"
+enabled = false
+
+# coo-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/coo-advisor/SKILL.md"
+enabled = false
+
+# copy-editing
+[[skills.config]]
+path = "/Users/roman/.codex/skills/copy-editing/SKILL.md"
+enabled = false
+
+# copywriting
+[[skills.config]]
+path = "/Users/roman/.codex/skills/copywriting/SKILL.md"
+enabled = false
+
+# cpo-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cpo-advisor/SKILL.md"
+enabled = false
+
+# create-prd
+[[skills.config]]
+path = "/Users/roman/.codex/skills/create-prd/SKILL.md"
+enabled = false
+
+# cro-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cro-advisor/SKILL.md"
+enabled = false
+
+# cs-onboard
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cs-onboard/SKILL.md"
+enabled = false
+
+# cto-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cto-advisor/SKILL.md"
+enabled = false
+
+# culture-architect
+[[skills.config]]
+path = "/Users/roman/.codex/skills/culture-architect/SKILL.md"
+enabled = false
+
+# customer-feedback-triage
+[[skills.config]]
+path = "/Users/roman/.codex/skills/customer-feedback-triage/SKILL.md"
+enabled = false
+
+# customer-interview-script
+[[skills.config]]
+path = "/Users/roman/.codex/skills/customer-interview-script/SKILL.md"
+enabled = false
+
+# customer-success-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/customer-success-manager/SKILL.md"
+enabled = false
+
+# cycle-time-analyzer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/cycle-time-analyzer/SKILL.md"
+enabled = false
+
+# daci-framework
+[[skills.config]]
+path = "/Users/roman/.codex/skills/daci-framework/SKILL.md"
+enabled = false
+
+# data-analyst
+[[skills.config]]
+path = "/Users/roman/.codex/skills/data-analyst/SKILL.md"
+enabled = false
+
+# data-breach-response
+[[skills.config]]
+path = "/Users/roman/.codex/skills/data-breach-response/SKILL.md"
+enabled = false
+
+# data-scientist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/data-scientist/SKILL.md"
+enabled = false
+
+# deal-desk
+[[skills.config]]
+path = "/Users/roman/.codex/skills/deal-desk/SKILL.md"
+enabled = false
+
+# decision-logger
+[[skills.config]]
+path = "/Users/roman/.codex/skills/decision-logger/SKILL.md"
+enabled = false
+
+# deep-work
+[[skills.config]]
+path = "/Users/roman/.codex/skills/deep-work/SKILL.md"
+enabled = false
+
+# delivery-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/delivery-manager/SKILL.md"
+enabled = false
+
+# design-auditor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/design-auditor/SKILL.md"
+enabled = false
+
+# design-system
+[[skills.config]]
+path = "/Users/roman/.codex/skills/design-system/SKILL.md"
+enabled = false
+
+# design-system-lead
+[[skills.config]]
+path = "/Users/roman/.codex/skills/design-system-lead/SKILL.md"
+enabled = false
+
+# documents:documents
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-primary-runtime/documents/26.905.11957/skills/documents/SKILL.md"
+enabled = false
+
+# docx-toolkit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/docx-toolkit/SKILL.md"
+enabled = false
+
+# domain-name-brainstormer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/domain-name-brainstormer/SKILL.md"
+enabled = false
+
+# dora-compliance-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/dora-compliance-expert/SKILL.md"
+enabled = false
+
+# dossier
+[[skills.config]]
+path = "/Users/roman/.codex/skills/dossier/SKILL.md"
+enabled = false
+
+# dpia-assessment
+[[skills.config]]
+path = "/Users/roman/.codex/skills/dpia-assessment/SKILL.md"
+enabled = false
+
+# ecommerce-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ecommerce-advisor/SKILL.md"
+enabled = false
+
+# edtech-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/edtech-advisor/SKILL.md"
+enabled = false
+
+# email-sequence
+[[skills.config]]
+path = "/Users/roman/.codex/skills/email-sequence/SKILL.md"
+enabled = false
+
+# email-template-builder
+[[skills.config]]
+path = "/Users/roman/.codex/skills/email-template-builder/SKILL.md"
+enabled = false
+
+# email-triage
+[[skills.config]]
+path = "/Users/roman/.codex/skills/email-triage/SKILL.md"
+enabled = false
+
+# eol-communication
+[[skills.config]]
+path = "/Users/roman/.codex/skills/eol-communication/SKILL.md"
+enabled = false
+
+# eu-ai-act-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/eu-ai-act-specialist/SKILL.md"
+enabled = false
+
+# executive-mentor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/executive-mentor/SKILL.md"
+enabled = false
+
+# extended-thinking-architect
+[[skills.config]]
+path = "/Users/roman/.codex/skills/extended-thinking-architect/SKILL.md"
+enabled = false
+
+# fda-consultant-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/fda-consultant-specialist/SKILL.md"
+enabled = false
+
+# fda-qsr-audit-prep
+[[skills.config]]
+path = "/Users/roman/.codex/skills/fda-qsr-audit-prep/SKILL.md"
+enabled = false
+
+# financial-analyst
+[[skills.config]]
+path = "/Users/roman/.codex/skills/financial-analyst/SKILL.md"
+enabled = false
+
+# fintech-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/fintech-advisor/SKILL.md"
+enabled = false
+
+# form-cro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/form-cro/SKILL.md"
+enabled = false
+
+# founder-coach
+[[skills.config]]
+path = "/Users/roman/.codex/skills/founder-coach/SKILL.md"
+enabled = false
+
+# free-tool-strategy
+[[skills.config]]
+path = "/Users/roman/.codex/skills/free-tool-strategy/SKILL.md"
+enabled = false
+
+# gdpr-audit-prep
+[[skills.config]]
+path = "/Users/roman/.codex/skills/gdpr-audit-prep/SKILL.md"
+enabled = false
+
+# gdpr-dsgvo-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/gdpr-dsgvo-expert/SKILL.md"
+enabled = false
+
+# general-counsel-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/general-counsel-advisor/SKILL.md"
+enabled = false
+
+# google-workspace-cli
+[[skills.config]]
+path = "/Users/roman/.codex/skills/google-workspace-cli/SKILL.md"
+enabled = false
+
+# grants
+[[skills.config]]
+path = "/Users/roman/.codex/skills/grants/SKILL.md"
+enabled = false
+
+# growth-marketer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/growth-marketer/SKILL.md"
+enabled = false
+
+# gtm-strategy
+[[skills.config]]
+path = "/Users/roman/.codex/skills/gtm-strategy/SKILL.md"
+enabled = false
+
+# healthtech-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/healthtech-advisor/SKILL.md"
+enabled = false
+
+# helm-chart-builder
+[[skills.config]]
+path = "/Users/roman/.codex/skills/helm-chart-builder/SKILL.md"
+enabled = false
+
+# hr-business-partner
+[[skills.config]]
+path = "/Users/roman/.codex/skills/hr-business-partner/SKILL.md"
+enabled = false
+
+# ideal-customer-profile
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ideal-customer-profile/SKILL.md"
+enabled = false
+
+# identify-assumptions
+[[skills.config]]
+path = "/Users/roman/.codex/skills/identify-assumptions/SKILL.md"
+enabled = false
+
+# imagegen
+[[skills.config]]
+path = "/Users/roman/.codex/skills/.system/imagegen/SKILL.md"
+enabled = false
+
+# information-security-manager-iso27001
+[[skills.config]]
+path = "/Users/roman/.codex/skills/information-security-manager-iso27001/SKILL.md"
+enabled = false
+
+# internal-comms
+[[skills.config]]
+path = "/Users/roman/.codex/skills/internal-comms/SKILL.md"
+enabled = false
+
+# internal-narrative
+[[skills.config]]
+path = "/Users/roman/.codex/skills/internal-narrative/SKILL.md"
+enabled = false
+
+# interview-synthesis
+[[skills.config]]
+path = "/Users/roman/.codex/skills/interview-synthesis/SKILL.md"
+enabled = false
+
+# interview-system-designer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/interview-system-designer/SKILL.md"
+enabled = false
+
+# intl-expansion
+[[skills.config]]
+path = "/Users/roman/.codex/skills/intl-expansion/SKILL.md"
+enabled = false
+
+# investor-update-generator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/investor-update-generator/SKILL.md"
+enabled = false
+
+# invoice-organizer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/invoice-organizer/SKILL.md"
+enabled = false
+
+# isms-audit-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/isms-audit-expert/SKILL.md"
+enabled = false
+
+# iso42001-ai-management
+[[skills.config]]
+path = "/Users/roman/.codex/skills/iso42001-ai-management/SKILL.md"
+enabled = false
+
+# jira-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/jira-expert/SKILL.md"
+enabled = false
+
+# job-stories
+[[skills.config]]
+path = "/Users/roman/.codex/skills/job-stories/SKILL.md"
+enabled = false
+
+# jtbd-workshop
+[[skills.config]]
+path = "/Users/roman/.codex/skills/jtbd-workshop/SKILL.md"
+enabled = false
+
+# knowledge-ops
+[[skills.config]]
+path = "/Users/roman/.codex/skills/knowledge-ops/SKILL.md"
+enabled = false
+
+# kubernetes-operator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/kubernetes-operator/SKILL.md"
+enabled = false
+
+# landing-page-generator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/landing-page-generator/SKILL.md"
+enabled = false
+
+# launch-playbook
+[[skills.config]]
+path = "/Users/roman/.codex/skills/launch-playbook/SKILL.md"
+enabled = false
+
+# launch-strategy
+[[skills.config]]
+path = "/Users/roman/.codex/skills/launch-strategy/SKILL.md"
+enabled = false
+
+# lead-researcher
+[[skills.config]]
+path = "/Users/roman/.codex/skills/lead-researcher/SKILL.md"
+enabled = false
+
+# lean-canvas
+[[skills.config]]
+path = "/Users/roman/.codex/skills/lean-canvas/SKILL.md"
+enabled = false
+
+# legal-canned-responses
+[[skills.config]]
+path = "/Users/roman/.codex/skills/legal-canned-responses/SKILL.md"
+enabled = false
+
+# legal-meeting-briefing
+[[skills.config]]
+path = "/Users/roman/.codex/skills/legal-meeting-briefing/SKILL.md"
+enabled = false
+
+# legal-red-team
+[[skills.config]]
+path = "/Users/roman/.codex/skills/legal-red-team/SKILL.md"
+enabled = false
+
+# legal-risk-assessment
+[[skills.config]]
+path = "/Users/roman/.codex/skills/legal-risk-assessment/SKILL.md"
+enabled = false
+
+# linear-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/linear-expert/SKILL.md"
+enabled = false
+
+# litreview
+[[skills.config]]
+path = "/Users/roman/.codex/skills/litreview/SKILL.md"
+enabled = false
+
+# llm-cost-optimizer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/llm-cost-optimizer/SKILL.md"
+enabled = false
+
+# ma-playbook
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ma-playbook/SKILL.md"
+enabled = false
+
+# market-research
+[[skills.config]]
+path = "/Users/roman/.codex/skills/market-research/SKILL.md"
+enabled = false
+
+# marketing-analyst
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-analyst/SKILL.md"
+enabled = false
+
+# marketing-context
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-context/SKILL.md"
+enabled = false
+
+# marketing-demand-acquisition
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-demand-acquisition/SKILL.md"
+enabled = false
+
+# marketing-ideas
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-ideas/SKILL.md"
+enabled = false
+
+# marketing-ops
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-ops/SKILL.md"
+enabled = false
+
+# marketing-psychology
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-psychology/SKILL.md"
+enabled = false
+
+# marketing-strategy-pmm
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketing-strategy-pmm/SKILL.md"
+enabled = false
+
+# marketplace-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/marketplace-advisor/SKILL.md"
+enabled = false
+
+# mba-dss-research
+[[skills.config]]
+path = "/Users/roman/.codex/skills/mba-dss-research/SKILL.md"
+enabled = false
+
+# mba-dss-research
+[[skills.config]]
+path = "/Users/roman/.codex/skills/test/mba-dss-research/SKILL.md"
+enabled = false
+
+# md-slides
+[[skills.config]]
+path = "/Users/roman/.codex/skills/md-slides/SKILL.md"
+enabled = false
+
+# mdr-745-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/mdr-745-specialist/SKILL.md"
+enabled = false
+
+# mediation-analysis
+[[skills.config]]
+path = "/Users/roman/.codex/skills/mediation-analysis/SKILL.md"
+enabled = false
+
+# meeting-analyzer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/meeting-analyzer/SKILL.md"
+enabled = false
+
+# meeting-insights
+[[skills.config]]
+path = "/Users/roman/.codex/skills/meeting-insights/SKILL.md"
+enabled = false
+
+# metrics-dashboard
+[[skills.config]]
+path = "/Users/roman/.codex/skills/metrics-dashboard/SKILL.md"
+enabled = false
+
+# ml-ops-engineer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ml-ops-engineer/SKILL.md"
+enabled = false
+
+# monorepo-navigator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/monorepo-navigator/SKILL.md"
+enabled = false
+
+# ms365-tenant-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ms365-tenant-manager/SKILL.md"
+enabled = false
+
+# nda-review
+[[skills.config]]
+path = "/Users/roman/.codex/skills/nda-review/SKILL.md"
+enabled = false
+
+# nda-triage
+[[skills.config]]
+path = "/Users/roman/.codex/skills/nda-triage/SKILL.md"
+enabled = false
+
+# nis2-directive-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/nis2-directive-specialist/SKILL.md"
+enabled = false
+
+# nist-csf-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/nist-csf-specialist/SKILL.md"
+enabled = false
+
+# north-star-metric
+[[skills.config]]
+path = "/Users/roman/.codex/skills/north-star-metric/SKILL.md"
+enabled = false
+
+# notion-pm
+[[skills.config]]
+path = "/Users/roman/.codex/skills/notion-pm/SKILL.md"
+enabled = false
+
+# onboarding-cro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/onboarding-cro/SKILL.md"
+enabled = false
+
+# operations-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/operations-manager/SKILL.md"
+enabled = false
+
+# opportunity-solution-tree
+[[skills.config]]
+path = "/Users/roman/.codex/skills/opportunity-solution-tree/SKILL.md"
+enabled = false
+
+# org-health-diagnostic
+[[skills.config]]
+path = "/Users/roman/.codex/skills/org-health-diagnostic/SKILL.md"
+enabled = false
+
+# outcome-roadmap
+[[skills.config]]
+path = "/Users/roman/.codex/skills/outcome-roadmap/SKILL.md"
+enabled = false
+
+# page-cro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/page-cro/SKILL.md"
+enabled = false
+
+# paid-ads
+[[skills.config]]
+path = "/Users/roman/.codex/skills/paid-ads/SKILL.md"
+enabled = false
+
+# partnerships-architect
+[[skills.config]]
+path = "/Users/roman/.codex/skills/partnerships-architect/SKILL.md"
+enabled = false
+
+# patent
+[[skills.config]]
+path = "/Users/roman/.codex/skills/patent/SKILL.md"
+enabled = false
+
+# paywall-upgrade-cro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/paywall-upgrade-cro/SKILL.md"
+enabled = false
+
+# pci-dss-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pci-dss-specialist/SKILL.md"
+enabled = false
+
+# pdf-toolkit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pdf-toolkit/SKILL.md"
+enabled = false
+
+# pdf:pdf
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-primary-runtime/pdf/26.905.11957/skills/pdf/SKILL.md"
+enabled = false
+
+# people-analytics
+[[skills.config]]
+path = "/Users/roman/.codex/skills/people-analytics/SKILL.md"
+enabled = false
+
+# pitch-deck-reviewer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pitch-deck-reviewer/SKILL.md"
+enabled = false
+
+# playwright-pro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/playwright-pro/SKILL.md"
+enabled = false
+
+# plugin-creator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/.system/plugin-creator/SKILL.md"
+enabled = false
+
+# pm-1on1s
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pm-1on1s/SKILL.md"
+enabled = false
+
+# pm-career-ladder
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pm-career-ladder/SKILL.md"
+enabled = false
+
+# pm-interview-prep
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pm-interview-prep/SKILL.md"
+enabled = false
+
+# pm-onboarding
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pm-onboarding/SKILL.md"
+enabled = false
+
+# popup-cro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/popup-cro/SKILL.md"
+enabled = false
+
+# porters-five-forces
+[[skills.config]]
+path = "/Users/roman/.codex/skills/porters-five-forces/SKILL.md"
+enabled = false
+
+# pptx-toolkit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pptx-toolkit/SKILL.md"
+enabled = false
+
+# pre-mortem
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pre-mortem/SKILL.md"
+enabled = false
+
+# presentations:Presentations
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-primary-runtime/presentations/26.905.11957/skills/presentations/SKILL.md"
+enabled = false
+
+# prfaq
+[[skills.config]]
+path = "/Users/roman/.codex/skills/prfaq/SKILL.md"
+enabled = false
+
+# pricing-prd
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pricing-prd/SKILL.md"
+enabled = false
+
+# pricing-strategy
+[[skills.config]]
+path = "/Users/roman/.codex/skills/pricing-strategy/SKILL.md"
+enabled = false
+
+# prioritization-frameworks
+[[skills.config]]
+path = "/Users/roman/.codex/skills/prioritization-frameworks/SKILL.md"
+enabled = false
+
+# privacy-notice-generator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/privacy-notice-generator/SKILL.md"
+enabled = false
+
+# process-mapper
+[[skills.config]]
+path = "/Users/roman/.codex/skills/process-mapper/SKILL.md"
+enabled = false
+
+# procurement-optimizer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/procurement-optimizer/SKILL.md"
+enabled = false
+
+# product-analytics
+[[skills.config]]
+path = "/Users/roman/.codex/skills/product-analytics/SKILL.md"
+enabled = false
+
+# product-designer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/product-designer/SKILL.md"
+enabled = false
+
+# product-manager-toolkit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/product-manager-toolkit/SKILL.md"
+enabled = false
+
+# product-research
+[[skills.config]]
+path = "/Users/roman/.codex/skills/product-research/SKILL.md"
+enabled = false
+
+# product-strategist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/product-strategist/SKILL.md"
+enabled = false
+
+# product-vision
+[[skills.config]]
+path = "/Users/roman/.codex/skills/product-vision/SKILL.md"
+enabled = false
+
+# productboard-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/productboard-expert/SKILL.md"
+enabled = false
+
+# program-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/program-manager/SKILL.md"
+enabled = false
+
+# programmatic-seo
+[[skills.config]]
+path = "/Users/roman/.codex/skills/programmatic-seo/SKILL.md"
+enabled = false
+
+# prompt-engineer-toolkit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/prompt-engineer-toolkit/SKILL.md"
+enabled = false
+
+# prompt-governance
+[[skills.config]]
+path = "/Users/roman/.codex/skills/prompt-governance/SKILL.md"
+enabled = false
+
+# proptech-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/proptech-advisor/SKILL.md"
+enabled = false
+
+# qa-browser-automation
+[[skills.config]]
+path = "/Users/roman/.codex/skills/qa-browser-automation/SKILL.md"
+enabled = false
+
+# qms-audit-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/qms-audit-expert/SKILL.md"
+enabled = false
+
+# quality-documentation-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/quality-documentation-manager/SKILL.md"
+enabled = false
+
+# quality-manager-qmr
+[[skills.config]]
+path = "/Users/roman/.codex/skills/quality-manager-qmr/SKILL.md"
+enabled = false
+
+# quality-manager-qms-iso13485
+[[skills.config]]
+path = "/Users/roman/.codex/skills/quality-manager-qms-iso13485/SKILL.md"
+enabled = false
+
+# quarterly-planning
+[[skills.config]]
+path = "/Users/roman/.codex/skills/quarterly-planning/SKILL.md"
+enabled = false
+
+# rag-architect
+[[skills.config]]
+path = "/Users/roman/.codex/skills/rag-architect/SKILL.md"
+enabled = false
+
+# referral-program
+[[skills.config]]
+path = "/Users/roman/.codex/skills/referral-program/SKILL.md"
+enabled = false
+
+# reflect
+[[skills.config]]
+path = "/Users/roman/.codex/skills/reflect/SKILL.md"
+enabled = false
+
+# regulatory-affairs-head
+[[skills.config]]
+path = "/Users/roman/.codex/skills/regulatory-affairs-head/SKILL.md"
+enabled = false
+
+# research-finance
+[[skills.config]]
+path = "/Users/roman/.codex/skills/research-finance/SKILL.md"
+enabled = false
+
+# research-summarizer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/research-summarizer/SKILL.md"
+enabled = false
+
+# resume-tailor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/resume-tailor/SKILL.md"
+enabled = false
+
+# revenue-operations
+[[skills.config]]
+path = "/Users/roman/.codex/skills/revenue-operations/SKILL.md"
+enabled = false
+
+# risk-management-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/risk-management-specialist/SKILL.md"
+enabled = false
+
+# roadmap-communication
+[[skills.config]]
+path = "/Users/roman/.codex/skills/roadmap-communication/SKILL.md"
+enabled = false
+
+# roadmap-communicator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/roadmap-communicator/SKILL.md"
+enabled = false
+
+# saas-metrics-coach
+[[skills.config]]
+path = "/Users/roman/.codex/skills/saas-metrics-coach/SKILL.md"
+enabled = false
+
+# saas-scaffolder
+[[skills.config]]
+path = "/Users/roman/.codex/skills/saas-scaffolder/SKILL.md"
+enabled = false
+
+# sales-engineer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/sales-engineer/SKILL.md"
+enabled = false
+
+# sales-operations
+[[skills.config]]
+path = "/Users/roman/.codex/skills/sales-operations/SKILL.md"
+enabled = false
+
+# sample-text-processor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/skill-tester/assets/sample-skill/SKILL.md"
+enabled = false
+
+# scenario-war-room
+[[skills.config]]
+path = "/Users/roman/.codex/skills/scenario-war-room/SKILL.md"
+enabled = false
+
+# schema-markup
+[[skills.config]]
+path = "/Users/roman/.codex/skills/schema-markup/SKILL.md"
+enabled = false
+
+# scrum-master
+[[skills.config]]
+path = "/Users/roman/.codex/skills/scrum-master/SKILL.md"
+enabled = false
+
+# self-improving-agent
+[[skills.config]]
+path = "/Users/roman/.codex/skills/self-improving-agent/SKILL.md"
+enabled = false
+
+# senior-computer-vision
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-computer-vision/SKILL.md"
+enabled = false
+
+# senior-data-scientist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-data-scientist/SKILL.md"
+enabled = false
+
+# senior-frontend
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-frontend/SKILL.md"
+enabled = false
+
+# senior-fullstack
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-fullstack/SKILL.md"
+enabled = false
+
+# senior-ml-engineer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-ml-engineer/SKILL.md"
+enabled = false
+
+# senior-mobile
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-mobile/SKILL.md"
+enabled = false
+
+# senior-pm
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-pm/SKILL.md"
+enabled = false
+
+# senior-prompt-engineer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/senior-prompt-engineer/SKILL.md"
+enabled = false
+
+# seo-audit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/seo-audit/SKILL.md"
+enabled = false
+
+# seo-specialist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/seo-specialist/SKILL.md"
+enabled = false
+
+# signup-flow-cro
+[[skills.config]]
+path = "/Users/roman/.codex/skills/signup-flow-cro/SKILL.md"
+enabled = false
+
+# site-architecture
+[[skills.config]]
+path = "/Users/roman/.codex/skills/site-architecture/SKILL.md"
+enabled = false
+
+# snowflake-development
+[[skills.config]]
+path = "/Users/roman/.codex/skills/snowflake-development/SKILL.md"
+enabled = false
+
+# soc2-audit-prep
+[[skills.config]]
+path = "/Users/roman/.codex/skills/soc2-audit-prep/SKILL.md"
+enabled = false
+
+# soc2-compliance-expert
+[[skills.config]]
+path = "/Users/roman/.codex/skills/soc2-compliance-expert/SKILL.md"
+enabled = false
+
+# social-content
+[[skills.config]]
+path = "/Users/roman/.codex/skills/social-content/SKILL.md"
+enabled = false
+
+# social-media-analyzer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/social-media-analyzer/SKILL.md"
+enabled = false
+
+# social-media-manager
+[[skills.config]]
+path = "/Users/roman/.codex/skills/social-media-manager/SKILL.md"
+enabled = false
+
+# spreadsheets:Spreadsheets
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-primary-runtime/spreadsheets/26.905.11957/skills/spreadsheets/SKILL.md"
+enabled = false
+
+# spreadsheets:excel-live-control
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-primary-runtime/spreadsheets/26.905.11957/skills/excel-live-control/SKILL.md"
+enabled = false
+
+# sprint-plan
+[[skills.config]]
+path = "/Users/roman/.codex/skills/sprint-plan/SKILL.md"
+enabled = false
+
+# sprint-retrospective
+[[skills.config]]
+path = "/Users/roman/.codex/skills/sprint-retrospective/SKILL.md"
+enabled = false
+
+# stakeholder-map
+[[skills.config]]
+path = "/Users/roman/.codex/skills/stakeholder-map/SKILL.md"
+enabled = false
+
+# statistical-analyst
+[[skills.config]]
+path = "/Users/roman/.codex/skills/statistical-analyst/SKILL.md"
+enabled = false
+
+# status-update-generator
+[[skills.config]]
+path = "/Users/roman/.codex/skills/status-update-generator/SKILL.md"
+enabled = false
+
+# statute-analysis
+[[skills.config]]
+path = "/Users/roman/.codex/skills/statute-analysis/SKILL.md"
+enabled = false
+
+# story-mapping
+[[skills.config]]
+path = "/Users/roman/.codex/skills/story-mapping/SKILL.md"
+enabled = false
+
+# story-splitting
+[[skills.config]]
+path = "/Users/roman/.codex/skills/story-splitting/SKILL.md"
+enabled = false
+
+# strategic-alignment
+[[skills.config]]
+path = "/Users/roman/.codex/skills/strategic-alignment/SKILL.md"
+enabled = false
+
+# summarize-meeting
+[[skills.config]]
+path = "/Users/roman/.codex/skills/summarize-meeting/SKILL.md"
+enabled = false
+
+# swot-analysis
+[[skills.config]]
+path = "/Users/roman/.codex/skills/swot-analysis/SKILL.md"
+enabled = false
+
+# tabular-document-review
+[[skills.config]]
+path = "/Users/roman/.codex/skills/tabular-document-review/SKILL.md"
+enabled = false
+
+# talent-acquisition
+[[skills.config]]
+path = "/Users/roman/.codex/skills/talent-acquisition/SKILL.md"
+enabled = false
+
+# team-communications
+[[skills.config]]
+path = "/Users/roman/.codex/skills/team-communications/SKILL.md"
+enabled = false
+
+# tech-contract-negotiation
+[[skills.config]]
+path = "/Users/roman/.codex/skills/tech-contract-negotiation/SKILL.md"
+enabled = false
+
+# template-creator:template-creator
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-primary-runtime/template-creator/26.905.11957/skills/template-creator/SKILL.md"
+enabled = false
+
+# ui-design-system
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ui-design-system/SKILL.md"
+enabled = false
+
+# ux-researcher-designer
+[[skills.config]]
+path = "/Users/roman/.codex/skills/ux-researcher-designer/SKILL.md"
+enabled = false
+
+# value-proposition-canvas
+[[skills.config]]
+path = "/Users/roman/.codex/skills/value-proposition-canvas/SKILL.md"
+enabled = false
+
+# vendor-due-diligence
+[[skills.config]]
+path = "/Users/roman/.codex/skills/vendor-due-diligence/SKILL.md"
+enabled = false
+
+# vendor-management
+[[skills.config]]
+path = "/Users/roman/.codex/skills/vendor-management/SKILL.md"
+enabled = false
+
+# video-content-strategist
+[[skills.config]]
+path = "/Users/roman/.codex/skills/video-content-strategist/SKILL.md"
+enabled = false
+
+# visualize:visualize
+[[skills.config]]
+path = "/Users/roman/.codex/plugins/cache/openai-bundled/visualize/1.0.38/skills/visualize/SKILL.md"
+enabled = false
+
+# vpe-advisor
+[[skills.config]]
+path = "/Users/roman/.codex/skills/vpe-advisor/SKILL.md"
+enabled = false
+
+# weekly-review
+[[skills.config]]
+path = "/Users/roman/.codex/skills/weekly-review/SKILL.md"
+enabled = false
+
+# whistleblower-compliance
+[[skills.config]]
+path = "/Users/roman/.codex/skills/whistleblower-compliance/SKILL.md"
+enabled = false
+
+# write-a-skill
+[[skills.config]]
+path = "/Users/roman/.codex/skills/write-a-skill/SKILL.md"
+enabled = false
+
+# wwas
+[[skills.config]]
+path = "/Users/roman/.codex/skills/wwas/SKILL.md"
+enabled = false
+
+# x-twitter-growth
+[[skills.config]]
+path = "/Users/roman/.codex/skills/x-twitter-growth/SKILL.md"
+enabled = false
+
+# xlsx-toolkit
+[[skills.config]]
+path = "/Users/roman/.codex/skills/xlsx-toolkit/SKILL.md"
+enabled = false

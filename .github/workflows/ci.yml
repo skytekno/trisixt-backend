@@ -1,0 +1,24 @@
+name: Rust validation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.98.1
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install --locked cargo-audit
+      - name: Validate deployment contracts
+        run: scripts/validate-config.sh --terraform
+      - run: scripts/check.sh
+      - name: Build production image
+        run: docker build --tag trisixt-ci:local .
+      - name: Smoke test production image
+        run: IMAGE_NAME=trisixt-ci:local scripts/image-smoke.sh

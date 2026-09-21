@@ -1,0 +1,1056 @@
+{
+  "verified_at": "2026-09-20T04:25:14+00:00",
+  "project": {
+    "id": "81198699-cf99-4f26-8492-5cc374cfe00b",
+    "name": "TrisixT",
+    "url": "https://linear.app/mandays-labs/project/trisixt-91d84debbc6c",
+    "target_date": "2026-12-20",
+    "status": "Backlog",
+    "lead": {
+      "id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "name": "Rohman M"
+    }
+  },
+  "assignee": {
+    "id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+    "name": "Rohman M"
+  },
+  "counts": {
+    "issues": 52,
+    "audit_findings": 31,
+    "implementation_children": 11,
+    "shared_tasks": 9,
+    "deferred": 1,
+    "parent_links": 11,
+    "hard_blockers": 97
+  },
+  "milestones": [
+    {
+      "id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "name": "Foundation checkpoint",
+      "target_date": "2026-10-04",
+      "issue_count": 10
+    },
+    {
+      "id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "name": "Midpoint checkpoint",
+      "target_date": "2026-11-01",
+      "issue_count": 14
+    },
+    {
+      "id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "name": "Implementation complete",
+      "target_date": "2026-11-29",
+      "issue_count": 22
+    },
+    {
+      "id": "fd0f9ac6-dd61-4da6-8de4-af0eeba1e8ef",
+      "name": "Fresh Rust release",
+      "target_date": "2026-12-20",
+      "issue_count": 5
+    }
+  ],
+  "checks": {
+    "pagination_complete": true,
+    "unique_keys": true,
+    "exact_titles": true,
+    "project_team": true,
+    "assignee": true,
+    "status": true,
+    "priority": true,
+    "due_dates": true,
+    "milestones": true,
+    "parent_links": true,
+    "hard_blockers": true,
+    "acyclic": true,
+    "descriptions": true,
+    "readiness_notes": true,
+    "deferred_scope": true
+  },
+  "mismatches": [],
+  "limitations": [
+    "Descriptions are condensed acceptance criteria, not byte-identical copies of the expanded local implementation checklists.",
+    "The verification is a point-in-time snapshot; Linear remains the live execution tracker.",
+    "This verifies task publication and planning structure, not application implementation or runtime/provider test results."
+  ],
+  "issues": [
+    {
+      "key": "RUST-E1",
+      "id": "2fb86f4a-7b43-4c90-88f6-e68067123886",
+      "identifier": "MAN-6",
+      "url": "https://linear.app/mandays-labs/issue/MAN-6/e1-stripe-cancellation-on-instancelast-admin-deletion",
+      "title": "[E1] Stripe cancellation on instance/last-admin deletion",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-04",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E2",
+      "id": "77dc9c13-27ef-49fe-b7e2-dcfbc1d4ce16",
+      "identifier": "MAN-7",
+      "url": "https://linear.app/mandays-labs/issue/MAN-7/e2-scim-active-sso-verified-domain-and-operator-email-gates",
+      "title": "[E2] SCIM active-SSO, verified-domain and operator-email gates",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-04",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E3",
+      "id": "8fa2b37c-3f87-4a59-b03b-777ccbdaaf6c",
+      "identifier": "MAN-8",
+      "url": "https://linear.app/mandays-labs/issue/MAN-8/e3-scim-deactivation-of-nonlast-administrators",
+      "title": "[E3] SCIM deactivation of nonlast administrators",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-04",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-E2"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E4",
+      "id": "184327ee-341b-44c9-be18-3730cdd5d466",
+      "identifier": "MAN-9",
+      "url": "https://linear.app/mandays-labs/issue/MAN-9/e4-scim-memberinvitation-adoption-upnemail-distinction-externalid",
+      "title": "[E4] SCIM member/invitation adoption, UPN/email distinction, externalId filtering, name/email PATCH, retained string-active payloads",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-11",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-E2",
+        "RUST-E3"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E5",
+      "id": "471c96a6-be60-467a-8d78-8e3bc57aa9bd",
+      "identifier": "MAN-10",
+      "url": "https://linear.app/mandays-labs/issue/MAN-10/e5-controlled-oidc-preferred-usernamescim-upn-fallback",
+      "title": "[E5] Controlled OIDC preferred_username/SCIM-UPN fallback",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-11",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-E4"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E6",
+      "id": "6078ecf8-1905-4cd1-b5f1-16243dc041ed",
+      "identifier": "MAN-11",
+      "url": "https://linear.app/mandays-labs/issue/MAN-11/e6-purchase-browser-paginationsearchsort-and-adjustment-event-rows",
+      "title": "[E6] Purchase browser pagination/search/sort and adjustment event rows",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-15",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E7",
+      "id": "f6c609a1-05a2-4e2d-b963-7404a03ffaa0",
+      "identifier": "MAN-12",
+      "url": "https://linear.app/mandays-labs/issue/MAN-12/e7-product-level-revenue-tables",
+      "title": "[E7] Product-level revenue tables",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-15",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A6",
+        "RUST-BASELINE",
+        "RUST-E6"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E8",
+      "id": "39e90372-517f-40c5-acda-932af62d1be2",
+      "identifier": "MAN-13",
+      "url": "https://linear.app/mandays-labs/issue/MAN-13/e8-audit-actor-snapshots-beforeafter-changes-outcome-request-context",
+      "title": "[E8] Audit actor snapshots, before/after changes, outcome, request context, failed-login records and operational chain verification",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-22",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-E8-CONTEXT",
+        "RUST-E8-STORAGE",
+        "RUST-O2"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E9",
+      "id": "a8362169-1905-40c5-ad7a-159b0d9ff38e",
+      "identifier": "MAN-14",
+      "url": "https://linear.app/mandays-labs/issue/MAN-14/e9-tenant-credential-onboardingrotation-for-sso-push-and-stores-apns",
+      "title": "[E9] Tenant credential onboarding/rotation for SSO, push and stores; APNs certificate mode",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-22",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E8-STORAGE",
+        "RUST-E9-ENVELOPE",
+        "RUST-E9-PUSH",
+        "RUST-E9-SSO",
+        "RUST-E9-STORES"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A1",
+      "id": "412caf51-8d59-47be-bf51-526f137ecba9",
+      "identifier": "MAN-15",
+      "url": "https://linear.app/mandays-labs/issue/MAN-15/a1-automatic-ip-to-countrycity-enrichment-and-mmdb-loading",
+      "title": "[A1] Automatic IP-to-country/city enrichment and MMDB loading",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-18",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A2",
+        "RUST-A3",
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A2",
+      "id": "82ad9a2d-df60-4246-87bb-59aa49c3238b",
+      "identifier": "MAN-16",
+      "url": "https://linear.app/mandays-labs/issue/MAN-16/a2-applying-saved-screen-aliases-and-retained-screen-name-fallbacks",
+      "title": "[A2] Applying saved screen aliases and retained screen-name fallbacks",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-18",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A3",
+      "id": "b8933dfd-f239-43a2-8cb6-46ba077de6e3",
+      "identifier": "MAN-17",
+      "url": "https://linear.app/mandays-labs/issue/MAN-17/a3-device-ua-to-osversion-and-timezone-propagation-into-events",
+      "title": "[A3] Device UA-to-OS/version and timezone propagation into events",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-18",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A2",
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A4",
+      "id": "b184cbaa-3cb3-4fca-af1c-ce4261c7f086",
+      "identifier": "MAN-18",
+      "url": "https://linear.app/mandays-labs/issue/MAN-18/a4-dashboard-inviterreferral-aggregate-semantics",
+      "title": "[A4] Dashboard inviter/referral aggregate semantics",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-01",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A6",
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A5",
+      "id": "6bd3ac6a-adaa-49bf-a971-2758e8ee2d68",
+      "identifier": "MAN-19",
+      "url": "https://linear.app/mandays-labs/issue/MAN-19/a5-visitor-metric-pagination-metricidentity-sortsearch-revenue",
+      "title": "[A5] Visitor metric pagination, metric/identity sort/search, revenue hydration and rich detail",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-01",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A4",
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A6",
+      "id": "b636fb17-3ba2-4433-9a52-e531862c9a34",
+      "identifier": "MAN-20",
+      "url": "https://linear.app/mandays-labs/issue/MAN-20/a6-merge-aware-unique-visitors-in-warehouse-analytics",
+      "title": "[A6] Merge-aware unique visitors in warehouse analytics",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-18",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A7",
+      "id": "ea1f3e07-34bb-4352-944f-fa07ef9f8513",
+      "identifier": "MAN-21",
+      "url": "https://linear.app/mandays-labs/issue/MAN-21/a7-retained-link-csv-counters",
+      "title": "[A7] Retained link CSV counters",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-15",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A4",
+        "RUST-A5",
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A8",
+      "id": "516d32be-72ea-43a7-a9c8-41cfcd0931b4",
+      "identifier": "MAN-22",
+      "url": "https://linear.app/mandays-labs/issue/MAN-22/a8-range-sensitive-usage-csv-daily-active-users-and-empty-period-fill",
+      "title": "[A8] Range-sensitive usage CSV, daily active users and empty-period fill",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-15",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-A6",
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A9",
+      "id": "af5adc67-07fc-453b-93da-322e08c233e2",
+      "identifier": "MAN-23",
+      "url": "https://linear.app/mandays-labs/issue/MAN-23/a9-expired-migration-negative-cache-pruning",
+      "title": "[A9] Expired migration negative-cache pruning",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-A10",
+      "id": "b1f53b5b-4dba-4e59-9d49-a53e9ccaafa2",
+      "identifier": "MAN-24",
+      "url": "https://linear.app/mandays-labs/issue/MAN-24/a10-runtime-table-data-deletion-grant",
+      "title": "[A10] Runtime table-data deletion grant",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-09-27",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C1",
+      "id": "645cc6e8-d6e1-48f5-a8ce-daeb2047f7e7",
+      "identifier": "MAN-25",
+      "url": "https://linear.app/mandays-labs/issue/MAN-25/c1-routed-sdk-support-for-raw-play-install-referrer-and-bare-migration",
+      "title": "[C1] Routed SDK support for raw Play Install Referrer and bare migration slug",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-11",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C2",
+      "id": "63da621b-fc36-49f1-ac8e-762d5d87363b",
+      "identifier": "MAN-26",
+      "url": "https://linear.app/mandays-labs/issue/MAN-26/c2-mcp-rich-linkcampaign-search-delegation",
+      "title": "[C2] MCP rich link/campaign search delegation",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-11",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C3",
+      "id": "5a66ff41-0b1e-48d5-a8cf-f3986311747e",
+      "identifier": "MAN-27",
+      "url": "https://linear.app/mandays-labs/issue/MAN-27/c3-uploaded-link-images-and-domain-branding-attachments",
+      "title": "[C3] Uploaded link images and domain branding attachments",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-C3-ASSETS",
+        "RUST-C3-BINDINGS",
+        "RUST-C3-CLEANUP",
+        "RUST-C5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C4",
+      "id": "d665cf3a-e4b0-4582-b4f5-40419d1ee409",
+      "identifier": "MAN-28",
+      "url": "https://linear.app/mandays-labs/issue/MAN-28/c4-tokenless-clipboard-project-activity-check",
+      "title": "[C4] Tokenless clipboard project-activity check",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-01",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-C5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C5",
+      "id": "568202b1-e17c-4b2c-b9f7-66adfafec346",
+      "identifier": "MAN-29",
+      "url": "https://linear.app/mandays-labs/issue/MAN-29/c5-mandatory-sdk-appplatform-configuration-gate",
+      "title": "[C5] Mandatory SDK app/platform configuration gate",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-09-27",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O1",
+      "id": "1d5810f7-9a97-41f7-94c0-eb3f2b2ad0cc",
+      "identifier": "MAN-30",
+      "url": "https://linear.app/mandays-labs/issue/MAN-30/o1-self-hosted-flag-automatically-closing-registration",
+      "title": "[O1] Self-hosted flag automatically closing registration",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-09-27",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O2",
+      "id": "b4eb1f1c-6073-4ad6-9321-a95ff2fdd725",
+      "identifier": "MAN-31",
+      "url": "https://linear.app/mandays-labs/issue/MAN-31/o2-retained-per-ip-request-throttles",
+      "title": "[O2] Retained per-IP request throttles",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-04",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O3",
+      "id": "e590e4dc-4189-4016-a9c0-8222593b6ac5",
+      "identifier": "MAN-32",
+      "url": "https://linear.app/mandays-labs/issue/MAN-32/o3-opentelemetryotlp-trace-integration-and-metrics-instrumentation",
+      "title": "[O3] OpenTelemetry/OTLP trace integration and metrics instrumentation",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-29",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-O3-METRICS",
+        "RUST-O3-TRACES"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O4",
+      "id": "a7125150-3c8d-4bb4-a562-eca9274ddd4e",
+      "identifier": "MAN-33",
+      "url": "https://linear.app/mandays-labs/issue/MAN-33/o4-deep-dependency-diagnostics-and-dedicated-diagnostics-key-contract",
+      "title": "[O4] Deep dependency diagnostics and dedicated diagnostics-key contract",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-29",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-O5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O5",
+      "id": "dea37852-19d2-4292-abe5-8cd352eec181",
+      "identifier": "MAN-34",
+      "url": "https://linear.app/mandays-labs/issue/MAN-34/o5-redis-tls-client-featuresconfiguration",
+      "title": "[O5] Redis TLS client features/configuration",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-09-27",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O6",
+      "id": "76afa399-2eb3-4484-a727-b5851a662954",
+      "identifier": "MAN-35",
+      "url": "https://linear.app/mandays-labs/issue/MAN-35/o6-atomic-initial-member-provisioning",
+      "title": "[O6] Atomic initial-member provisioning",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE",
+        "RUST-E4"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O7",
+      "id": "52416d23-6492-47ad-aada-b0db3f77bbf7",
+      "identifier": "MAN-36",
+      "url": "https://linear.app/mandays-labs/issue/MAN-36/o7-renaming-paired-projects-with-an-instance",
+      "title": "[O7] Renaming paired projects with an instance",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-M1",
+      "id": "a437e10d-f682-44be-8bb9-539b36287c48",
+      "identifier": "MAN-37",
+      "url": "https://linear.app/mandays-labs/issue/MAN-37/m1-rails-data-conversion-and-legacy-archive-recovery",
+      "title": "[M1] Rails data conversion and legacy archive recovery",
+      "status": "Backlog",
+      "priority": 4,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": null,
+      "milestone_id": null,
+      "parent_key": null,
+      "blocked_by_keys": [],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E8-STORAGE",
+      "id": "708222ec-b266-4bc5-8d00-14061a046c9a",
+      "identifier": "MAN-38",
+      "url": "https://linear.app/mandays-labs/issue/MAN-38/e8-audit-v2-immutable-storage-and-mixed-version-verifier",
+      "title": "[E8] Audit v2 immutable storage and mixed-version verifier",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-10-25",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": "RUST-E8",
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E8-CONTEXT",
+      "id": "f2dec609-6af0-4294-a159-5e7f3765f5bb",
+      "identifier": "MAN-39",
+      "url": "https://linear.app/mandays-labs/issue/MAN-39/e8-audit-request-context-actor-snapshots-failures-and-redacted-diffs",
+      "title": "[E8] Audit request context, actor snapshots, failures and redacted diffs",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-22",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-E8",
+      "blocked_by_keys": [
+        "RUST-E8-STORAGE",
+        "RUST-O2"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E9-ENVELOPE",
+      "id": "f17f23e5-971a-41bb-adf0-ec75d9646b22",
+      "identifier": "MAN-40",
+      "url": "https://linear.app/mandays-labs/issue/MAN-40/e9-encrypted-tenant-credential-envelope-resolver-and-lifecycle",
+      "title": "[E9] Encrypted tenant credential envelope, resolver and lifecycle",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-01",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": "RUST-E9",
+      "blocked_by_keys": [
+        "RUST-E2",
+        "RUST-E3",
+        "RUST-E8-STORAGE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E9-SSO",
+      "id": "b9bde99b-2057-40ad-83d3-1928d1b87c5b",
+      "identifier": "MAN-41",
+      "url": "https://linear.app/mandays-labs/issue/MAN-41/e9-tenant-sso-issuerclient-secret-administration-and-rotation",
+      "title": "[E9] Tenant SSO issuer/client secret administration and rotation",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-01",
+      "milestone_id": "c1766a95-6b65-4b66-b33c-d711c313f048",
+      "parent_key": "RUST-E9",
+      "blocked_by_keys": [
+        "RUST-E5",
+        "RUST-E9-ENVELOPE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E9-PUSH",
+      "id": "8f8905f7-2b60-4b2e-a408-cb9a13639459",
+      "identifier": "MAN-42",
+      "url": "https://linear.app/mandays-labs/issue/MAN-42/e9-tenant-fcmapns-credentials-including-certificate-mode",
+      "title": "[E9] Tenant FCM/APNs credentials including certificate mode",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-22",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-E9",
+      "blocked_by_keys": [
+        "RUST-E9-ENVELOPE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-E9-STORES",
+      "id": "7dd69fe6-4e9a-4f3b-8c61-3b25fed7ec3a",
+      "identifier": "MAN-43",
+      "url": "https://linear.app/mandays-labs/issue/MAN-43/e9-tenant-applegoogle-store-server-credentials-and-rotation",
+      "title": "[E9] Tenant Apple/Google store server credentials and rotation",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-22",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-E9",
+      "blocked_by_keys": [
+        "RUST-E9-ENVELOPE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C3-ASSETS",
+      "id": "d94cc4e5-9a23-44c3-9024-efc5832aa547",
+      "identifier": "MAN-44",
+      "url": "https://linear.app/mandays-labs/issue/MAN-44/c3-asset-metadata-and-safe-public-image-delivery",
+      "title": "[C3] Asset metadata and safe public image delivery",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-C3",
+      "blocked_by_keys": [
+        "RUST-C5"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C3-BINDINGS",
+      "id": "7ccdafb9-f164-4b36-81e6-18244e21d0fd",
+      "identifier": "MAN-45",
+      "url": "https://linear.app/mandays-labs/issue/MAN-45/c3-bind-uploaded-images-to-links-and-domain-branding",
+      "title": "[C3] Bind uploaded images to links and domain branding",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-C3",
+      "blocked_by_keys": [
+        "RUST-C3-ASSETS"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-C3-CLEANUP",
+      "id": "eb3990ec-5bfd-4fcf-84a3-0e3967bb9b2a",
+      "identifier": "MAN-46",
+      "url": "https://linear.app/mandays-labs/issue/MAN-46/c3-durable-cleanup-for-replaced-abandoned-and-deleted-assets",
+      "title": "[C3] Durable cleanup for replaced, abandoned and deleted assets",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-08",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-C3",
+      "blocked_by_keys": [
+        "RUST-C3-BINDINGS"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O3-TRACES",
+      "id": "e6d718f5-eda6-4787-8121-07d7d92db1e1",
+      "identifier": "MAN-47",
+      "url": "https://linear.app/mandays-labs/issue/MAN-47/o3-optional-otlp-export-and-correlated-requestworker-spans",
+      "title": "[O3] Optional OTLP export and correlated request/worker spans",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-29",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-O3",
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-O3-METRICS",
+      "id": "d7663fa8-699e-4210-a0c7-4576f9211a9a",
+      "identifier": "MAN-48",
+      "url": "https://linear.app/mandays-labs/issue/MAN-48/o3-required-operation-error-latency-and-queue-metrics",
+      "title": "[O3] Required operation, error, latency and queue metrics",
+      "status": "Backlog",
+      "priority": 3,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-29",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": "RUST-O3",
+      "blocked_by_keys": [
+        "RUST-O3-TRACES"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-BASELINE",
+      "id": "717f01c1-8817-43bd-8f8d-df1dc64bca8d",
+      "identifier": "MAN-5",
+      "url": "https://linear.app/mandays-labs/issue/MAN-5/capture-reviewed-baseline-and-shared-deterministic-fixture-contracts",
+      "title": "Capture reviewed baseline and shared deterministic fixture contracts",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-09-27",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-ACCESS",
+      "id": "083b645f-bbd2-44d2-a548-4ef17ca33397",
+      "identifier": "MAN-49",
+      "url": "https://linear.app/mandays-labs/issue/MAN-49/prepare-isolated-provider-sandboxes-client-builds-and-device-access",
+      "title": "Prepare isolated provider sandboxes, client builds and device access",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-09-27",
+      "milestone_id": "26fe7ab4-45f1-45a2-8bbc-a166c86a0b21",
+      "parent_key": null,
+      "blocked_by_keys": [],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-CONTRACTS",
+      "id": "996dfd06-d752-4969-bc18-6a98774983d4",
+      "identifier": "MAN-50",
+      "url": "https://linear.app/mandays-labs/issue/MAN-50/freeze-week-one-behavior-contracts-and-implement-agreed-lifecycle",
+      "title": "Freeze week-one behavior contracts and implement agreed lifecycle decisions",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-29",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-CHECKPOINTS",
+      "id": "739c4498-9711-4556-822f-9a240ff4274f",
+      "identifier": "MAN-51",
+      "url": "https://linear.app/mandays-labs/issue/MAN-51/reforecast-solo-capacity-and-external-readiness-at-release-checkpoints",
+      "title": "Reforecast solo capacity and external readiness at release checkpoints",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-11-29",
+      "milestone_id": "7b117a78-a1da-4a20-ba7b-519ff7147063",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-CANDIDATE",
+      "id": "2e4f438e-71ff-485b-99e3-7c27d37f7c37",
+      "identifier": "MAN-52",
+      "url": "https://linear.app/mandays-labs/issue/MAN-52/build-exact-candidate-and-run-complete-nativeconfigimage-gates",
+      "title": "Build exact candidate and run complete native/config/image gates",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-12-06",
+      "milestone_id": "fd0f9ac6-dd61-4da6-8de4-af0eeba1e8ef",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-BASELINE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-PROVIDERS",
+      "id": "ac1fdf3c-c342-4db8-9313-6f67cd417592",
+      "identifier": "MAN-56",
+      "url": "https://linear.app/mandays-labs/issue/MAN-56/validate-four-provider-combinations-and-live-identitypaymentpush",
+      "title": "Validate four provider combinations and live identity/payment/push services",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-12-06",
+      "milestone_id": "fd0f9ac6-dd61-4da6-8de4-af0eeba1e8ef",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-ACCESS",
+        "RUST-CANDIDATE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-CLIENTS",
+      "id": "adbd6891-4cea-4540-bb76-1923c91f8a07",
+      "identifier": "MAN-53",
+      "url": "https://linear.app/mandays-labs/issue/MAN-53/prove-supported-dashboard-android-ios-server-sdk-and-mcp-journeys",
+      "title": "Prove supported dashboard, Android, iOS, server SDK and MCP journeys",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-12-06",
+      "milestone_id": "fd0f9ac6-dd61-4da6-8de4-af0eeba1e8ef",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-ACCESS",
+        "RUST-CANDIDATE"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-RECOVERY",
+      "id": "7d3cdd77-e90f-4506-8e4e-960c00af840e",
+      "identifier": "MAN-54",
+      "url": "https://linear.app/mandays-labs/issue/MAN-54/measure-loadsoak-and-rehearse-native-backup-replay-and-image-rollback",
+      "title": "Measure load/soak and rehearse native backup, replay and image rollback",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-12-13",
+      "milestone_id": "fd0f9ac6-dd61-4da6-8de4-af0eeba1e8ef",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-CANDIDATE",
+        "RUST-CONTRACTS",
+        "RUST-PROVIDERS"
+      ],
+      "description_checked": true
+    },
+    {
+      "key": "RUST-RELEASE",
+      "id": "e5ba769e-5487-4d89-ae01-cd644b5a9dad",
+      "identifier": "MAN-55",
+      "url": "https://linear.app/mandays-labs/issue/MAN-55/review-release-evidence-and-execute-controlled-fresh-first-tenant",
+      "title": "Review release evidence and execute controlled fresh first-tenant rollout",
+      "status": "Backlog",
+      "priority": 2,
+      "assignee_id": "fe15b6a0-8882-4015-9121-467364eba0c4",
+      "due_date": "2026-12-20",
+      "milestone_id": "fd0f9ac6-dd61-4da6-8de4-af0eeba1e8ef",
+      "parent_key": null,
+      "blocked_by_keys": [
+        "RUST-CANDIDATE",
+        "RUST-CHECKPOINTS",
+        "RUST-CLIENTS",
+        "RUST-PROVIDERS",
+        "RUST-RECOVERY"
+      ],
+      "description_checked": true
+    }
+  ],
+  "schema_version": 1,
+  "description_mode": "Condensed acceptance criteria in Linear; expanded implementation checklists in LINEAR_TASKS.json.",
+  "verification_method": "Independent Linear MCP readback of all 52 issues and native relationships; root comparison of keys/titles/owner/status/priority/dates/parents/blockers against the prepared payload; browser inspection of all 52 links and final four description corrections.",
+  "mcp_readback_at": "2026-09-20T04:16:37Z",
+  "resolved_mismatches": [
+    {
+      "key": "RUST-ACCESS",
+      "identifier": "MAN-49",
+      "field": "description.provider_scope",
+      "expected": "PostgreSQL 18.6 staging/backup resources.",
+      "actual": "Generic provider/client/device access; PostgreSQL 18.6 is not specified.",
+      "reread_unchanged": true,
+      "resolution": "Appended explicit acceptance section verbatim; independently reread the saved issue description through the browser.",
+      "resolved_at": "2026-09-20T04:25:14+00:00"
+    },
+    {
+      "key": "RUST-CANDIDATE",
+      "identifier": "MAN-52",
+      "field": "description.database_scope",
+      "expected": "PostgreSQL 18.6; fresh SQLx migration, repeat invocation and restart preserving persistent native data.",
+      "actual": "Requires migrations/restart proof and recorded versions, but omits PostgreSQL 18.6 and explicit fresh SQLx/repeat-invocation/data-preservation criteria.",
+      "reread_unchanged": true,
+      "resolution": "Appended explicit acceptance section verbatim; independently reread the saved issue description through the browser.",
+      "resolved_at": "2026-09-20T04:25:14+00:00"
+    },
+    {
+      "key": "RUST-PROVIDERS",
+      "identifier": "MAN-56",
+      "field": "description.provider_matrix",
+      "expected": "ClickHouse+MinIO, BigQuery/PubSub+MinIO, ClickHouse+GCS and BigQuery/PubSub+GCS.",
+      "actual": "Requires four combinations and live provider proof, but does not identify the warehouse/storage combinations.",
+      "reread_unchanged": true,
+      "resolution": "Appended explicit acceptance section verbatim; independently reread the saved issue description through the browser.",
+      "resolved_at": "2026-09-20T04:25:14+00:00"
+    },
+    {
+      "key": "RUST-RECOVERY",
+      "identifier": "MAN-54",
+      "field": "description.native_restore",
+      "expected": "Clean native PostgreSQL, encryption-key and selected object-storage restore with reconciliation and measured RPO/RTO.",
+      "actual": "Title specifies native backup/replay/image rollback; description requires generic recovery proof without explicit clean restore or its required contents. Native restore remains mandatory in M1 and other shared descriptions.",
+      "reread_unchanged": true,
+      "resolution": "Appended explicit acceptance section verbatim; independently reread the saved issue description through the browser.",
+      "resolved_at": "2026-09-20T04:25:14+00:00"
+    }
+  ],
+  "description_corrections_verified": [
+    "MAN-49",
+    "MAN-52",
+    "MAN-56",
+    "MAN-54"
+  ]
+}
