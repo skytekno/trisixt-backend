@@ -8,9 +8,12 @@
     ".env.test",
     ".gitattributes",
     ".gitignore",
+    ".commitlintrc.json",
+    ".release-please-manifest.json",
     ".rubocop.yml",
     "Cargo.lock",
     "Cargo.toml",
+    "CHANGELOG.md",
     "Dockerfile",
     "Gemfile",
     "Gemfile.lock",
@@ -27,11 +30,15 @@
     "docker-compose.test.yml",
     "run_clickhouse.sh",
     "run_sidekiq.sh",
-    "rust-toolchain.toml"
+    "rust-toolchain.toml",
+    "package.json",
+    "package-lock.json",
+    "release-please-config.json"
   ],
   "include_directories": [
     ".githooks",
     ".github",
+    ".husky",
     "app",
     "bin",
     "config",
@@ -63,6 +70,7 @@
     "secrets": "operator_credentials"
   },
   "exclude_paths": {
+    ".husky/_": "generated_local_git_hook_wrappers",
     "db/GeoLite2-City.mmdb": "separately_provisioned_geoip_database",
     "config/master.key": "operator_credentials",
     "config/deploy.yml": "operator_deployment_config",

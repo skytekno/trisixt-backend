@@ -1,24 +1,177 @@
-name: Rust validation
+name: CI
 on:
-  push:
   pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+  workflow_call:
 permissions:
   contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+env:
+  CARGO_TERM_COLOR: always
+  HUSKY: '0'
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
+  commits:
+    name: Commit standards
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.98.1
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Validate squash commit contract
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python3 scripts/check-commit-message.py
+  lint:
+    name: Lint and static analysis
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e # 1.98.1
+        with:
+          toolchain: 1.98.1
           components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
-      - run: cargo install --locked cargo-audit
-      - name: Validate deployment contracts
-        run: scripts/validate-config.sh --terraform
-      - run: scripts/check.sh
-      - name: Build production image
-        run: docker build --tag trisixt-ci:local .
-      - name: Smoke test production image
-        run: IMAGE_NAME=trisixt-ci:local scripts/image-smoke.sh
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --locked --all-targets --all-features -- -D warnings
+      - run: scripts/validate-config.sh --terraform
+      - name: Existing migrations must be immutable
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          changes=$(git diff --name-status --no-renames "$BASE_SHA" "$HEAD_SHA" -- migrations/)
+          if printf '%s\n' "$changes" | grep -Eq '^[MDT]'; then
+            echo 'Existing migrations cannot be edited or removed. Add a new migration.' >&2
+            exit 1
+          fi
+  security:
+    name: Dependency audit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e # 1.98.1
+        with:
+          toolchain: 1.98.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm audit --audit-level=high
+      - run: cargo install cargo-audit --version 0.22.2 --locked
+      - run: cargo audit --deny warnings
+  tests:
+    name: Unit and integration tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: trisixt
+          POSTGRES_PASSWORD: trisixt
+          POSTGRES_DB: trisixt_test
+        ports: ['55436:5432']
+        options: >-
+          --health-cmd "pg_isready -U trisixt -d trisixt_test"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e # 1.98.1
+        with:
+          toolchain: 1.98.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - run: python3 -m unittest discover -s scripts/tests -p 'test_*.py'
+      - run: cargo test --locked --lib --all-features
+      - name: PostgreSQL, Redis, ClickHouse and MinIO integration
+        env:
+          TEST_EXTERNAL_POSTGRES: '1'
+          TEST_DATABASE_URL: postgresql://trisixt:trisixt@127.0.0.1:55436/trisixt_test
+          TEST_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+          TEST_COMPOSE_PROJECT: trisixt-ci-${{ github.run_id }}-${{ github.run_attempt }}
+        run: scripts/integration.sh
+  migrations:
+    name: Migration dry run
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:18.6
+        env:
+          POSTGRES_USER: trisixt
+          POSTGRES_PASSWORD: trisixt
+          POSTGRES_DB: trisixt_migrations
+        ports: ['55438:5432']
+        options: >-
+          --health-cmd "pg_isready -U trisixt -d trisixt_migrations"
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@ce678459e9fc7500d337468f904b95f1b5c10b5e # 1.98.1
+        with:
+          toolchain: 1.98.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+      - name: Apply and repeat migrations on a disposable database
+        env:
+          DATABASE_URL: postgresql://trisixt:trisixt@127.0.0.1:55438/trisixt_migrations
+          MIGRATION_CONTAINER: ${{ job.services.postgres.id }}
+        run: scripts/check-migrations.sh
+  image:
+    name: Container smoke test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          load: true
+          tags: trisixt-ci:local
+          cache-from: type=gha,scope=trisixt-ci
+          cache-to: type=gha,mode=max,scope=trisixt-ci
+      - run: IMAGE_NAME=trisixt-ci:local scripts/image-smoke.sh
+  required:
+    name: CI required
+    if: always()
+    needs: [commits, lint, security, tests, migrations, image]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Require every gate to pass
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PYCODE'
+          import json, os
+          results = json.loads(os.environ['RESULTS'])
+          failed = [name for name, job in results.items() if job['result'] != 'success']
+          if failed:
+              raise SystemExit('Failed or skipped gates: ' + ', '.join(failed))
+          PYCODE

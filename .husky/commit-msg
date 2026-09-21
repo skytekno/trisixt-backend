@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+set -eu
+if grep -Eiq '^[[:space:]]*Release-As:' "$1"; then
+  echo 'Release-As overrides are forbidden; use Conventional Commits.' >&2
+  exit 1
+fi
+./node_modules/.bin/commitlint --edit "$1"

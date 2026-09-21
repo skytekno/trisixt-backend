@@ -78,3 +78,4 @@ __pycache__/
 .bundle/
 node_modules/
 **/.DS_Store
+/.husky/_/

@@ -1,3 +1,4 @@
+# Deny by default: credentials, legacy code, test data, Git and npm stay out.
 **
 !Cargo.toml
 !Cargo.lock

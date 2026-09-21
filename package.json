@@ -1,0 +1,17 @@
+{
+  "name": "trisixt-repository-tooling",
+  "private": true,
+  "description": "Commit standards for the Rust backend; not a runtime dependency",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "commitlint": "commitlint"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "21.2.3",
+    "@commitlint/config-conventional": "21.2.3",
+    "husky": "9.1.7"
+  }
+}
