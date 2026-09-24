@@ -136,6 +136,18 @@ Update image digests, the Debian snapshot date, action SHAs and tooling lockfile
 through reviewed dependency-update PRs. Pinning prevents silent drift; it does
 not automatically apply future security fixes or prove byte-identical artifacts.
 
+When updating Terraform providers, record checksums for both the GitHub AMD64
+runner and local ARM64 Docker validation, then commit `.terraform.lock.hcl`:
+
+```sh
+docker run --rm -v "$PWD/deploy/google:/work" -w /work \
+  hashicorp/terraform:1.14 providers lock \
+  -platform=linux_amd64 -platform=linux_arm64
+```
+
+Validation keeps `-lockfile=readonly`, so each platform's unpacked provider
+checksum must already be present before CI initializes and validates it.
+
 ## 7. Production rollout contract
 
 These workflows provide CI, releases, and container delivery. They do not deploy
