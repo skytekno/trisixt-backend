@@ -12,3 +12,4 @@
 !ee/LICENSE
 !deploy/
 !deploy/redis.Dockerfile
+!deploy/minio.Dockerfile

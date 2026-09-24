@@ -148,6 +148,13 @@ docker run --rm -v "$PWD/deploy/google:/work" -w /work \
 Validation keeps `-lockfile=readonly`, so each platform's unpacked provider
 checksum must already be present before CI initializes and validates it.
 
+The test stack builds MinIO `RELEASE.2025-09-07T16-13-09Z` and its client
+`RELEASE.2025-08-13T08-35-41Z` with `deploy/minio.Dockerfile`. Their upstream
+container images are no longer publicly pullable. The build verifies pinned
+source archive checksums and retains those releases; `scripts/integration.sh`
+builds both targets before running the storage tests. Update the source pins and
+checksums together when intentionally changing either test dependency.
+
 ## 7. Production rollout contract
 
 These workflows provide CI, releases, and container delivery. They do not deploy
