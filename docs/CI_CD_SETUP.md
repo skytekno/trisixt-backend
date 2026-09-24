@@ -154,6 +154,10 @@ container images are no longer publicly pullable. The build verifies pinned
 source archive checksums and retains those releases; `scripts/integration.sh`
 builds both targets before running the storage tests. Update the source pins and
 checksums together when intentionally changing either test dependency.
+The compile layers remove Go module/build caches before they are committed.
+The hosted test job disables Rust debug-symbol output with
+`CARGO_PROFILE_TEST_DEBUG=0` while retaining debug assertions, and reports disk
+usage after the suite to make runner storage failures visible.
 
 ## 7. Production rollout contract
 

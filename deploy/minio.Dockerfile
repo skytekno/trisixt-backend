@@ -12,12 +12,11 @@ RUN curl --fail --location --show-error --retry 3 \
     && echo '8819e3e7817e46b7b3798f8f200ead208562e571563c2e040352378031abe9f2  source.tar.gz' | sha256sum -c - \
     && tar -xzf source.tar.gz --strip-components=1 \
     && rm source.tar.gz
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go mod download && go mod verify \
+RUN go mod download && go mod verify \
     && go build -p 2 -mod=readonly -trimpath -tags kqueue \
       -ldflags='-s -w -X github.com/minio/minio/cmd.Version=2025-09-07T16:13:09Z -X github.com/minio/minio/cmd.ReleaseTag=RELEASE.2025-09-07T16-13-09Z -X github.com/minio/minio/cmd.CopyrightYear=2025 -X github.com/minio/minio/cmd.CommitID=07c3a429bfed433e49018cb0f78a52145d4bedeb -X github.com/minio/minio/cmd.ShortCommitID=07c3a429bfed' \
-      -o /out/minio .
+      -o /out/minio . \
+    && go clean -cache -modcache
 
 FROM go-build AS mc-build
 # Pinned upstream release commit for RELEASE.2025-08-13T08-35-41Z.
@@ -26,12 +25,11 @@ RUN curl --fail --location --show-error --retry 3 \
     && echo '95cd293c7119f16921a6dc515a1fb74a2227f19fd994b9c8b770a154e802ac44  source.tar.gz' | sha256sum -c - \
     && tar -xzf source.tar.gz --strip-components=1 \
     && rm source.tar.gz
-RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go mod download && go mod verify \
+RUN go mod download && go mod verify \
     && go build -p 2 -mod=readonly -trimpath -tags kqueue \
       -ldflags='-s -w -X github.com/minio/mc/cmd.Version=2025-08-13T08:35:41Z -X github.com/minio/mc/cmd.ReleaseTag=RELEASE.2025-08-13T08-35-41Z -X github.com/minio/mc/cmd.CopyrightYear=2025 -X github.com/minio/mc/cmd.CommitID=7394ce0dd2a80935aded936b09fa12cbb3cb8096 -X github.com/minio/mc/cmd.ShortCommitID=7394ce0dd2a80' \
-      -o /out/mc .
+      -o /out/mc . \
+    && go clean -cache -modcache
 
 FROM debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS runtime
 ARG DEBIAN_SNAPSHOT=20260921T000000Z
