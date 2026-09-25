@@ -13,7 +13,7 @@ trap cleanup EXIT
 services=(redis clickhouse minio)
 if [[ "${TEST_EXTERNAL_POSTGRES:-0}" != 1 ]]; then services+=(postgres); fi
 "${compose[@]}" up --detach --build --wait "${services[@]}"
-"${compose[@]}" run --rm minio-init
+"${compose[@]}" run --build --rm minio-init
 export TEST_DATABASE_URL="${TEST_DATABASE_URL:-postgresql://trisixt:trisixt@127.0.0.1:${TEST_POSTGRES_PORT:-55436}/trisixt_test}"
 export TEST_REDIS_URL="${TEST_REDIS_URL:-redis://127.0.0.1:${TEST_REDIS_PORT:-56386}/0}"
 export TEST_CLICKHOUSE_URL="${TEST_CLICKHOUSE_URL:-http://trisixt:trisixt@127.0.0.1:${TEST_CLICKHOUSE_PORT:-58123}}"

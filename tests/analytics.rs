@@ -261,7 +261,8 @@ async fn golden_countable_users_install_requirement_platform_history_and_trends(
     let view = f.visitor().await;
     let custom = f.visitor().await;
     let referral = f.visitor().await;
-    let today = Utc::now().date_naive();
+    let now = Utc::now();
+    let today = now.date_naive();
     let at = (today - Duration::days(1))
         .and_hms_opt(12, 0, 0)
         .unwrap()
@@ -276,13 +277,9 @@ async fn golden_countable_users_install_requirement_platform_history_and_trends(
     f.event(cross, "install", at, json!({"platform":"ios"}))
         .await;
     f.event(new, "view", at, json!({"platform":"ios"})).await;
-    f.event(
-        new,
-        "install",
-        today.and_hms_opt(1, 0, 0).unwrap().and_utc(),
-        json!({"platform":"ios"}),
-    )
-    .await;
+    // A fixed hour today can exceed the SDK's future timestamp limit near midnight.
+    f.event(new, "install", now, json!({"platform":"ios"}))
+        .await;
     f.event(view, "view", at, json!({"platform":"ios"})).await;
     f.event(custom, "custom_only", at, json!({"platform":"ios"}))
         .await;

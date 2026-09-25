@@ -136,6 +136,29 @@ Update image digests, the Debian snapshot date, action SHAs and tooling lockfile
 through reviewed dependency-update PRs. Pinning prevents silent drift; it does
 not automatically apply future security fixes or prove byte-identical artifacts.
 
+When updating Terraform providers, record checksums for both the GitHub AMD64
+runner and local ARM64 Docker validation, then commit `.terraform.lock.hcl`:
+
+```sh
+docker run --rm -v "$PWD/deploy/google:/work" -w /work \
+  hashicorp/terraform:1.14 providers lock \
+  -platform=linux_amd64 -platform=linux_arm64
+```
+
+Validation keeps `-lockfile=readonly`, so each platform's unpacked provider
+checksum must already be present before CI initializes and validates it.
+
+The test stack builds MinIO `RELEASE.2025-09-07T16-13-09Z` and its client
+`RELEASE.2025-08-13T08-35-41Z` with `deploy/minio.Dockerfile`. Their upstream
+container images are no longer publicly pullable. The build verifies pinned
+source archive checksums and retains those releases; `scripts/integration.sh`
+builds both targets before running the storage tests. Update the source pins and
+checksums together when intentionally changing either test dependency.
+The compile layers remove Go module/build caches before they are committed.
+The hosted test job disables Rust debug-symbol output with
+`CARGO_PROFILE_TEST_DEBUG=0` while retaining debug assertions, and reports disk
+usage after the suite to make runner storage failures visible.
+
 ## 7. Production rollout contract
 
 These workflows provide CI, releases, and container delivery. They do not deploy
