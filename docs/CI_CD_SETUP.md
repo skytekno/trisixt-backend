@@ -154,6 +154,16 @@ container images are no longer publicly pullable. The build verifies pinned
 source archive checksums and retains those releases; `scripts/integration.sh`
 builds both targets before running the storage tests. Update the source pins and
 checksums together when intentionally changing either test dependency.
+CI uses Buildx Bake with the test Compose file to build Redis, MinIO, and the
+MinIO client together and load them into Docker. Each target has a separate
+GitHub Actions cache scope (`trisixt-test-redis`, `trisixt-test-minio`, and
+`trisixt-test-mc`); `mode=max` preserves the source compilation layers. Dockerfile
+or base-image changes invalidate the affected layers normally. The first run
+populates these caches; later runs reuse them while still executing every test.
+CI then sets `TEST_PREBUILT_IMAGES=1`: the integration runner verifies all three
+images exist and starts them without rebuilding. Leave this unset for local runs
+to build the images automatically. Caches contain image layers only, never test
+databases or service volumes; the disposable stack is recreated on every run.
 The compile layers remove Go module/build caches before they are committed.
 The hosted test job disables Rust debug-symbol output with
 `CARGO_PROFILE_TEST_DEBUG=0` while retaining debug assertions, and reports disk
