@@ -65,6 +65,11 @@ one-time open-event behavior, including when `ct` is inside the referring URL.
 
 ## Verification
 
+`POST /api/v1/sdk/clipboard_status` accepts `{}` for a project activity hint
+before the client reads the clipboard. Explicit tokens retain their availability
+check. See [clipboard activity](CLIPBOARD_ACTIVITY.md) for eligibility, the
+48-hour window, response shapes, and the client privacy acceptance gate.
+
 `tests/sdk_configuration_gate.rs` exercises the actual router and PostgreSQL. Negative requests compare complete rows across identity, event/outbox, attribution, link/import, notification, purchase, quota, rate-limit, and audit tables. It also covers valid clients, server callers, and internal delegation. Existing suites configure their apps explicitly.
 
 Run the complete local suite with `scripts/check.sh`. Actual supported SDK/device builds and live cloud provider acceptance remain separate release gates described in [TESTING_GUIDE.md](TESTING_GUIDE.md).

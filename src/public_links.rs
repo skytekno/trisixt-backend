@@ -567,7 +567,17 @@ pub async fn render(
             }
         }
     }
-    let mut response = if crawler || preview || show || generated || deep.is_some() {
+    let renders_page = crawler || preview || show || generated || deep.is_some();
+    if renders_page && copy && !disabled && matches!(p, "ios" | "android") && click.is_some() {
+        // Eligibility is a hint to check the clipboard, not proof that the
+        // browser completed a copy. Keep the newest activity under concurrent
+        // requests, including statements that started before a row-lock wait.
+        sqlx::query("INSERT INTO project_clipboard_activity(project_id,last_eligible_at) VALUES($1,statement_timestamp()) ON CONFLICT(project_id) DO UPDATE SET last_eligible_at=greatest(project_clipboard_activity.last_eligible_at,excluded.last_eligible_at)")
+            .bind(project)
+            .execute(&st.pg)
+            .await?;
+    }
+    let mut response = if renders_page {
         page(Page {
             title,
             subtitle,

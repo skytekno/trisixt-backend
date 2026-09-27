@@ -758,10 +758,26 @@ async fn clipboard_status(
 ) -> Api {
     let project = sdk.id;
     sdk.check_body(&body)?;
-    let token =
-        text(&body, "clipboard_token", 64)?.ok_or_else(|| bad("clipboard_token required"))?;
-    let available=sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM link_clicks WHERE project_id=$1 AND clipboard_hash=$2 AND handled_at IS NULL AND created_at>now()-interval '48 hours')").bind(project).bind(auth::token_hash(token)).fetch_one(&st.pg).await?;
-    Ok(Json(json!({"available":available})))
+    if !body.is_object() {
+        return Err(bad("JSON object required"));
+    }
+    if let Some(token) = text(&body, "clipboard_token", 64)? {
+        let available=sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM link_clicks WHERE project_id=$1 AND clipboard_hash=$2 AND handled_at IS NULL AND created_at>now()-interval '48 hours')").bind(project).bind(auth::token_hash(token)).fetch_one(&st.pg).await?;
+        return Ok(Json(json!({"available":available})));
+    }
+    // Use the same database clock as the public renderer; application-server
+    // clock skew must not extend or prematurely expire the activity window.
+    let activity = sqlx::query_as::<_, (chrono::DateTime<Utc>, chrono::DateTime<Utc>)>(
+        "SELECT last_eligible_at,now() FROM project_clipboard_activity WHERE project_id=$1",
+    )
+    .bind(project)
+    .fetch_optional(&st.pg)
+    .await?;
+    let active = activity.is_some_and(|(last, now)| clipboard_activity_active(last, now));
+    Ok(Json(json!({"clipboard_active":active})))
+}
+fn clipboard_activity_active(last: chrono::DateTime<Utc>, now: chrono::DateTime<Utc>) -> bool {
+    last <= now && last > now - chrono::Duration::hours(48)
 }
 async fn custom_event(
     State(st): State<AppState>,
@@ -822,6 +838,27 @@ pub fn router() -> Router<AppState> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn clipboard_activity_expires_at_exactly_48_hours() {
+        let now = "2026-09-27T12:00:00Z"
+            .parse::<chrono::DateTime<Utc>>()
+            .unwrap();
+        let boundary = now - chrono::Duration::hours(48);
+        assert!(clipboard_activity_active(now, now));
+        assert!(clipboard_activity_active(
+            boundary + chrono::Duration::microseconds(1),
+            now
+        ));
+        assert!(!clipboard_activity_active(boundary, now));
+        assert!(!clipboard_activity_active(
+            boundary - chrono::Duration::microseconds(1),
+            now
+        ));
+        assert!(!clipboard_activity_active(
+            now + chrono::Duration::microseconds(1),
+            now
+        ));
+    }
     #[test]
     fn trusted_proxy_uses_nearest_untrusted_hop_and_ignores_forged_prefix() {
         let proxy: IpAddr = "10.0.0.1".parse().unwrap();
