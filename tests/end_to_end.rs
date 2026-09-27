@@ -121,6 +121,15 @@ async fn http_ingestion_analytics_and_storage_flow() {
     )
     .await;
     let project = project["id"].as_str().unwrap();
+    json_request(
+        &client,
+        reqwest::Method::PUT,
+        format!("{base}/api/v1/projects/{project}/configurations/ios"),
+        Some(token),
+        json!({"enabled":true,"bundle_id":"com.example.app"}),
+        200,
+    )
+    .await;
     let key = json_request(
         &client,
         reqwest::Method::POST,
@@ -139,6 +148,8 @@ async fn http_ingestion_analytics_and_storage_flow() {
         let response = client
             .post(format!("{base}/api/v1/sdk/events"))
             .header("x-project-key", key)
+            .header("platform", "ios")
+            .header("identifier", "com.example.app")
             .json(&json!({"events":[event]}))
             .send()
             .await

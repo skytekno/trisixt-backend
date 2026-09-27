@@ -16,5 +16,5 @@ fi
 rustup show active-toolchain
 cargo fetch --locked
 docker compose up -d --build --wait postgres redis clickhouse minio
-docker compose run --rm minio-init
+docker compose run --build --rm minio-init
 cargo run --locked -- migrate

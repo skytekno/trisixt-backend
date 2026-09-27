@@ -108,8 +108,29 @@ jobs:
       - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
       - run: python3 -m unittest discover -s scripts/tests -p 'test_*.py'
       - run: cargo test --locked --lib --all-features
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Build and cache integration service images
+        uses: docker/bake-action@5be5f02ff8819ecd3092ea6b2e6261c31774f2b4 # v6
+        with:
+          source: .
+          files: docker-compose.test.yml
+          targets: |
+            redis
+            minio
+            minio-init
+          load: true
+          # Each image needs its own scope so exports cannot overwrite each other.
+          # Keep intermediate layers to reuse the pinned source compilations.
+          set: |
+            redis.cache-from=type=gha,scope=trisixt-test-redis
+            redis.cache-to=type=gha,mode=max,scope=trisixt-test-redis
+            minio.cache-from=type=gha,scope=trisixt-test-minio
+            minio.cache-to=type=gha,mode=max,scope=trisixt-test-minio
+            minio-init.cache-from=type=gha,scope=trisixt-test-mc
+            minio-init.cache-to=type=gha,mode=max,scope=trisixt-test-mc
       - name: PostgreSQL, Redis, ClickHouse and MinIO integration
         env:
+          TEST_PREBUILT_IMAGES: '1'
           TEST_EXTERNAL_POSTGRES: '1'
           TEST_DATABASE_URL: postgresql://trisixt:trisixt@127.0.0.1:55436/trisixt_test
           TEST_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}

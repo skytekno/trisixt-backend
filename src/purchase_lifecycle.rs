@@ -1326,9 +1326,11 @@ fn buy() -> String {
 }
 async fn reported_purchase(
     State(st): State<AppState>,
-    crate::auth::SdkProject(project): crate::auth::SdkProject,
-    Json(body): Json<ReportedPurchase>,
+    sdk: crate::auth::SdkProject,
+    Json(mut body): Json<ReportedPurchase>,
 ) -> Result<Json<Value>, AppError> {
+    let project = sdk.id;
+    body.platform = Some(sdk.platform(body.platform.as_deref(), "other")?.to_owned());
     if !st.config.ee_enabled {
         return Err(AppError::Forbidden);
     }

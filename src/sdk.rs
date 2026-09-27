@@ -157,11 +157,13 @@ pub async fn canonical(st: &AppState, project: Uuid, id: Uuid) -> Result<Uuid, A
 }
 async fn authenticate(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     ctx: ClientContext,
     headers: HeaderMap,
     Json(body): Json<Value>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_body(&body)?;
     object(&body)?;
     let ua = text(&body, "user_agent", 2048)?.unwrap_or(&ctx.user_agent);
     let version = text(&body, "app_version", 100)?.ok_or_else(|| bad("app_version required"))?;
@@ -182,7 +184,7 @@ async fn authenticate(
     if id.is_nil() {
         return Err(bad("invalid visitor_id"));
     }
-    let p = text(&body, "platform", 20)?.unwrap_or_else(|| platform(ua));
+    let p = sdk.platform(text(&body, "platform", 20)?, platform(ua))?;
     if !["ios", "android", "web", "desktop", "other"].contains(&p) {
         return Err(bad("invalid platform"));
     }
@@ -248,9 +250,10 @@ async fn authenticate(
 }
 async fn vendor(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     Query(q): Query<HashMap<String, String>>,
 ) -> Api {
+    let project = sdk.id;
     let vendor = q
         .get("vendor_id")
         .or(q.get("vendor"))
@@ -263,10 +266,11 @@ async fn vendor(
 }
 async fn get_attributes(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
     Query(q): Query<HashMap<String, String>>,
 ) -> Api {
+    let project = sdk.id;
     let id = visitor_id(&json!({"visitor_id":q.get("visitor_id")}), &headers)?;
     let id = canonical(&st, project, id).await?;
     let row=sqlx::query_scalar::<_,Value>("SELECT jsonb_build_object('visitor_id',id,'sdk_identifier',external_id,'attributes',attributes) FROM visitors WHERE project_id=$1 AND id=$2").bind(project).bind(id).fetch_optional(&st.pg).await?.ok_or(AppError::NotFound)?;
@@ -274,10 +278,12 @@ async fn get_attributes(
 }
 async fn set_attributes(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
     Json(body): Json<Value>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_body(&body)?;
     object(&body)?;
     let requested = visitor_id(&body, &headers)?;
     let attrs = body
@@ -315,11 +321,9 @@ async fn set_attributes(
     tx.commit().await?;
     Ok(Json(row))
 }
-async fn screens(
-    State(st): State<AppState>,
-    SdkProject(project): SdkProject,
-    Json(body): Json<Value>,
-) -> Api {
+async fn screens(State(st): State<AppState>, sdk: SdkProject, Json(body): Json<Value>) -> Api {
+    let project = sdk.id;
+    sdk.check_body(&body)?;
     let entries = body["screen_aliases"]
         .as_array()
         .filter(|a| !a.is_empty() && a.len() <= 200)
@@ -549,11 +553,14 @@ pub async fn record_click(
 }
 async fn resolve(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     ctx: ClientContext,
     headers: HeaderMap,
     Json(body): Json<Value>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_body(&body)?;
+    let p = sdk.platform(text(&body, "platform", 20)?, platform(&ctx.user_agent))?;
     object(&body)?;
     let visitor = canonical(&st, project, visitor_id(&body, &headers)?).await?;
     let exists = sqlx::query_scalar::<_, bool>(
@@ -688,7 +695,6 @@ async fn resolve(
         .await?
         .ok_or(AppError::NotFound)?,
     };
-    let p = text(&body, "platform", 20)?.unwrap_or_else(|| platform(&ctx.user_agent));
     if !matches!(p, "ios" | "android" | "web" | "desktop" | "other") {
         return Err(bad("invalid platform"));
     }
@@ -742,9 +748,11 @@ async fn resolve(
 }
 async fn clipboard_status(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     Json(body): Json<Value>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_body(&body)?;
     let token =
         text(&body, "clipboard_token", 64)?.ok_or_else(|| bad("clipboard_token required"))?;
     let available=sqlx::query_scalar::<_,bool>("SELECT EXISTS(SELECT 1 FROM link_clicks WHERE project_id=$1 AND clipboard_hash=$2 AND handled_at IS NULL AND created_at>now()-interval '48 hours')").bind(project).bind(auth::token_hash(token)).fetch_one(&st.pg).await?;
@@ -752,10 +760,12 @@ async fn clipboard_status(
 }
 async fn custom_event(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
     Json(body): Json<Value>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_body(&body)?;
     let visitor = canonical(&st, project, visitor_id(&body, &headers)?).await?;
     let name = text(&body, "event_name", 100)?
         .or(text(&body, "name", 100)?)
@@ -766,6 +776,7 @@ async fn custom_event(
         .cloned()
         .unwrap_or(json!({}));
     object(&props)?;
+    sdk.bind_event_platform(&mut props)?;
     props["event_name"] = json!(name);
     let id = body
         .get("event_id")

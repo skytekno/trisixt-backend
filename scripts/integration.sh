@@ -12,8 +12,20 @@ cleanup() {
 trap cleanup EXIT
 services=(redis clickhouse minio)
 if [[ "${TEST_EXTERNAL_POSTGRES:-0}" != 1 ]]; then services+=(postgres); fi
-"${compose[@]}" up --detach --build --wait "${services[@]}"
-"${compose[@]}" run --build --rm minio-init
+if [[ "${TEST_PREBUILT_IMAGES:-0}" == 1 ]]; then
+  # CI loads these images through Buildx with a persistent layer cache. Fail if
+  # any are missing instead of silently pulling a tag or rebuilding from source.
+  images=$("${compose[@]}" config --images redis minio minio-init)
+  while IFS= read -r image; do
+    docker image inspect "$image" >/dev/null
+  done <<< "$images"
+else
+  # Build all three targets together, including the client, before starting the
+  # stack. Local runs still pick up Dockerfile changes without extra commands.
+  "${compose[@]}" build redis minio minio-init
+fi
+"${compose[@]}" up --detach --no-build --wait "${services[@]}"
+"${compose[@]}" run --no-deps --pull never --rm minio-init
 export TEST_DATABASE_URL="${TEST_DATABASE_URL:-postgresql://trisixt:trisixt@127.0.0.1:${TEST_POSTGRES_PORT:-55436}/trisixt_test}"
 export TEST_REDIS_URL="${TEST_REDIS_URL:-redis://127.0.0.1:${TEST_REDIS_PORT:-56386}/0}"
 export TEST_CLICKHOUSE_URL="${TEST_CLICKHOUSE_URL:-http://trisixt:trisixt@127.0.0.1:${TEST_CLICKHOUSE_PORT:-58123}}"

@@ -101,7 +101,10 @@ impl Fixture {
             request = request.header("authorization", format!("Bearer {token}"));
         }
         if let Some(key) = key {
-            request = request.header("x-project-key", key);
+            request = request
+                .header("x-project-key", key)
+                .header("platform", "ios")
+                .header("identifier", "com.example.app");
         }
         let response = self
             .app
@@ -155,7 +158,14 @@ impl Fixture {
     async fn project(&self, token: &str, instance: Uuid) -> Uuid {
         let (status,value)=self.request("POST",&format!("/api/v1/instances/{instance}/projects"),Some(token),None,json!({"name":"Test project","environment":"production","domain":format!("{}.example.test",Uuid::new_v4().simple())})).await;
         assert_eq!(status, StatusCode::CREATED, "{value}");
-        Uuid::parse_str(value["id"].as_str().unwrap()).unwrap()
+        let project = Uuid::parse_str(value["id"].as_str().unwrap()).unwrap();
+        sqlx::query("INSERT INTO project_configurations(project_id,ios) VALUES($1,$2)")
+            .bind(project)
+            .bind(json!({"enabled":true,"bundle_id":"com.example.app"}))
+            .execute(&self.pool)
+            .await
+            .unwrap();
+        project
     }
     async fn finish(self) {
         self.pool.close().await;
@@ -586,7 +596,7 @@ async fn association_configs_and_concurrent_replays_are_scoped() {
         .await
         .unwrap();
     let path = format!("/api/v1/projects/{project}/configurations/ios");
-    let config = json!({"team_id":"ABCDEFGHIJ","bundle_id":"com.example.app","app_store_url":"https://apps.apple.com/app/example"});
+    let config = json!({"enabled":true,"team_id":"ABCDEFGHIJ","bundle_id":"com.example.app","app_store_url":"https://apps.apple.com/app/example"});
     assert_eq!(
         f.request("PUT", &path, Some(&other), None, config.clone())
             .await

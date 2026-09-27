@@ -86,6 +86,12 @@ impl Fixture {
             .await
             .unwrap();
         let project=sqlx::query_scalar("INSERT INTO projects(instance_id,domain,environment) VALUES($1,'messages.example.test','production') RETURNING id").bind(instance).fetch_one(&st.pg).await.unwrap();
+        sqlx::query("INSERT INTO project_configurations(project_id,ios) VALUES($1,$2)")
+            .bind(project)
+            .bind(json!({"enabled":true,"bundle_id":"com.example.app"}))
+            .execute(&st.pg)
+            .await
+            .unwrap();
         let owner = trisixt::accounts::issue_session(&st, user).await.unwrap()["token"]
             .as_str()
             .unwrap()
@@ -123,7 +129,10 @@ impl Fixture {
         if dashboard {
             builder = builder.header("authorization", format!("Bearer {}", self.owner))
         } else {
-            builder = builder.header("x-project-key", &self.key)
+            builder = builder
+                .header("x-project-key", &self.key)
+                .header("platform", "ios")
+                .header("identifier", "com.example.app")
         }
         let response = self
             .app

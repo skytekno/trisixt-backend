@@ -217,11 +217,9 @@ async fn generate(State(st): State<AppState>, headers: HeaderMap, Json(v): Json<
     let p = server_project(&st, &headers).await?;
     Ok(Json(build_link(&st, p, v).await?))
 }
-async fn sdk_create(
-    State(st): State<AppState>,
-    SdkProject(p): SdkProject,
-    Json(v): Json<Value>,
-) -> Api {
+async fn sdk_create(State(st): State<AppState>, sdk: SdkProject, Json(v): Json<Value>) -> Api {
+    let p = sdk.id;
+    sdk.check_body(&v)?;
     Ok(Json(build_link(&st, p, v).await?))
 }
 async fn link_row(st: &AppState, p: Uuid, path: &str) -> Result<Value, AppError> {
