@@ -101,6 +101,15 @@ impl Fixture {
             .await
             .unwrap();
         let project=sqlx::query_scalar::<_,Uuid>("INSERT INTO projects(id,instance_id,environment,domain,name) VALUES($1,$2,'production','fixture.example.test','Fixture') RETURNING id").bind(project).bind(instance).fetch_one(&pool).await.unwrap();
+        sqlx::query("INSERT INTO project_configurations(project_id,ios,android,web,desktop) VALUES($1,$2,$3,$4,$5)")
+            .bind(project)
+            .bind(json!({"enabled":true,"bundle_id":"com.example.app"}))
+            .bind(json!({"enabled":true,"package_name":"com.example.app"}))
+            .bind(json!({"enabled":true,"domains":["fixture.example.test"]}))
+            .bind(json!({"enabled":true}))
+            .execute(&pool)
+            .await
+            .unwrap();
         let (token, hash) = trisixt::auth::new_token();
         sqlx::query("INSERT INTO access_tokens(user_id,token_hash,expires_at) VALUES($1,$2,now()+interval '1 hour')").bind(user).bind(hash).execute(&pool).await.unwrap();
         let (key, hash) = trisixt::auth::new_token();
@@ -137,7 +146,42 @@ impl Fixture {
         token: &str,
         key: &str,
     ) -> (StatusCode, Value, HeaderMap) {
-        let response=self.app.clone().oneshot(Request::builder().method(method).uri(path).header("authorization",format!("Bearer {token}")).header("x-project-key",key).header("content-type","application/json").header("host","fixture.example.test").header("user-agent","Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15").extension(axum::extract::ConnectInfo("127.0.0.1:55222".parse::<std::net::SocketAddr>().unwrap())).body(Body::from(body.to_string())).unwrap()).await.unwrap();
+        // These fixtures represent configured clients; negative authentication
+        // tests build their own requests without these declarations.
+        let platform = body["platform"]
+            .as_str()
+            .or(body["properties"]["platform"].as_str())
+            .or(body["events"][0]["properties"]["platform"].as_str())
+            .unwrap_or("ios");
+        let identifier = if platform == "web" {
+            "fixture.example.test"
+        } else {
+            "com.example.app"
+        };
+        let mut request = Request::builder()
+            .method(method)
+            .uri(path)
+            .header("authorization", format!("Bearer {token}"))
+            .header("x-project-key", key)
+            .header("x-sdk-platform", platform)
+            .header("content-type", "application/json")
+            .header("host", "fixture.example.test")
+            .header(
+                "user-agent",
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15",
+            )
+            .extension(axum::extract::ConnectInfo(
+                "127.0.0.1:55222".parse::<std::net::SocketAddr>().unwrap(),
+            ));
+        if !matches!(platform, "desktop" | "mac" | "windows" | "linux") {
+            request = request.header("x-sdk-identifier", identifier);
+        }
+        let response = self
+            .app
+            .clone()
+            .oneshot(request.body(Body::from(body.to_string())).unwrap())
+            .await
+            .unwrap();
         let status = response.status();
         let headers = response.headers().clone();
         let bytes = to_bytes(response.into_body(), 2_000_000).await.unwrap();

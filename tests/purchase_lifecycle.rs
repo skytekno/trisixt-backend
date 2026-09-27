@@ -66,6 +66,8 @@ async fn payment(app: &Router, key: &str, value: Value) -> (StatusCode, Value) {
                 .method("POST")
                 .uri("/api/v1/sdk/add_payment_event")
                 .header("x-project-key", key)
+                .header("platform", "ios")
+                .header("identifier", "com.example.app")
                 .header("content-type", "application/json")
                 .body(Body::from(value.to_string()))
                 .unwrap(),
@@ -86,6 +88,12 @@ async fn sdk_reported_payments_signed_refunds_metadata_and_retry_persistence() {
             .await
             .unwrap();
     let project:Uuid=sqlx::query_scalar("INSERT INTO projects(instance_id,environment,domain) VALUES($1,'production','life.example.test') RETURNING id").bind(instance).fetch_one(&st.pg).await.unwrap();
+    sqlx::query("INSERT INTO project_configurations(project_id,ios) VALUES($1,$2)")
+        .bind(project)
+        .bind(json!({"enabled":true,"bundle_id":"com.example.app"}))
+        .execute(&st.pg)
+        .await
+        .unwrap();
     let key = "7".repeat(64);
     sqlx::query("INSERT INTO project_api_keys(project_id,name,token_hash) VALUES($1,'test',$2)")
         .bind(project)

@@ -158,6 +158,7 @@ async fn archive(
 }
 
 #[derive(Deserialize, Default)]
+#[serde(deny_unknown_fields)]
 struct VisitorQuery {
     visitor_id: Option<Uuid>,
     #[serde(default = "one")]
@@ -200,42 +201,62 @@ async fn visitor_messages(
     check_visitor(st, project, visitor).await?;
     // Reads also perform bounded fanout for this visitor, avoiding a worker-latency race after SDK registration.
     fanout_for_visitor(st, project, visitor).await?;
-    let rows=sqlx::query_scalar::<_,Value>("SELECT jsonb_build_object('id',m.id,'read',m.read,'notification_id',n.id,'title',n.title,'subtitle',n.subtitle,'auto_display',n.auto_display,'updated_at',m.updated_at,'access_url','/mm/'||n.id::text) FROM notification_messages m JOIN notifications n ON n.id=m.notification_id WHERE m.project_id=$1 AND m.visitor_id=$2 AND NOT n.archived AND (NOT $3 OR (NOT m.read AND n.auto_display)) AND ($4::text IS NULL OR cardinality(n.platforms)=0 OR $4=ANY(n.platforms) OR ($4 IN('windows','mac','linux','other') AND 'web'=ANY(n.platforms))) ORDER BY m.created_at DESC,m.id LIMIT 100 OFFSET $5").bind(project).bind(visitor).bind(automatic).bind(q.platform).bind((q.page.clamp(1,1_000_000)-1)*100).fetch_all(&st.pg).await?;
+    let rows=sqlx::query_scalar::<_,Value>("SELECT jsonb_build_object('id',m.id,'read',m.read,'notification_id',n.id,'title',n.title,'subtitle',n.subtitle,'auto_display',n.auto_display,'updated_at',m.updated_at,'access_url','/mm/'||n.id::text) FROM notification_messages m JOIN notifications n ON n.id=m.notification_id WHERE m.project_id=$1 AND m.visitor_id=$2 AND NOT n.archived AND (NOT $3 OR (NOT m.read AND n.auto_display)) AND ($4::text IS NULL OR cardinality(n.platforms)=0 OR $4=ANY(n.platforms) OR ($4 IN('desktop','windows','mac','linux','other') AND 'web'=ANY(n.platforms))) ORDER BY m.created_at DESC,m.id LIMIT 100 OFFSET $5").bind(project).bind(visitor).bind(automatic).bind(q.platform).bind((q.page.clamp(1,1_000_000)-1)*100).fetch_all(&st.pg).await?;
     Ok(Json(json!({"notifications":rows})))
 }
 async fn sdk_list(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
-    Query(q): Query<VisitorQuery>,
+    Query(mut q): Query<VisitorQuery>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_platform(q.platform.as_deref())?;
+    if q.platform.is_none() {
+        q.platform = sdk.declared_platform().map(str::to_owned);
+    }
     let visitor = visitor_id(&headers, &q)?;
     visitor_messages(&st, project, visitor, q, false).await
 }
 async fn sdk_list_post(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
-    Json(q): Json<VisitorQuery>,
+    Json(mut q): Json<VisitorQuery>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_platform(q.platform.as_deref())?;
+    if q.platform.is_none() {
+        q.platform = sdk.declared_platform().map(str::to_owned);
+    }
     let visitor = visitor_id(&headers, &q)?;
     visitor_messages(&st, project, visitor, q, false).await
 }
 async fn automatic(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
-    Query(q): Query<VisitorQuery>,
+    Query(mut q): Query<VisitorQuery>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_platform(q.platform.as_deref())?;
+    if q.platform.is_none() {
+        q.platform = sdk.declared_platform().map(str::to_owned);
+    }
     let visitor = visitor_id(&headers, &q)?;
     visitor_messages(&st, project, visitor, q, true).await
 }
 async fn unread(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
-    Query(q): Query<VisitorQuery>,
+    Query(mut q): Query<VisitorQuery>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_platform(q.platform.as_deref())?;
+    if q.platform.is_none() {
+        q.platform = sdk.declared_platform().map(str::to_owned);
+    }
     let visitor = visitor_id(&headers, &q)?;
     check_visitor(&st, project, visitor).await?;
     fanout_for_visitor(&st, project, visitor).await?;
@@ -244,10 +265,15 @@ async fn unread(
 }
 async fn read(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     headers: HeaderMap,
-    Json(q): Json<VisitorQuery>,
+    Json(mut q): Json<VisitorQuery>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.check_platform(q.platform.as_deref())?;
+    if q.platform.is_none() {
+        q.platform = sdk.declared_platform().map(str::to_owned);
+    }
     let visitor = visitor_id(&headers, &q)?;
     let id =
         q.id.ok_or_else(|| AppError::BadRequest("id is required".into()))?;
@@ -320,11 +346,11 @@ async fn public_message(
 }
 
 async fn fanout_for_visitor(st: &AppState, project: Uuid, visitor: Uuid) -> Result<u64, AppError> {
-    let result=sqlx::query("INSERT INTO notification_messages(project_id,visitor_id,notification_id) SELECT n.project_id,v.id,n.id FROM notifications n JOIN visitors v ON v.project_id=n.project_id LEFT JOIN LATERAL(SELECT platform FROM devices WHERE project_id=v.project_id AND visitor_id=v.id ORDER BY updated_at DESC LIMIT 1)d ON true WHERE n.project_id=$1 AND v.id=$2 AND NOT n.archived AND n.scheduled_at<=now() AND ((n.new_users AND v.first_seen_at>=n.created_at) OR (n.existing_users AND v.first_seen_at<=n.scheduled_at)) AND (cardinality(n.platforms)=0 OR coalesce(d.platform,'web')=ANY(n.platforms) OR (coalesce(d.platform,'web') IN('web','windows','mac','linux','other') AND 'web'=ANY(n.platforms))) ORDER BY n.created_at LIMIT 1000 ON CONFLICT(notification_id,visitor_id) DO NOTHING").bind(project).bind(visitor).execute(&st.pg).await?;
+    let result=sqlx::query("INSERT INTO notification_messages(project_id,visitor_id,notification_id) SELECT n.project_id,v.id,n.id FROM notifications n JOIN visitors v ON v.project_id=n.project_id LEFT JOIN LATERAL(SELECT platform FROM devices WHERE project_id=v.project_id AND visitor_id=v.id ORDER BY updated_at DESC LIMIT 1)d ON true WHERE n.project_id=$1 AND v.id=$2 AND NOT n.archived AND n.scheduled_at<=now() AND ((n.new_users AND v.first_seen_at>=n.created_at) OR (n.existing_users AND v.first_seen_at<=n.scheduled_at)) AND (cardinality(n.platforms)=0 OR coalesce(d.platform,'web')=ANY(n.platforms) OR (coalesce(d.platform,'web') IN('web','desktop','windows','mac','linux','other') AND 'web'=ANY(n.platforms))) ORDER BY n.created_at LIMIT 1000 ON CONFLICT(notification_id,visitor_id) DO NOTHING").bind(project).bind(visitor).execute(&st.pg).await?;
     Ok(result.rows_affected())
 }
 pub async fn fanout_once(st: &AppState) -> Result<u64, AppError> {
-    let result=sqlx::query("INSERT INTO notification_messages(project_id,visitor_id,notification_id) SELECT n.project_id,v.id,n.id FROM notifications n JOIN visitors v ON v.project_id=n.project_id LEFT JOIN LATERAL(SELECT platform FROM devices WHERE project_id=v.project_id AND visitor_id=v.id ORDER BY updated_at DESC LIMIT 1)d ON true WHERE NOT n.archived AND n.scheduled_at<=now() AND ((n.new_users AND v.first_seen_at>=n.created_at) OR (n.existing_users AND v.first_seen_at<=n.scheduled_at)) AND (cardinality(n.platforms)=0 OR coalesce(d.platform,'web')=ANY(n.platforms) OR (coalesce(d.platform,'web') IN('web','windows','mac','linux','other') AND 'web'=ANY(n.platforms))) AND NOT EXISTS(SELECT 1 FROM notification_messages m WHERE m.notification_id=n.id AND m.visitor_id=v.id) ORDER BY n.created_at,v.id LIMIT 500 ON CONFLICT(notification_id,visitor_id) DO NOTHING").execute(&st.pg).await?;
+    let result=sqlx::query("INSERT INTO notification_messages(project_id,visitor_id,notification_id) SELECT n.project_id,v.id,n.id FROM notifications n JOIN visitors v ON v.project_id=n.project_id LEFT JOIN LATERAL(SELECT platform FROM devices WHERE project_id=v.project_id AND visitor_id=v.id ORDER BY updated_at DESC LIMIT 1)d ON true WHERE NOT n.archived AND n.scheduled_at<=now() AND ((n.new_users AND v.first_seen_at>=n.created_at) OR (n.existing_users AND v.first_seen_at<=n.scheduled_at)) AND (cardinality(n.platforms)=0 OR coalesce(d.platform,'web')=ANY(n.platforms) OR (coalesce(d.platform,'web') IN('web','desktop','windows','mac','linux','other') AND 'web'=ANY(n.platforms))) AND NOT EXISTS(SELECT 1 FROM notification_messages m WHERE m.notification_id=n.id AND m.visitor_id=v.id) ORDER BY n.created_at,v.id LIMIT 500 ON CONFLICT(notification_id,visitor_id) DO NOTHING").execute(&st.pg).await?;
     sqlx::query("INSERT INTO push_outbox(project_id,message_id,device_id) SELECT m.project_id,m.id,d.id FROM notification_messages m JOIN notifications n ON n.id=m.notification_id JOIN devices d ON d.project_id=m.project_id AND d.visitor_id=m.visitor_id WHERE n.send_push AND NOT n.archived AND d.push_token IS NOT NULL AND d.platform IN('ios','android') AND (cardinality(n.platforms)=0 OR d.platform=ANY(n.platforms)) AND NOT EXISTS(SELECT 1 FROM push_outbox o WHERE o.message_id=m.id AND o.device_id=d.id) ORDER BY m.created_at LIMIT 500 ON CONFLICT(message_id,device_id) DO NOTHING").execute(&st.pg).await?;
     Ok(result.rows_affected())
 }

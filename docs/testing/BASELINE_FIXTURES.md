@@ -82,7 +82,7 @@ omit them from saved JSON, logs and screenshots.
    Seed or set visitor attributes before ingestion so frozen event snapshots are
    predictable. Registration and device authentication themselves add no fixture
    event rows.
-6. Submit each project's initial events as one batch, then repeat the event named
+6. Submit each project's initial events in batches grouped by platform, then repeat the event named
    in `event_replays`. Before the optional merge stage, assert initial ledger and
    outbox counts. Provider runners should dispatch and independently confirm the
    initial event IDs in the selected warehouse before proceeding.
@@ -107,19 +107,24 @@ use an unscoped `DELETE`, bucket purge, or cloud-project cleanup as fixture clea
 ## Native request and response contracts
 
 JSON calls send `Content-Type: application/json`. Owner calls use
-`Authorization: Bearer <owner token>`; SDK calls use `x-project-key: <project key>`.
+`Authorization: Bearer <owner token>`; SDK calls use `x-project-key: <project key>`,
+the matching `platform`, and `identifier: <configured bundle ID or package name>`
+(`test.baseline.a` or `test.baseline.b` for the selected project). Device authentication
+uses iOS; event batches use their events' platform. The corresponding app configuration
+must have `enabled: true`. See the [SDK declaration contract](../SDK_CONFIGURATION.md)
+for other platforms and browser origins.
 When exercising domain routing, also send the selected project's `Host`. Owner
 credentials do not replace an SDK key. Tokens and keys are created at runtime.
 
 | Operation | Request | Response assertions |
 | --- | --- | --- |
 | Platform declaration | `PUT /api/v1/projects/{project}/configurations/{platform}`; matching `sdk_configurations[].request` | 200, project configuration object with saved platform data; foreign owner 403 |
-| SDK declaration read | `GET /api/v1/sdk/configurations`; SDK key | 200, saved project configuration; declaration enforcement is still C5 |
+| SDK declaration read | `GET /api/v1/sdk/configurations`; SDK key and matching declarations | 200, saved project configuration; missing, disabled, or mismatched app configuration returns 403 |
 | Visitor profile | `POST /api/v1/sdk/visitor_attributes`; existing `visitor_id`, `sdk_identifier`, `attributes` | 200, `visitor_id`, `sdk_identifier`, `attributes`; attributes replace the profile object |
 | Device authentication | `POST /api/v1/sdk/authenticate`; `sdk_authentication.request` | 200, matching `visitor_id`, generated `device_id`, `uri_scheme="baseline"`; same vendor/project reuses device and visitor |
 | Campaign | `POST /api/v1/projects/{project}/campaigns`; `campaigns[].request` | 201, campaign object with server `id` |
 | Link | `POST /api/v1/projects/{project}/links`; `links[].request` | 201, link object with server `id`; retain campaign/data/tracking fields |
-| Event batch | `POST /api/v1/sdk/events`; `{"events": [event.request, ...]}` | 200, A `{"accepted":4,"duplicates":0}` or B `{"accepted":2,"duplicates":0}` |
+| Event batch | `POST /api/v1/sdk/events`; `{"events": [event.request, ...]}` grouped by declared platform | 200 per batch; summed totals A `{"accepted":4,"duplicates":0}` or B `{"accepted":2,"duplicates":0}` |
 | Single event/replay | `POST /api/v1/sdk/event`; exact original `event.request` | 200, initial `accepted=1,duplicates=0` if not batched; replay `accepted=0,duplicates=1` |
 | Reported purchase | `POST /api/v1/sdk/add_payment_event`; `payments[].request` | 200, stable purchase `id`, `verified=false`, `source="sdk_reported"`; BUY replay has `duplicate=true`; adjustment replies need not expose `duplicate` |
 | Canonical explorer | `GET /api/v1/projects/{project}/analytics/events?from=...&to=...&include_count=true` | 200, `count=4` for A and `count=2` for B; `data` rows remain within selected project |
@@ -129,8 +134,8 @@ credentials do not replace an SDK key. Tokens and keys are created at runtime.
 
 `EventInput` denies unknown top-level fields. Its fields are `event_id`,
 `visitor_id`, `event_type`, `occurred_at` and object-valued `properties`. Do not
-invent top-level `app_id`, `platform`, `run_id` or `device_id` fields to make a
-planned gate pass. C5 owns any later gate-specific contract changes.
+invent top-level `app_id`, `platform`, `run_id` or `device_id` fields. The SDK
+declaration belongs in headers; any `properties.platform` must agree with it.
 
 Current source references: [core_api.rs](../../src/core_api.rs),
 [sdk.rs](../../src/sdk.rs), [auth.rs](../../src/auth.rs),

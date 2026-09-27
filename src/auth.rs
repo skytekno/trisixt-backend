@@ -2,7 +2,8 @@ use argon2::Argon2;
 use argon2::password_hash::rand_core::OsRng;
 use argon2::password_hash::{PasswordHash, PasswordHasher, PasswordVerifier, SaltString};
 use axum::extract::FromRequestParts;
-use axum::http::{header::AUTHORIZATION, request::Parts};
+use axum::http::{HeaderMap, header::AUTHORIZATION, request::Parts};
+use serde_json::Value;
 use sha2::{Digest, Sha256};
 use std::sync::{Arc, OnceLock};
 use uuid::Uuid;
@@ -156,21 +157,151 @@ pub async fn authorize_project(
 }
 
 #[derive(Debug, Clone)]
-pub struct SdkProject(pub Uuid);
+pub struct SdkProject {
+    pub id: Uuid,
+    declaration: Option<SdkDeclaration>,
+}
+
+#[derive(Debug, Clone)]
+struct SdkDeclaration {
+    platform: String,
+    identifier: Option<String>,
+    disabled_desktop_platforms: Vec<&'static str>,
+}
+
+/// Trusted in-process delegation. HTTP headers cannot create this extension.
 #[derive(Clone)]
-pub struct InternalSdkProject(pub SdkProject);
+pub struct InternalSdkProject(pub Uuid);
+
+fn sdk_platform(value: &str) -> Result<&'static str, AppError> {
+    match value.to_ascii_lowercase().as_str() {
+        "ios" => Ok("ios"),
+        "android" => Ok("android"),
+        "web" => Ok("web"),
+        "desktop" | "mac" | "windows" | "linux" => Ok("desktop"),
+        _ => Err(AppError::BadRequest("unsupported SDK platform".into())),
+    }
+}
+
+/// Reject ambiguous aliases and repeated headers instead of trusting the first.
+fn sdk_header<'a>(headers: &'a HeaderMap, names: &[&str]) -> Result<Option<&'a str>, AppError> {
+    let mut selected = None;
+    for name in names {
+        for value in headers.get_all(*name) {
+            let value = value
+                .to_str()
+                .ok()
+                .filter(|v| !v.is_empty() && *v == v.trim())
+                .ok_or_else(|| AppError::BadRequest("invalid SDK declaration header".into()))?;
+            if selected.is_some_and(|previous| previous != value) {
+                return Err(AppError::BadRequest(
+                    "conflicting SDK declaration headers".into(),
+                ));
+            }
+            selected = Some(value);
+        }
+    }
+    Ok(selected)
+}
+
+impl SdkProject {
+    /// The authenticated declaration, rather than the user agent, owns the
+    /// platform. Internal callers retain their existing platform fallback.
+    pub(crate) fn platform<'a>(
+        &'a self,
+        supplied: Option<&'a str>,
+        fallback: &'a str,
+    ) -> Result<&'a str, AppError> {
+        self.check_platform(supplied)?;
+        match &self.declaration {
+            Some(declaration) => sdk_platform(&declaration.platform),
+            None => Ok(supplied.unwrap_or(fallback)),
+        }
+    }
+
+    pub(crate) fn check_platform(&self, supplied: Option<&str>) -> Result<(), AppError> {
+        if let (Some(declaration), Some(supplied)) = (&self.declaration, supplied) {
+            if sdk_platform(supplied)? != sdk_platform(&declaration.platform)? {
+                return Err(AppError::Forbidden);
+            }
+            if declaration
+                .disabled_desktop_platforms
+                .contains(&supplied.to_ascii_lowercase().as_str())
+            {
+                return Err(AppError::Forbidden);
+            }
+            // A specific desktop client must not claim a different OS.
+            if matches!(declaration.platform.as_str(), "mac" | "windows" | "linux")
+                && supplied.to_ascii_lowercase() != declaration.platform
+                && !supplied.eq_ignore_ascii_case("desktop")
+            {
+                return Err(AppError::Forbidden);
+            }
+        }
+        Ok(())
+    }
+
+    pub(crate) fn check_body(&self, body: &Value) -> Result<(), AppError> {
+        let Some(declaration) = &self.declaration else {
+            return Ok(());
+        };
+        if let Some(platform) = body.get("platform") {
+            self.check_platform(Some(
+                platform
+                    .as_str()
+                    .ok_or_else(|| AppError::BadRequest("invalid SDK platform".into()))?,
+            ))?;
+        }
+        // sdk_identifier is a visitor's external identity, not an app ID.
+        for field in ["identifier", "bundle_id", "package_name", "origin"] {
+            if let Some(value) = body.get(field) {
+                let value = value.as_str().ok_or(AppError::Forbidden)?;
+                let matches = if declaration.platform == "web" {
+                    web_identifier(value).ok().as_ref() == declaration.identifier.as_ref()
+                } else {
+                    field != "origin" && declaration.identifier.as_deref() == Some(value)
+                };
+                if !matches {
+                    return Err(AppError::Forbidden);
+                }
+            }
+        }
+        Ok(())
+    }
+
+    pub(crate) fn declared_platform(&self) -> Option<&str> {
+        self.declaration.as_ref().map(|d| d.platform.as_str())
+    }
+
+    pub(crate) fn bind_event_platform(&self, properties: &mut Value) -> Result<(), AppError> {
+        if let Some(platform) = properties.get("platform") {
+            self.check_platform(Some(
+                platform
+                    .as_str()
+                    .ok_or_else(|| AppError::BadRequest("invalid event platform".into()))?,
+            ))?;
+        } else if let Some(platform) = self.declared_platform() {
+            if !properties.is_object() {
+                return Err(AppError::BadRequest(
+                    "event properties must be an object".into(),
+                ));
+            }
+            properties["platform"] = Value::String(platform.to_owned());
+        }
+        Ok(())
+    }
+}
 impl FromRequestParts<AppState> for SdkProject {
     type Rejection = AppError;
     async fn from_request_parts(parts: &mut Parts, state: &AppState) -> Result<Self, AppError> {
         if let Some(principal) = parts.extensions.get::<InternalSdkProject>() {
-            return Ok(principal.0.clone());
+            return Ok(Self {
+                id: principal.0,
+                declaration: None,
+            });
         }
 
-        let key = parts
-            .headers
-            .get("x-project-key")
-            .or_else(|| parts.headers.get("project-key"))
-            .and_then(|v| v.to_str().ok())
+        let key = sdk_header(&parts.headers, &["x-project-key", "project-key"])?
             .filter(|v| v.len() == 64)
             .ok_or(AppError::Unauthorized)?;
         let id = sqlx::query_scalar::<_, Uuid>(
@@ -180,62 +311,84 @@ impl FromRequestParts<AppState> for SdkProject {
         .fetch_optional(&state.pg)
         .await?
         .ok_or(AppError::Unauthorized)?;
-        let platform = parts
-            .headers
-            .get("x-sdk-platform")
-            .or_else(|| parts.headers.get("platform"))
-            .and_then(|h| h.to_str().ok());
-        let identifier = parts
-            .headers
-            .get("x-sdk-identifier")
-            .or_else(|| parts.headers.get("identifier"))
-            .and_then(|h| h.to_str().ok());
-        let origin = parts.headers.get("origin").and_then(|h| h.to_str().ok());
-        if platform.is_some() || origin.is_some() {
-            let configuration = sqlx::query_scalar::<_, serde_json::Value>(
-                "SELECT to_jsonb(c) FROM project_configurations c WHERE project_id=$1",
-            )
-            .bind(id)
-            .fetch_optional(&state.pg)
-            .await?
-            .unwrap_or_else(|| serde_json::json!({}));
-            if let Some(platform) = platform {
-                let platform = match platform.to_ascii_lowercase().as_str() {
-                    "ios" => "ios",
-                    "android" => "android",
-                    "web" => "web",
-                    "desktop" | "mac" | "windows" | "linux" => "desktop",
-                    _ => return Err(AppError::BadRequest("unsupported SDK platform".into())),
-                };
-                if configuration[platform]["enabled"] == false {
-                    return Err(AppError::Forbidden);
-                }
-                let expected = match platform {
-                    "ios" => configuration[platform]["bundle_id"].as_str(),
-                    "android" => configuration[platform]["package_name"].as_str(),
-                    _ => None,
-                };
-                if expected.is_some() && identifier != expected {
-                    return Err(AppError::Forbidden);
-                }
-                if platform == "web"
-                    && let Some(domains) = configuration["web"]["domains"].as_array()
-                {
-                    let claimed = identifier.or(origin).ok_or(AppError::Forbidden)?;
-                    if !web_domain_allowed(domains, claimed) {
-                        return Err(AppError::Forbidden);
-                    }
-                }
-            }
-            if let Some(origin) = origin
-                && let Some(domains) = configuration["web"]["domains"].as_array()
-                && (configuration["web"]["enabled"] == false
-                    || !web_domain_allowed(domains, origin))
-            {
-                return Err(AppError::Forbidden);
-            }
+        let platform = sdk_header(&parts.headers, &["x-sdk-platform", "platform"])?;
+        let identifier = sdk_header(&parts.headers, &["x-sdk-identifier", "identifier"])?;
+        let origin = sdk_header(&parts.headers, &["origin"])?;
+        if origin.is_some_and(|value| !value.contains("://") || web_identifier(value).is_err()) {
+            return Err(AppError::Forbidden);
         }
-        Ok(Self(id))
+        // A browser Origin is an unambiguous web declaration; a bare key or
+        // identifier is not enough to choose an app.
+        let platform = platform
+            .or(origin.map(|_| "web"))
+            .ok_or(AppError::Forbidden)?;
+        let family = sdk_platform(platform)?;
+        let configuration = sqlx::query_scalar::<_, Value>(
+            "SELECT to_jsonb(c) FROM project_configurations c WHERE project_id=$1",
+        )
+        .bind(id)
+        .fetch_optional(&state.pg)
+        .await?
+        .ok_or(AppError::Forbidden)?;
+        let app = &configuration[family];
+        if app["enabled"] != true || (origin.is_some() && family != "web") {
+            return Err(AppError::Forbidden);
+        }
+        let identifier = match family {
+            "ios" | "android" => {
+                let field = if family == "ios" {
+                    "bundle_id"
+                } else {
+                    "package_name"
+                };
+                let expected = app[field]
+                    .as_str()
+                    .filter(|s| !s.trim().is_empty())
+                    .ok_or(AppError::Forbidden)?;
+                if identifier != Some(expected) {
+                    return Err(AppError::Forbidden);
+                }
+                Some(expected.to_owned())
+            }
+            "web" => {
+                let domains = app["domains"].as_array().ok_or(AppError::Forbidden)?;
+                let claimed = identifier.or(origin).ok_or(AppError::Forbidden)?;
+                if !web_domain_allowed(domains, claimed) {
+                    return Err(AppError::Forbidden);
+                }
+                let claimed = web_identifier(claimed).map_err(|_| AppError::Forbidden)?;
+                if let Some(origin) = origin
+                    && (!web_domain_allowed(domains, origin)
+                        || web_identifier(origin).ok().as_ref() != Some(&claimed))
+                {
+                    return Err(AppError::Forbidden);
+                }
+                Some(claimed)
+            }
+            _ => {
+                let platform = platform.to_ascii_lowercase();
+                if matches!(platform.as_str(), "mac" | "windows")
+                    && app[format!("{platform}_enabled")] == false
+                {
+                    return Err(AppError::Forbidden);
+                }
+                if identifier.is_some() {
+                    return Err(AppError::Forbidden);
+                }
+                None
+            }
+        };
+        Ok(Self {
+            id,
+            declaration: Some(SdkDeclaration {
+                platform: platform.to_ascii_lowercase(),
+                identifier,
+                disabled_desktop_platforms: ["mac", "windows"]
+                    .into_iter()
+                    .filter(|os| app[format!("{os}_enabled")] == false)
+                    .collect(),
+            }),
+        })
     }
 }
 

@@ -4,6 +4,8 @@ Prepared 2026-09-19. This is an execution guide, not a report of newly executed 
 
 Use this guide to validate the Rust runtime, PostgreSQL 18.6, Redis 8.10.2, ClickHouse or BigQuery through Pub/Sub, MinIO/S3 or GCS, and all retained application capabilities. A release needs evidence for the exact source and image being deployed.
 
+Client SDK fixtures must first enable and configure their app, then send the declarations in [SDK_CONFIGURATION.md](SDK_CONFIGURATION.md). A project key alone is insufficient. The example below uses an iOS fixture with its configured bundle ID supplied as `SDK_IDENTIFIER`.
+
 ## 1. What counts as valid
 
 Complete these gates in order. Mark each result `PASS`, `FAIL`, `BLOCKED`, or `NOT RUN`. An unavailable provider account is `BLOCKED`, not a pass.
@@ -188,6 +190,7 @@ JSON
 for attempt in 1 2; do
   curl --fail-with-body --silent --show-error \
     -H "x-project-key: $PROJECT_KEY" -H 'Content-Type: application/json' \
+    -H 'x-sdk-platform: ios' -H "x-sdk-identifier: $SDK_IDENTIFIER" \
     --data-binary "@$TRISIXT_EVIDENCE_DIR/event.json" \
     "$BASE_URL/api/v1/sdk/events"
 done

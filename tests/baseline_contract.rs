@@ -4,7 +4,10 @@ use axum::http::StatusCode;
 use chrono::{Duration, Utc};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
-use std::{collections::BTreeSet, path::Path};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    path::Path,
+};
 use support::baseline::{Baseline, Contract};
 use uuid::Uuid;
 
@@ -118,15 +121,32 @@ async fn shared_contract_replays_isolates_tenants_and_preserves_numeric_oracles(
             .filter(|e| e["project_id"] == project.to_string())
             .map(|e| e["request"].clone())
             .collect();
-        let (status, actual) = baseline
-            .call(
-                project,
-                "POST",
-                "/api/v1/sdk/events",
-                json!({"events":events}),
-            )
-            .await;
-        assert_eq!(status, StatusCode::OK, "{actual}");
+        // Each SDK request declares one app. Preserve the mixed-platform
+        // fixture and its independent numeric oracle by submitting one batch
+        // per client platform, then adding the accepted/duplicate counts.
+        let mut batches = BTreeMap::<&str, Vec<&Value>>::new();
+        for event in &events {
+            batches
+                .entry(event["properties"]["platform"].as_str().unwrap())
+                .or_default()
+                .push(event);
+        }
+        let mut accepted = 0;
+        let mut duplicates = 0;
+        for batch in batches.values() {
+            let (status, actual) = baseline
+                .call(
+                    project,
+                    "POST",
+                    "/api/v1/sdk/events",
+                    json!({"events":batch}),
+                )
+                .await;
+            assert_eq!(status, StatusCode::OK, "{actual}");
+            accepted += actual["accepted"].as_u64().unwrap();
+            duplicates += actual["duplicates"].as_u64().unwrap();
+        }
+        let actual = json!({"accepted":accepted,"duplicates":duplicates});
         assert_eq!(actual, data["expected"]["initial_ingestion"][key]);
         let (status, actual) = baseline
             .call(project, "POST", "/api/v1/sdk/event", events[0].clone())

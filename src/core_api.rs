@@ -659,9 +659,10 @@ struct VisitorInput {
 }
 async fn sdk_visitor(
     State(st): State<AppState>,
-    SdkProject(id): SdkProject,
+    sdk: SdkProject,
     Json(body): Json<VisitorInput>,
 ) -> Api {
+    let id = sdk.id;
     if body.visitor_id.is_nil() {
         return Err(AppError::BadRequest("visitor_id must not be nil".into()));
     }
@@ -852,16 +853,22 @@ pub(crate) async fn persist_events(
 }
 async fn sdk_events(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
-    Json(body): Json<EventBatch>,
+    sdk: SdkProject,
+    Json(mut body): Json<EventBatch>,
 ) -> Api {
+    let project = sdk.id;
+    for event in &mut body.events {
+        sdk.bind_event_platform(&mut event.properties)?;
+    }
     persist_events(&st, project, body.events).await
 }
 async fn sdk_event(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
-    Json(body): Json<EventInput>,
+    sdk: SdkProject,
+    Json(mut body): Json<EventInput>,
 ) -> Api {
+    let project = sdk.id;
+    sdk.bind_event_platform(&mut body.properties)?;
     persist_events(&st, project, vec![body]).await
 }
 async fn events(
@@ -982,8 +989,8 @@ async fn read_configurations(st: &AppState, id: Uuid) -> Api {
         || json!({"project_id":id,"ios":{},"android":{},"web":{},"desktop":{},"redirect":{}}),
     )))
 }
-async fn sdk_configurations(State(st): State<AppState>, SdkProject(id): SdkProject) -> Api {
-    read_configurations(&st, id).await
+async fn sdk_configurations(State(st): State<AppState>, sdk: SdkProject) -> Api {
+    read_configurations(&st, sdk.id).await
 }
 pub(crate) fn validate_configuration(platform: &str, body: &Value) -> Result<(), AppError> {
     object(body)?;
@@ -1224,11 +1231,8 @@ async fn android_association(State(st): State<AppState>, headers: HeaderMap) -> 
         json!([{"relation":["delegate_permission/common.handle_all_urls"],"target":{"namespace":"android_app","package_name":package,"sha256_cert_fingerprints":fingerprints}}]),
     ))
 }
-async fn sdk_link(
-    State(st): State<AppState>,
-    SdkProject(id): SdkProject,
-    Path(path): Path<String>,
-) -> Api {
+async fn sdk_link(State(st): State<AppState>, sdk: SdkProject, Path(path): Path<String>) -> Api {
+    let id = sdk.id;
     let row = sqlx::query_scalar::<_, Value>(
         "SELECT to_jsonb(l) FROM links l WHERE project_id=$1 AND path=$2 AND archived_at IS NULL",
     )

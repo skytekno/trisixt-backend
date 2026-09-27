@@ -258,6 +258,12 @@ async fn firebase_server_sdk_public_preview_and_clipboard_roundtrip() {
         .unwrap();
     let p=sqlx::query_scalar::<_,Uuid>("INSERT INTO projects(instance_id,environment,domain)VALUES($1,'production','native.example.test')RETURNING id").bind(i).fetch_one(&st.pg).await.unwrap();
     let p2=sqlx::query_scalar::<_,Uuid>("INSERT INTO projects(instance_id,environment,domain)VALUES($1,'test','test.example.test')RETURNING id").bind(i).fetch_one(&st.pg).await.unwrap();
+    sqlx::query("INSERT INTO project_configurations(project_id,ios) VALUES($1,$2)")
+        .bind(p)
+        .bind(json!({"enabled":true,"bundle_id":"com.example.app"}))
+        .execute(&st.pg)
+        .await
+        .unwrap();
     let app = trisixt::routes::router(st.clone());
     let csv = "name,short_link,link,utm_source\nImported,https://old.example/a,https://shop.example/product,newsletter\nDuplicate,https://old.example/a,https://shop.example/other,newsletter\n";
     let req = Request::builder()
@@ -413,6 +419,8 @@ async fn firebase_server_sdk_public_preview_and_clipboard_roundtrip() {
             .method("POST")
             .uri("/api/v1/sdk/data_for_device")
             .header("x-project-key", &key)
+            .header("platform", "ios")
+            .header("identifier", "com.example.app")
             .header("content-type", "application/json")
             .body(Body::from(
                 json!({"visitor_id":current,"clipboard_token":ct}).to_string(),

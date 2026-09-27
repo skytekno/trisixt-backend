@@ -136,13 +136,25 @@ impl Baseline {
             assert_eq!(project, self.contract.id("project_b"));
             (&self.owner_b_token, &self.project_b_key)
         };
+        let platform = body["platform"]
+            .as_str()
+            .or(body["properties"]["platform"].as_str())
+            .or(body["events"][0]["properties"]["platform"].as_str())
+            .unwrap_or("ios");
         let configuration = self.contract.data["sdk_configurations"]
             .as_array()
             .unwrap()
             .iter()
-            .find(|c| c["project_id"] == project.to_string() && c["platform"] == "ios")
-            .expect("baseline calls use the declared iOS app");
-        let identifier = configuration["request"]["bundle_id"].as_str().unwrap();
+            .find(|c| c["project_id"] == project.to_string() && c["platform"] == platform)
+            .expect("baseline calls use a configured app");
+        let identifier = match platform {
+            "ios" => &configuration["request"]["bundle_id"],
+            "android" => &configuration["request"]["package_name"],
+            "web" => &configuration["request"]["domains"][0],
+            _ => panic!("unsupported baseline client platform"),
+        }
+        .as_str()
+        .unwrap();
         let response = self
             .fixture
             .app
@@ -153,7 +165,7 @@ impl Baseline {
                     .uri(path)
                     .header("authorization", format!("Bearer {token}"))
                     .header("x-project-key", key)
-                    .header("platform", "ios")
+                    .header("platform", platform)
                     .header("identifier", identifier)
                     .header("content-type", "application/json")
                     .body(Body::from(body.to_string()))

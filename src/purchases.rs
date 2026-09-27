@@ -586,9 +586,16 @@ pub(crate) async fn persist_verified(
 }
 async fn sdk_purchase(
     State(st): State<AppState>,
-    SdkProject(project): SdkProject,
+    sdk: SdkProject,
     Json(input): Json<PurchaseInput>,
 ) -> Result<Json<Value>, AppError> {
+    let project = sdk.id;
+    sdk.check_platform(input.platform.as_deref())?;
+    sdk.check_platform(match input.provider.as_str() {
+        "apple" => Some("ios"),
+        "google" => Some("android"),
+        _ => None,
+    })?;
     if !st.config.ee_enabled {
         return Err(AppError::NotFound);
     }

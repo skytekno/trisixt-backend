@@ -35,8 +35,8 @@ Native tenant-scoped billing prefix: `/api/v1/instances/{instance_id}/billing`.
 | Operator usage report | `POST /api/v1/webhooks/send_stripe_quotas` with `x-api-key` |
 | Enterprise subscription create / update | `POST /api/v1/admin/create_enterprise_subscription`, `PATCH /api/v1/admin/enterprise_subscriptions/{id}` |
 | Revenue collection switch | `PUT /api/v1/instances/{id}/revenue_collection` |
-| SDK store purchase | `POST /api/v1/sdk/purchases/verify` with `x-project-key` |
-| SDK external payment | `POST /api/v1/sdk/add_payment_event` with `x-project-key` |
+| SDK store purchase | `POST /api/v1/sdk/purchases/verify` with project key and [configured SDK declaration](../SDK_CONFIGURATION.md) |
+| SDK external payment | `POST /api/v1/sdk/add_payment_event` with project key and [configured SDK declaration](../SDK_CONFIGURATION.md) |
 | Google Cloud configuration script | `GET /api/v1/projects/{id}/purchases/google_configuration_script` |
 | Apple notification | `POST /api/v1/iap/apple/{test\|production}/{project_id}` |
 | Google authenticated Pub/Sub push | `POST /api/v1/iap/google/{instance_id}` |
