@@ -355,7 +355,7 @@ pub async fn resolve(
             return Ok(None);
         }
     }
-    if let Some((status,link))=sqlx::query_as::<_,(String,Option<Value>)>("SELECT m.status,to_jsonb(l) FROM migrated_links m LEFT JOIN links l ON l.id=m.link_id WHERE m.source_id=$1 AND m.old_path=$2 AND(m.status='resolved' OR m.cached_until>now())").bind(source.id).bind(path).fetch_optional(&st.pg).await?{return Ok(Some(if status=="resolved"{link.filter(|v|v["archived_at"].is_null()).map(ImportOutcome::Link).unwrap_or(ImportOutcome::Defaults)}else{ImportOutcome::Defaults}));}
+    if let Some((status,link))=sqlx::query_as::<_,(String,Option<Value>)>("SELECT m.status,to_jsonb(l) FROM migrated_links m LEFT JOIN links l ON l.id=m.link_id AND l.project_id=$3 WHERE m.source_id=$1 AND m.old_path=$2 AND(m.status='resolved' OR m.cached_until>now())").bind(source.id).bind(path).bind(project).fetch_optional(&st.pg).await?{return Ok(Some(if status=="resolved"{link.filter(|v|v["archived_at"].is_null()).map(ImportOutcome::Link).unwrap_or(ImportOutcome::Defaults)}else{ImportOutcome::Defaults}));}
     if !source.enabled {
         return Ok(if source.auto_disabled_at.is_some() {
             Some(ImportOutcome::Defaults)
@@ -373,7 +373,7 @@ pub async fn resolve(
         return Ok(Some(ImportOutcome::Defaults));
     }
     // Recheck after claiming the lock: another request may have populated the cache.
-    if let Some((status,link))=sqlx::query_as::<_,(String,Option<Value>)>("SELECT m.status,to_jsonb(l) FROM migrated_links m LEFT JOIN links l ON l.id=m.link_id WHERE m.source_id=$1 AND m.old_path=$2 AND(m.status='resolved' OR m.cached_until>now())").bind(source.id).bind(path).fetch_optional(&mut *tx).await? {return Ok(Some(if status=="resolved" {link.filter(|v|v["archived_at"].is_null()).map(ImportOutcome::Link).unwrap_or(ImportOutcome::Defaults)}else{ImportOutcome::Defaults}));}
+    if let Some((status,link))=sqlx::query_as::<_,(String,Option<Value>)>("SELECT m.status,to_jsonb(l) FROM migrated_links m LEFT JOIN links l ON l.id=m.link_id AND l.project_id=$3 WHERE m.source_id=$1 AND m.old_path=$2 AND(m.status='resolved' OR m.cached_until>now())").bind(source.id).bind(path).bind(project).fetch_optional(&mut *tx).await? {return Ok(Some(if status=="resolved" {link.filter(|v|v["archived_at"].is_null()).map(ImportOutcome::Link).unwrap_or(ImportOutcome::Defaults)}else{ImportOutcome::Defaults}));}
     if rate_limit(&st.pg, &format!("import:{}", source.id), 6000)
         .await
         .is_err()
@@ -506,59 +506,154 @@ async fn failure(
     }
     Ok(())
 }
+/// Classify SDK inputs before URL-only routing. Slugs remain scoped to the
+/// authenticated project's migration source; they are never network addresses.
+pub(crate) enum SdkLinkInput {
+    Url(url::Url),
+    Slug {
+        path: String,
+        query: String,
+        url: Option<url::Url>,
+    },
+}
+impl SdkLinkInput {
+    pub(crate) fn parse(input: &str) -> Result<Self, AppError> {
+        let input = input.trim();
+        let invalid = || AppError::BadRequest("invalid link URL or referrer".into());
+        if input.is_empty()
+            || input.len() > 8192
+            || input.starts_with("//")
+            || input
+                .chars()
+                .any(|c| c.is_whitespace() || c.is_control() || c == '\\')
+            || input.as_bytes().iter().enumerate().any(|(i, b)| {
+                *b == b'%'
+                    && !input
+                        .as_bytes()
+                        .get(i + 1..i + 3)
+                        .is_some_and(|hex| hex.iter().all(u8::is_ascii_hexdigit))
+            })
+        {
+            return Err(invalid());
+        }
+        if let Ok(url) = url::Url::parse(input) {
+            if !url.username().is_empty() || url.password().is_some() {
+                return Err(invalid());
+            }
+            if matches!(url.scheme(), "http" | "https") {
+                if !input.contains("://") || url.host_str().is_none() {
+                    return Err(invalid());
+                }
+                return Ok(Self::Url(url));
+            }
+            if url.cannot_be_a_base()
+                || [
+                    "javascript",
+                    "data",
+                    "file",
+                    "vbscript",
+                    "about",
+                    "blob",
+                    "ftp",
+                    "ftps",
+                    "ws",
+                    "wss",
+                ]
+                .contains(&url.scheme())
+                || url.port().is_some()
+            {
+                return Err(invalid());
+            }
+            let (_, slug) = input.split_once("://").ok_or_else(invalid)?;
+            return Self::slug(slug, Some(url));
+        }
+        // An '=' before any '?' identifies a raw form-encoded referrer, not a
+        // slug with query parameters. Do not guess when referring links repeat.
+        if input
+            .find('=')
+            .is_some_and(|eq| input.find('?').is_none_or(|q| eq < q))
+        {
+            let links = url::form_urlencoded::parse(input.as_bytes())
+                .filter(|(key, _)| key == "~referring_link")
+                .map(|(_, value)| value.into_owned())
+                .collect::<Vec<_>>();
+            if links.len() != 1
+                || !url::Url::parse(&links[0])
+                    .is_ok_and(|url| matches!(url.scheme(), "http" | "https"))
+            {
+                return Err(invalid());
+            }
+            return match Self::parse(&links[0])? {
+                Self::Url(url) => Ok(Self::Url(url)),
+                Self::Slug { .. } => Err(invalid()),
+            };
+        }
+        Self::slug(input, None)
+    }
+
+    fn slug(input: &str, url: Option<url::Url>) -> Result<Self, AppError> {
+        let input = input.split('#').next().unwrap_or("");
+        let (path, query) = input.split_once('?').unwrap_or((input, ""));
+        let path = path.trim_start_matches('/');
+        if path.is_empty()
+            || path.len() > 2048
+            || !path
+                .bytes()
+                .all(|c| c.is_ascii_alphanumeric() || b"-_.~/%".contains(&c))
+            || path
+                .split('/')
+                .any(|part| part.is_empty() || matches!(part, "." | ".."))
+        {
+            return Err(AppError::BadRequest("invalid migration slug".into()));
+        }
+        Ok(Self::Slug {
+            path: path.into(),
+            query: query.into(),
+            url,
+        })
+    }
+
+    pub(crate) fn url(&self) -> Option<&url::Url> {
+        match self {
+            Self::Url(url) => Some(url),
+            Self::Slug { url, .. } => url.as_ref(),
+        }
+    }
+}
+
 pub async fn resolve_sdk(
     st: &AppState,
     project: Uuid,
     input: &str,
 ) -> Result<Option<ImportOutcome>, AppError> {
-    let input = input.trim();
-    if input.is_empty() || input.len() > 8192 {
-        return Ok(None);
-    }
-    if let Ok(url) = url::Url::parse(input)
-        && ["http", "https"].contains(&url.scheme())
-        && let Some(host) = url.host_str()
-    {
-        return resolve(
-            st,
-            project,
-            host,
-            url.path().trim_start_matches('/'),
-            url.query().unwrap_or(""),
-        )
-        .await;
-    }
-    if !input.contains("://") && input.contains('=') {
-        if let Some((_, value)) =
-            url::form_urlencoded::parse(input.as_bytes()).find(|(k, _)| k == "~referring_link")
-            && let Ok(url) = url::Url::parse(&value)
-            && let Some(host) = url.host_str()
-        {
-            return resolve(
+    resolve_sdk_input(st, project, &SdkLinkInput::parse(input)?).await
+}
+
+pub(crate) async fn resolve_sdk_input(
+    st: &AppState,
+    project: Uuid,
+    input: &SdkLinkInput,
+) -> Result<Option<ImportOutcome>, AppError> {
+    match input {
+        SdkLinkInput::Url(url) => {
+            resolve(
                 st,
                 project,
-                host,
+                url.host_str().expect("validated host"),
                 url.path().trim_start_matches('/'),
                 url.query().unwrap_or(""),
             )
-            .await;
+            .await
         }
-        return Ok(None);
+        SdkLinkInput::Slug { path, query, .. } => {
+            let source = match source_project(&st.pg, project).await {
+                Ok(source) => source,
+                Err(AppError::NotFound) => return Ok(None),
+                Err(error) => return Err(error),
+            };
+            resolve(st, project, &source.old_host, path, query).await
+        }
     }
-    let source = match source_project(&st.pg, project).await {
-        Ok(s) => s,
-        Err(AppError::NotFound) => return Ok(None),
-        Err(e) => return Err(e),
-    };
-    let slug = input
-        .split_once("://")
-        .map(|(_, s)| s)
-        .unwrap_or(input)
-        .split(['?', '#'])
-        .next()
-        .unwrap_or("")
-        .trim_start_matches('/');
-    resolve(st, project, &source.old_host, slug, "").await
 }
 
 pub fn router() -> Router<AppState> {

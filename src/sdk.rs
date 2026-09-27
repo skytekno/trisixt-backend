@@ -575,43 +575,48 @@ async fn resolve(
     }
     let session = text(&body, "session_id", 200)?;
     let raw = text(&body, "url", 8192)?;
-    let parsed = raw
-        .map(url::Url::parse)
-        .transpose()
-        .map_err(|_| bad("invalid link URL"))?;
+    let input = raw.map(crate::imports::SdkLinkInput::parse).transpose()?;
+    let parsed = input.as_ref().and_then(crate::imports::SdkLinkInput::url);
     let clipboard = parsed
-        .as_ref()
         .and_then(|url| {
             url.query_pairs()
                 .find(|(k, _)| k == "ct")
                 .map(|(_, v)| v.into_owned())
         })
         .or_else(|| body["clipboard_token"].as_str().map(str::to_owned));
-    let path = text(&body, "path", 100)?
-        .or_else(|| parsed.as_ref().map(|u| u.path().trim_start_matches('/')));
+    let path =
+        text(&body, "path", 100)?.or_else(|| parsed.map(|u| u.path().trim_start_matches('/')));
     let mut explicit = None;
-    if let Some(path) = path {
-        if let Some(url) = &parsed {
-            let host = url.host_str().ok_or_else(|| bad("URL host required"))?;
-            let own = sqlx::query_scalar::<_, bool>(
-                "SELECT EXISTS(SELECT 1 FROM projects WHERE id=$1 AND lower(domain)=$2)",
+    if let Some(input) = &input {
+        let native_host = if let Some(host) = parsed
+            .and_then(url::Url::host_str)
+            .and_then(|host| crate::domains::normalize_hostname(host).ok())
+        {
+            // Migration custom hosts must use their old-path mapping even when
+            // a native link happens to have the same path.
+            sqlx::query_scalar::<_, bool>(
+                "SELECT EXISTS(SELECT 1 FROM projects WHERE id=$1 AND lower(domain)=$2) OR EXISTS(SELECT 1 FROM custom_hostnames WHERE project_id=$1 AND hostname=$2 AND purpose='primary' AND status='active')",
             )
             .bind(project)
             .bind(host)
             .fetch_one(&st.pg)
-            .await?;
-            if !own && crate::domains::resolve_project(&st.pg, host).await? != Some(project) {
-                match crate::imports::resolve_sdk(&st, project, raw.unwrap()).await? {
-                    Some(crate::imports::ImportOutcome::Link(link)) => explicit = Some(link),
-                    Some(crate::imports::ImportOutcome::Defaults) | None => {
-                        return Ok(Json(json!({"data":null,"link":null,"tracking":null})));
-                    }
+            .await?
+        } else {
+            false
+        };
+        if !native_host {
+            match crate::imports::resolve_sdk_input(&st, project, input).await? {
+                Some(crate::imports::ImportOutcome::Link(link)) => explicit = Some(link),
+                Some(crate::imports::ImportOutcome::Defaults) | None => {
+                    return Ok(Json(json!({"data":null,"link":null,"tracking":null})));
                 }
             }
         }
-        if explicit.is_none() {
-            explicit=sqlx::query_scalar::<_,Value>("SELECT to_jsonb(l) FROM links l WHERE project_id=$1 AND path=$2 AND archived_at IS NULL").bind(project).bind(path.trim_start_matches("l/")).fetch_optional(&st.pg).await?;
-        }
+    }
+    if explicit.is_none()
+        && let Some(path) = path
+    {
+        explicit=sqlx::query_scalar::<_,Value>("SELECT to_jsonb(l) FROM links l WHERE project_id=$1 AND path=$2 AND archived_at IS NULL").bind(project).bind(path.trim_start_matches("l/")).fetch_optional(&st.pg).await?;
     }
     let explicit_id = explicit
         .as_ref()

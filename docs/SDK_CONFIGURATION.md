@@ -32,8 +32,45 @@ Failures use the existing error contract: invalid/revoked credentials return `40
 
 The genuine server SDK routes (`generate_link`, server link details, and metrics) keep their separate key plus `environment` authentication. They do not need a mobile/web declaration. Client `create_link` remains gated. In-process `InternalSdkProject` delegation is trusted application state and cannot be created by an HTTP header.
 
+## Link and install-referrer inputs
+
+`POST /api/v1/sdk/data_for_device_and_url` accepts an existing `visitor_id` and
+one of these strings in `url`, with the same configured-app headers above:
+
+| Input | Example | Resolution |
+| --- | --- | --- |
+| Native HTTP(S) URL | `https://links.example/l/offer` | The authenticated project's native or active primary custom host |
+| Migrated HTTP(S) URL | `https://old.example/offer?utm_source=mail` | A migration host owned by the authenticated project |
+| Raw Play Install Referrer | `utm_source=play&~referring_link=https%3A%2F%2Fold.example%2Foffer` | Exactly one decoded `~referring_link`, containing an HTTP(S) URL |
+| Bare migration slug | `offer?utm_source=mail` | The authenticated project's migration source |
+| Hierarchical custom scheme | `demoapp://prefix/offer?utm_source=mail` | Native host when owned; otherwise `prefix/offer` in the project's migration source |
+
+The complete input is limited to 8,192 bytes and migration slugs to 2,048 bytes.
+Malformed escapes, empty inputs, repeated referring links, nested referrer
+wrappers, unknown referrer keys without a referring link, URL credentials,
+control characters, protocol-relative URLs, and unsafe/reserved custom schemes
+return `400`. Custom schemes must use `://`; `javascript`, `data`, `file`,
+`vbscript`, `about`, `blob`, `ftp`, `ftps`, `ws`, and `wss` are rejected. Custom
+scheme inputs are link identifiers, never destinations for outbound requests.
+
+Query parameters on the resolved URL or slug are preserved for the provider
+lookup. Native hosts retain precedence; migration custom hosts use the old-path
+mapping even when a native path collides. Foreign/unconfigured hosts, missing
+sources, archived/deleted targets, and cached provider failures return
+`{"data":null,"link":null,"tracking":null}` without claiming fingerprint matches.
+Resolved cache entries remain usable for disabled sources; uncached disabled
+sources return the same empty result. Successful responses include `data`,
+`link`, `link_id`, and `tracking`; clipboard identity claims retain their existing
+one-time open-event behavior, including when `ct` is inside the referring URL.
+
 ## Verification
 
 `tests/sdk_configuration_gate.rs` exercises the actual router and PostgreSQL. Negative requests compare complete rows across identity, event/outbox, attribution, link/import, notification, purchase, quota, rate-limit, and audit tables. It also covers valid clients, server callers, and internal delegation. Existing suites configure their apps explicitly.
 
 Run the complete local suite with `scripts/check.sh`. Actual supported SDK/device builds and live cloud provider acceptance remain separate release gates described in [TESTING_GUIDE.md](TESTING_GUIDE.md).
+
+`tests/sdk_migration.rs` exercises these input forms through the actual router,
+including exact attribution, project boundaries, cache lifecycle, and provider
+queries against a local HTTP fixture. Rejected-input tests compare full rows in
+eight affected tables. These fixtures do not prove Android Play delivery or real
+Branch/AppsFlyer account compatibility.
