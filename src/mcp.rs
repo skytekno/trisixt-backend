@@ -545,6 +545,7 @@ async fn delegate(
         .map_err(|_| AppError::Internal)?;
     Ok(crate::core_api::router()
         .merge(crate::analytics_api::router())
+        .merge(crate::management::router())
         .with_state(st)
         .oneshot(req)
         .await
@@ -775,6 +776,9 @@ async fn gateway(
     } else {
         serde_json::from_slice(&bytes).map_err(|_| AppError::BadRequest("invalid JSON".into()))?
     };
+    if !body.is_object() {
+        return Err(AppError::BadRequest("JSON object required".into()));
+    }
     for (k, v) in query {
         if body.get(&k).is_none() {
             body[&k] = json!(v)
@@ -829,9 +833,12 @@ async fn gateway(
     auth.project(&st, p, write).await?;
     let (verb, target) = match suffix.as_str() {
         "links" => (Method::POST, format!("/api/v1/projects/{p}/links")),
-        "links/search" => (Method::GET, format!("/api/v1/projects/{p}/links")),
+        "links/search" => (Method::POST, format!("/api/v1/projects/{p}/links/search")),
         "campaigns" => (Method::POST, format!("/api/v1/projects/{p}/campaigns")),
-        "campaigns/search" => (Method::GET, format!("/api/v1/projects/{p}/campaigns")),
+        "campaigns/search" => (
+            Method::POST,
+            format!("/api/v1/projects/{p}/campaigns/search"),
+        ),
         "analytics/overview" => (
             Method::GET,
             format!("/api/v1/projects/{p}/analytics/overview/key-metrics"),
@@ -943,6 +950,82 @@ const TOOLS: &[(&str, &str, &str)] = &[
     ("overview_analytics", "POST", "analytics/overview"),
     ("top_links", "POST", "analytics/top_links"),
 ];
+fn tool_description(name: &str, method: &str, path: &str) -> Value {
+    let mut tool = json!({"name":name,"description":format!("Trisixt {name}. Uses the authenticated projects and current tenant permissions."),"inputSchema":{"type":"object","properties":{"project_id":{"type":"string","format":"uuid"},"instance_id":{"type":"string","format":"uuid"},"id":{"type":"string","format":"uuid"},"path":{"type":"string"},"name":{"type":"string"},"target_url":{"type":"string"},"metadata":{"type":"object"},"platforms":{"type":"object"}},"additionalProperties":true},"annotations":{"readOnlyHint":method=="GET"||path.ends_with("search")||path.starts_with("analytics/"),"destructiveHint":method=="DELETE"}});
+    if matches!(path, "links/search" | "campaigns/search") {
+        let campaign = path == "campaigns/search";
+        let entity = if campaign { "campaigns" } else { "links" };
+        tool["description"] = json!(format!(
+            "Search {entity} using native management filters and statistics. Returns JSON with {entity}, meta (page, per_page, total_entries, total_pages), and next_offset. Includes zero-activity rows and both active and archived rows unless filtered. Requires mcp:read or mcp:full and current project membership."
+        ));
+        tool["inputSchema"] = search_input_schema(campaign);
+    }
+    tool
+}
+
+fn search_input_schema(campaign: bool) -> Value {
+    let mut properties = json!({
+        "project_id":{"type":"string","format":"uuid"},
+        "query":{"type":"string","maxLength":255,"description":"Case-insensitive text; takes precedence over search and term."},
+        "search":{"type":"string","maxLength":255},
+        "term":{"type":"string","maxLength":255},
+        "active":{"type":"boolean","description":"Takes precedence over archived."},
+        "archived":{"type":"boolean"},
+        "ids":{"type":"array","maxItems":200,"items":{"type":"string","format":"uuid"}},
+        "limit":{"type":"integer","minimum":1,"maximum":1000,"description":"Overrides per_page; defaults to 50, or 1000 with all=true."},
+        "per_page":{"type":"integer","minimum":1,"maximum":1000},
+        "offset":{"type":"integer","minimum":0,"maximum":100000,"description":"Overrides page."},
+        "page":{"type":"integer","minimum":1,"maximum":100001,"default":1},
+        "all":{"type":"boolean","default":false,"description":"Uses a bounded 1000-row default page, not an unbounded result."},
+        "sort_order":{"type":"string","enum":["asc","desc"],"description":"Defaults to desc; overrides asc/ascending/ascendent. Null metrics sort last; UUID breaks ties."},
+        "asc":{"type":"boolean"},
+        "ascending":{"type":"boolean","description":"Alias for asc; supply only one spelling."},
+        "ascendent":{"type":"boolean","description":"Alias for asc; supply only one spelling."},
+        "start_date":{"type":"string","format":"date"},
+        "end_date":{"type":"string","format":"date","description":"Inclusive date in the selected timezone."},
+        "date_from":{"type":"string","format":"date","description":"Legacy MCP alias for start_date."},
+        "date_to":{"type":"string","format":"date","description":"Legacy MCP alias for end_date."},
+        "from":{"type":"string","format":"date-time","description":"Inclusive timestamp with UTC offset; overrides start_date."},
+        "to":{"type":"string","format":"date-time","description":"Exclusive timestamp with UTC offset; overrides end_date."},
+        "timezone":{"type":"string","default":"UTC","description":"IANA timezone; date windows are bounded by retention and 90 calendar days."},
+        "platform":{"type":"string","description":"Filter activity metrics by the native analytics platform contract."}
+    });
+    let mut sorts = vec![
+        "name",
+        "created_at",
+        "updated_at",
+        "active",
+        "views",
+        "opens",
+        "installs",
+        "reinstalls",
+        "time_spent",
+        "reactivations",
+        "app_opens",
+        "user_referred",
+        "revenue",
+    ];
+    if !campaign {
+        sorts.extend([
+            "title",
+            "path",
+            "tags",
+            "sdk_generated",
+            "campaign_id",
+            "ads_platform",
+        ]);
+        properties.as_object_mut().unwrap().extend(json!({
+            "campaign_id":{"type":"string","format":"uuid"},
+            "link_id":{"type":"string","format":"uuid"},
+            "sdk":{"type":"boolean","description":"Filter links by sdk_generated metadata."},
+            "ads_platform":{"type":"string","maxLength":100},
+            "tags":{"type":"array","maxItems":100,"items":{"type":"string","maxLength":255},"description":"Require every supplied tag."}
+        }).as_object().unwrap().clone());
+    }
+    properties["sort_by"] = json!({"type":"string","enum":sorts,"default":"created_at"});
+    json!({"type":"object","required":["project_id"],"properties":properties,"additionalProperties":true})
+}
+
 async fn rpc(
     State(st): State<AppState>,
     auth: McpAuth,
@@ -974,7 +1057,7 @@ async fn rpc(
         "notifications/initialized" => Ok(StatusCode::ACCEPTED.into_response()),
         "ping" => Ok(reply(json!({}))),
         "tools/list" => Ok(reply(
-            json!({"tools":TOOLS.iter().map(|(name,method,path)|json!({"name":name,"description":format!("Trisixt {name}. Uses the authenticated projects and current tenant permissions."),"inputSchema":{"type":"object","properties":{"project_id":{"type":"string","format":"uuid"},"instance_id":{"type":"string","format":"uuid"},"id":{"type":"string","format":"uuid"},"path":{"type":"string"},"name":{"type":"string"},"target_url":{"type":"string"},"metadata":{"type":"object"},"platforms":{"type":"object"}},"additionalProperties":true},"annotations":{"readOnlyHint":*method=="GET"||path.ends_with("search")||path.starts_with("analytics/"),"destructiveHint":*method=="DELETE"}})).collect::<Vec<_>>()}),
+            json!({"tools":TOOLS.iter().map(|(name,method,path)|tool_description(name,method,path)).collect::<Vec<_>>()}),
         )),
         "tools/call" => {
             let Some((_, method, template)) = TOOLS
